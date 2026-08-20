@@ -44,6 +44,7 @@ export class BookingPage implements OnInit {
   routesCache: Record<string, any> = {};
   customBusData: Record<string, any> = {};
   globalCustomStops: string[] = [];
+  globalCustomRates: Record<string, number> = {};
   isLoading = false;
   isOfflineMode = false;
   editingBusInput = '';
