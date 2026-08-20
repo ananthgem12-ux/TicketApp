@@ -216,10 +216,7 @@
           </div>
 
           <div class="activated-code">
-            @for (char of ticketChars; track $index) {
-            <span [class.char-zero]="char === '0'" [class.char-serif-i]="char === 'I'"
-              [class.char-flat-one]="char === '1'">{{char}}</span>
-            }
+            {{ ticket }}
           </div>
 
           <!-- Yellow Watermark "1" -->
