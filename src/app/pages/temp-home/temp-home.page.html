@@ -1,0 +1,540 @@
+<ion-content fullscreen>
+  <div class="app-container">
+    
+    <!-- Royal Blue dynamic BUS OTP button (sticky/absolute at bottom, viewport-fixed) -->
+    <div class="bus-otp-btn" *ngIf="currentTab === 'home' && !showOtpInput" (click)="openBusOtp()">
+      <div class="bus-otp-icon-container">
+        <svg class="bus-otp-svg" viewBox="0 0 24 24" width="36" height="24">
+          <!-- Corner brackets (scanner corners) -->
+          <path d="M 4,6 L 4,4 L 6,4" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" />
+          <path d="M 18,4 L 20,4 L 20,6" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" />
+          <path d="M 4,12 L 4,14 L 6,14" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" />
+          <path d="M 18,14 L 20,14 L 20,12" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round" />
+          
+          <!-- Four rounded vertical bars inside -->
+          <rect x="7" y="5.5" width="2" height="7" rx="0.8" ry="0.8" fill="white" />
+          <rect x="10" y="5.5" width="2" height="7" rx="0.8" ry="0.8" fill="white" />
+          <rect x="13" y="5.5" width="2" height="7" rx="0.8" ry="0.8" fill="white" />
+          <rect x="16" y="5.5" width="2" height="7" rx="0.8" ry="0.8" fill="white" />
+        </svg>
+      </div>
+      <div class="bus-otp-label">BUS OTP</div>
+    </div>
+
+    <!-- ================= HOME TAB ================= -->
+    <div class="tab-content" *ngIf="currentTab === 'home'">
+      
+      <!-- Mockup view with dynamic BUS OTP button overlay -->
+      <div class="image-wrapper" *ngIf="!showOtpInput">
+        <img src="assets/home_bg.png" class="bg-img" alt="Home" />
+      </div>
+
+      <!-- Bus ticket no. entering page (Camera scanning mockup + bottom card entry) -->
+      <div class="manual-otp-container" *ngIf="showOtpInput">
+        
+        <!-- Black Camera Scanner Simulation Area -->
+        <div class="scanner-view">
+          <div class="scanner-camera-simulation">
+            <div class="scanner-loading-text">Loading camera...</div>
+            
+            <!-- Corner Brackets -->
+            <div class="scanner-target-box">
+              <div class="bracket top-left"></div>
+              <div class="bracket top-right"></div>
+              <div class="bracket bottom-left"></div>
+              <div class="bracket bottom-right"></div>
+            </div>
+          </div>
+          
+          <!-- Scanner Action bar at the bottom of camera view -->
+          <div class="scanner-action-row">
+            <button class="scanner-back-btn" (click)="closeBusOtp()" aria-label="Go Back">
+              ←
+            </button>
+            <button class="scanner-qr-btn" (click)="showOtpInput = false; showQrModal = true">
+              <span class="qr-brackets-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M 4,8 L 4,4 L 8,4" stroke-linecap="round" />
+                  <path d="M 16,4 L 20,4 L 20,8" stroke-linecap="round" />
+                  <path d="M 4,16 L 4,20 L 8,20" stroke-linecap="round" />
+                  <path d="M 16,20 L 20,20 L 20,16" stroke-linecap="round" />
+                </svg>
+              </span>
+              Scan QR
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottom white entry container layout matching screenshot -->
+        <div class="otp-card-bottom">
+          <!-- Top Row with blue card and Thiruvalluvar quote -->
+          <div class="otp-card-top-row">
+            <!-- Blue payment logo card -->
+            <div class="blue-payment-logo-card">
+              <div class="card-dots">****</div>
+              <div class="card-crescent"></div>
+            </div>
+            
+            <!-- Thiruvalluvar Quote Box -->
+            <div class="saint-quote-box">
+              <img src="assets/image.png" class="saint-avatar-img" alt="Thiruvalluvar" />
+              <div class="saint-quote-text">
+                தெய்வத்தான் ஆகா தெனினும் முயற்சிதன்<br>மெய்வருத்தக் கூலி தரும்
+              </div>
+            </div>
+          </div>
+
+          <!-- Entry lines row -->
+          <div class="otp-digits-line-row">
+            <div class="otp-digit-line-item">
+              <span class="digit-text font-letter" [class.active]="digits[0]">{{ digits[0] || '' }}</span>
+              <span class="digit-bottom-line" [class.filled]="digits[0]"></span>
+            </div>
+            <div class="otp-digit-line-item">
+              <span class="digit-text" [class.active]="digits[1]">{{ digits[1] || '' }}</span>
+              <span class="digit-bottom-line" [class.filled]="digits[1]"></span>
+            </div>
+            <div class="otp-digit-line-item">
+              <span class="digit-text" [class.active]="digits[2]">{{ digits[2] || '' }}</span>
+              <span class="digit-bottom-line" [class.filled]="digits[2]"></span>
+            </div>
+            <div class="otp-digit-line-item">
+              <span class="digit-text" [class.active]="digits[3]">{{ digits[3] || '' }}</span>
+              <span class="digit-bottom-line" [class.filled]="digits[3]"></span>
+            </div>
+            <div class="otp-digit-line-item">
+              <span class="digit-text" [class.active]="digits[4]">{{ digits[4] || '' }}</span>
+              <span class="digit-bottom-line" [class.filled]="digits[4]"></span>
+            </div>
+          </div>
+
+          <!-- Book button -->
+          <button class="book-bus-ticket-btn" [class.active]="isComplete" (click)="goBooking()">
+            Book Bus ticket
+            <span class="chevron-icons">➔➔</span>
+          </button>
+
+          <!-- White grid keyboard -->
+          <div class="grid-keyboard-white">
+            <!-- Row 1 -->
+            <button class="keyboard-key-btn" (click)="press('J')">J</button>
+            <button class="keyboard-key-btn" (click)="press('K')">K</button>
+            <button class="keyboard-key-btn" (click)="press('I')">I</button>
+            
+            <!-- Row 2 -->
+            <button class="keyboard-key-btn font-number" (click)="press('1')">1</button>
+            <button class="keyboard-key-btn font-number" (click)="press('2')">2</button>
+            <button class="keyboard-key-btn font-number" (click)="press('3')">3</button>
+            
+            <!-- Row 3 -->
+            <button class="keyboard-key-btn font-number" (click)="press('4')">4</button>
+            <button class="keyboard-key-btn font-number" (click)="press('5')">5</button>
+            <button class="keyboard-key-btn font-number" (click)="press('6')">6</button>
+            
+            <!-- Row 4 -->
+            <button class="keyboard-key-btn font-number" (click)="press('7')">7</button>
+            <button class="keyboard-key-btn font-number" (click)="press('8')">8</button>
+            <button class="keyboard-key-btn font-number" (click)="press('9')">9</button>
+            
+            <!-- Row 5 -->
+            <button class="keyboard-key-btn" (click)="press('S')">S</button>
+            <button class="keyboard-key-btn font-number" (click)="press('0')">0</button>
+            <button class="keyboard-key-btn delete-btn" (click)="backspace()">
+              <!-- Inline SVG for Cross Delete Button -->
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" style="display: block;">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                <line x1="18" y1="9" x2="12" y2="15" />
+                <line x1="12" y1="9" x2="18" y2="15" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= PASSES TAB ================= -->
+    <div class="tab-content" *ngIf="currentTab === 'passes'">
+      <div class="image-wrapper">
+        <img src="assets/passes_bg.png" class="bg-img" alt="Passes" />
+      </div>
+    </div>
+
+    <!-- ================= LIVE TAB ================= -->
+    <div class="tab-content live-tab" *ngIf="currentTab === 'live'">
+      <div class="live-layout-container">
+        <!-- Cartoon Illustration at the top -->
+        <div class="live-illustration-container">
+          <img src="assets/active_journey_cartoon.png" alt="Active Journey Illustration" class="live-cartoon-img" />
+        </div>
+        
+        <!-- Text details -->
+        <div class="live-content">
+          <h2 class="live-main-title">You don't have any active journey now!</h2>
+          
+          <!-- Plan journey button -->
+          <button class="plan-journey-btn" (click)="setTab('home')">
+            <svg class="search-btn-icon" viewBox="0 0 24 24">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            Plan a journey now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TICKET TAB ================= -->
+    <div class="tab-content ticket-tab" *ngIf="currentTab === 'ticket'">
+      <div class="ticket-layout-container">
+        <!-- Ticket tab header -->
+        <div class="ticket-header-title">Past Tickets</div>
+        
+        <!-- Active Tickets section -->
+        <div class="active-section" *ngIf="activeTickets.length > 0">
+          <div class="active-section-label">
+            <span class="active-pulse-dot">●</span>
+            Active Tickets ({{ activeTickets.length }})
+          </div>
+          
+          <!-- Active Ticket Card (Bright, non-dulled) -->
+          <div class="active-card" *ngFor="let t of activeTickets" (click)="viewTicketDetails(t)" (touchstart)="onTicketPressStart(t, $event)" (touchend)="onTicketPressEnd($event)">
+            <div class="card-left">
+              <div class="bus-badge">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
+                </svg>
+                <span>{{ t.bus }}</span>
+              </div>
+              <span class="bus-type">{{ t.type }}</span>
+            </div>
+            
+            <div class="card-center">
+              <div class="route-stops">
+                <span class="stop-name">{{ t.source }}</span>
+                <span class="arrow">➔</span>
+                <span class="stop-name">{{ t.destination }}</span>
+              </div>
+              <div class="ticket-meta">
+                <span>👤 x{{ t.persons }}</span>
+                <span class="dot-sep">•</span>
+                <span>₹{{ t.amount }}</span>
+                <span class="dot-sep">•</span>
+                <span>Code: {{ t.ticketCode }}</span>
+              </div>
+            </div>
+            
+            <div class="card-right">
+              <div class="countdown-badge">
+                <span class="timer-icon">⏳</span>
+                <span class="timer-text">{{ t.countdownStr }}</span>
+              </div>
+              <span class="view-label">Tap to view</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrollable list of past tickets styled exactly like the screenshot -->
+        <div class="past-tickets-list">
+          
+          <!-- Card 1 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">OKKIYAMPET</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">NAVALUR</span>
+              </div>
+              <div class="past-datetime">Jun 9, 2026 • 11:20 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹20</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">CHENNAI ONE IT SEZ</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">NAVALUR</span>
+              </div>
+              <div class="past-datetime">Jun 8, 2026 • 11:02 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹30</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">THIRUVANMIYUR</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">230 K.V.TOWER</span>
+              </div>
+              <div class="past-datetime">Jun 8, 2026 • 5:46 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹19</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">CHENNAI ONE IT SEZ</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">NAVALUR</span>
+              </div>
+              <div class="past-datetime">Jun 5, 2026 • 11:16 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹30</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">NAVALUR AGS COMPLEX</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">CHENNAI ONE IT SEZ</span>
+              </div>
+              <div class="past-datetime">Jun 5, 2026 • 10:13 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹30</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="past-ticket-card">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus-icon.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <div class="past-route">
+                <span class="past-stop">CHENNAI ONE IT SEZ</span>
+                <span class="past-arrow">↘</span>
+                <span class="past-stop">NAVALUR</span>
+              </div>
+              <div class="past-datetime">Jun 4, 2026 • 11:19 AM</div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">₹30</div>
+              <div class="expired-badge">Expired</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PROFILE TAB ================= -->
+    <div class="tab-content profile-tab" *ngIf="currentTab === 'profile'">
+      <div class="profile-layout-container">
+        
+        <!-- Header Bar -->
+        <div class="profile-header-bar">
+          <button class="profile-back-btn" (click)="setTab('home')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Avatar & Details section -->
+        <div class="profile-avatar-row">
+          <div class="profile-avatar-circle"></div>
+          <div class="profile-details-wrapper" 
+               (mousedown)="onPressStart($event)" 
+               (mouseup)="onPressEnd()" 
+               (mouseleave)="onPressEnd()"
+               (touchstart)="onPressStart($event)" 
+               (touchend)="onPressEnd()">
+            <div class="profile-phone-number">{{ userPhone }}</div>
+            <div class="profile-view-link">View Profile</div>
+          </div>
+        </div>
+
+        <!-- Settings Groups List -->
+        <div class="profile-groups-container">
+          
+          <!-- Group 1 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">❤️</span>
+              <span class="item-label">Favourites</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">⚙️</span>
+              <span class="item-label">Preferences</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🚌</span>
+              <span class="item-label">Transit Preferences</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">💳</span>
+              <span class="item-label">Payment Management</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+          <!-- Group 2 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">👥</span>
+              <span class="item-label">Share with Friends</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🗺️</span>
+              <span class="item-label">My Rides</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🎧</span>
+              <span class="item-label">Help and Support</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🛡️</span>
+              <span class="item-label">Safety</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+          <!-- Group 3 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">ℹ️</span>
+              <span class="item-label">About Us</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🌐</span>
+              <span class="item-label">App Language</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🚪</span>
+              <span class="item-label">Logout</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= FIXED BOTTOM NAV OVERLAY ================= -->
+    <div class="custom-bottom-nav" *ngIf="!(currentTab === 'home' && showOtpInput)">
+      <div class="nav-item" [class.active]="currentTab === 'home'" (click)="setTab('home')">
+        <svg class="nav-svg" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'passes'" (click)="setTab('passes')">
+        <svg class="nav-svg" viewBox="0 0 24 24">
+          <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2-.9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+        </svg>
+        <span class="nav-label">Passes</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'live'" (click)="setTab('live')">
+        <svg class="nav-svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <circle cx="12" cy="12" r="3.5" fill="currentColor"/>
+        </svg>
+        <span class="nav-label">Live</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'ticket'" (click)="setTab('ticket')">
+        <svg class="nav-svg" viewBox="0 0 24 24">
+          <path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2zm-4 4.25H8v-1.5h8v1.5zm0-3.25H8v-1.5h8v1.5zm0-3.25H8v-1.5h8v1.5z"/>
+        </svg>
+        <span class="nav-label">Ticket</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'profile'" (click)="setTab('profile')">
+        <svg class="nav-svg" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <span class="nav-label">Profile</span>
+      </div>
+    </div>
+
+    <!-- ================= QR POPUP MODAL OVERLAY ================= -->
+    <div class="qr-modal-backdrop" *ngIf="showQrModal" (click)="closeQrModalOnly($event)">
+      <div class="qr-modal-content" (click)="$event.stopPropagation()">
+        <div class="qr-header">
+          <h3>Scan Ticket QR</h3>
+          <button class="qr-close-btn" (click)="closeQrModalOnly($event)">✕</button>
+        </div>
+        <div class="qr-img-container" (click)="closeQrModalAndNavigate()">
+          <img src="assets/qr.png" alt="Scan QR Code" class="qr-code-image" />
+          <div class="scanner-line"></div>
+        </div>
+        <p class="qr-footer-text">Tap QR code image to proceed to booking</p>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NUMBER EDIT DIALOG ================= -->
+    <div class="phone-edit-backdrop" *ngIf="showPhoneEdit">
+      <div class="phone-edit-card">
+        <h3>Edit Phone Number</h3>
+        <p>Enter a new mobile number for your Chennai One profile:</p>
+        <input type="tel" 
+               [(ngModel)]="editingPhone" 
+               placeholder="9724153346" 
+               class="phone-edit-input" 
+               maxlength="15" />
+        <div class="dialog-actions">
+          <button class="dialog-btn cancel" (click)="cancelPhoneEdit()">Cancel</button>
+          <button class="dialog-btn save" (click)="savePhone()">Save</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

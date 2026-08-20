@@ -1,0 +1,13 @@
+{
+  "name": "ChennaiOne",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "proxies": [
+    {
+      "path": "/commuter-proxy",
+      "proxyUrl": "https://commuter.mtcbusits.in"
+    }
+  ]
+}

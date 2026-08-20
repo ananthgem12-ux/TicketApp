@@ -1,0 +1,136 @@
+/*
+ * App Fonts System - Chennai One Authentic Typography
+ * ----------------------------------------------------------------------------
+ * Font face declarations using `../assets/` relative to `src/theme/`.
+ */
+
+/* 1. Core Brand Fonts */
+
+@font-face {
+  font-family: 'Areanormal';
+  src: url('../assets/fonts/Areanormal-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Areanormal';
+  src: url('../assets/fonts/Areanormal-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Areanormal';
+  src: url('../assets/fonts/Areanormal-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AnekTamil';
+  src: url('../assets/fonts/AnekTamil-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* DepartureMono for Ticket Page Timer & Monospace Displays */
+@font-face {
+  font-family: 'DepartureMono';
+  src: url('../assets/videos/fonts/DepartureMono-Regular.otf') format('opentype'),
+       url('../assets/fonts/DepartureMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GeistMono';
+  src: url('../assets/videos/fonts/GeistMono-SemiBold.ttf') format('truetype'),
+       url('../assets/fonts/GeistMono-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Legacy & Pixel Fonts */
+
+@font-face {
+  font-family: 'PixelOperator';
+  src: url('../assets/fonts/PixelOperator.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PixelOperator8';
+  src: url('../assets/fonts/PixelOperator8.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PixelOperatorMono';
+  src: url('../assets/fonts/PixelOperatorMono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PixelOperatorMono-Bold';
+  src: url('../assets/fonts/PixelOperatorMono-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'VT323';
+  src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'pixelgridtrial-linedownboldm';
+  src: url('../assets/fonts/pixelgridtrial-linedownboldm.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 3. Global CSS Custom Properties (Variables) */
+
+:root {
+  --font-areanormal: 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil', sans-serif;
+  --font-departure-mono: 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono', monospace;
+  
+  --font-pixel-operator: 'PixelOperator', sans-serif;
+  --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
+  --font-vt323: 'VT323', monospace;
+  --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+}
+
+/* 4. Utility Classes */
+
+.font-areanormal { font-family: var(--font-areanormal) !important; }
+.font-inter { font-family: var(--font-inter) !important; }
+.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
+.font-departure-mono { font-family: var(--font-departure-mono) !important; }
+.font-geist-mono { font-family: var(--font-geist-mono) !important; }
+.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+.font-vt323 { font-family: var(--font-vt323) !important; }
+.font-linedown-bold { font-family: var(--font-linedown-bold) !important; }

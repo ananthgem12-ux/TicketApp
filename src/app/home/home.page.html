@@ -1,0 +1,816 @@
+<ion-content fullscreen>
+  <div class="app-container">
+    
+    <!-- Royal Blue dynamic BUS OTP button (sticky at bottom) -->
+    <div class="bus-otp-btn" *ngIf="currentTab === 'home'" (click)="openBusOtp()">
+      <div class="bus-otp-icon-container">
+        <dotlottie-player src="assets/lottie/scan.lottie" autoplay loop style="width: 100%; height: 100%; display: inline-block;"></dotlottie-player>
+      </div>
+    </div>
+
+    <!-- ================= HOME TAB ================= -->
+    <div class="tab-content" [hidden]="currentTab !== 'home'">
+      
+      <div class="home-tab-wrapper">
+        
+        <!-- MAP SECTION ON TOP -->
+        <div class="map-viewport-container" 
+             (touchstart)="onMapTouchStart($event)" 
+             (touchmove)="onMapTouchMove($event)" 
+             (touchend)="onMapTouchEnd($event)"
+             (mousedown)="onMapMouseDown($event)"
+             (mousemove)="onMapMouseMove($event)"
+             (mouseup)="onMapMouseUp()"
+             (mouseleave)="onMapMouseUp()"
+             (wheel)="onMapWheel($event)">
+          
+          <!-- Zoomable Interactive Map Image Container -->
+          <div class="map-image-wrapper" [style.transform]="'translate(' + mapPanX + 'px, ' + mapPanY + 'px) scale(' + mapZoomScale + ')'">
+            <img [src]="mapTrackingActive ? 'assets/map_on.jpg' : 'assets/map_off.jpg'" 
+                 alt="Bus Map" 
+                 class="map-display-img" 
+                 (dblclick)="resetMapZoom()" />
+          </div>
+
+          <!-- TOGGLE CONTROL OVERLAY (Matches exact bus toggle in screenshot) -->
+          <div class="map-toggle-switch-card" [class.active]="mapTrackingActive" (click)="toggleMapTracking()">
+            <div class="toggle-bus-wrapper">
+              <!-- Solid white front-facing bus icon -->
+              <svg class="toggle-bus-icon" viewBox="0 0 24 24" width="22" height="22" fill="white">
+                <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
+              </svg>
+              <span class="active-indicator-dot"></span>
+            </div>
+            <div class="toggle-pill-slider">
+              <span class="toggle-knob" [class.slid]="mapTrackingActive"></span>
+            </div>
+          </div>
+
+          <!-- Zoom & GPS Controls -->
+          <div class="map-zoom-controls-stack">
+            <button class="map-ctrl-btn" (click)="zoomInMap()" aria-label="Zoom In">+</button>
+            <button class="map-ctrl-btn" (click)="zoomOutMap()" aria-label="Zoom Out">−</button>
+            <button class="map-ctrl-btn gps" (click)="recenterMap()" aria-label="Recenter Map">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="8" />
+                <line x1="12" y1="1" x2="12" y2="4" />
+                <line x1="12" y1="20" x2="12" y2="23" />
+                <line x1="1" y1="12" x2="4" y2="12" />
+                <line x1="20" y1="12" x2="23" y2="12" />
+                <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- SCROLLABLE BOTTOM SHEET CONTENT CONTAINER -->
+        <div class="home-bottom-sheet">
+          <!-- Sheet handle indicator -->
+          <div class="sheet-drag-handle"></div>
+
+          <!-- 1. GRADIENT RED-TO-ORANGE SEARCH BAR -->
+          <div class="gradient-search-container" (click)="openSearch()">
+            <div class="search-inner-wrapper">
+              <svg class="search-magnifier-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="3">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16" y2="16" stroke-linecap="round" />
+              </svg>
+              <span class="search-placeholder-text">{{ searchQuerySuggestion === 'Where are you going?' ? searchQuerySuggestion : 'Search "' + searchQuerySuggestion + '"' }}</span>
+            </div>
+          </div>
+
+          <!-- 2. SERVICE SELECTION ICONS (Grid of 4) IN WHITE CARD -->
+          <div class="services-white-card">
+            <div class="services-icons-grid">
+              <div class="service-item-btn" (click)="openBusOtp()">
+                <div class="service-icon-circle bus">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
+                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
+                  </svg>
+                </div>
+                <span class="service-label">Bus</span>
+              </div>
+
+              <div class="service-item-btn">
+                <div class="service-icon-circle train">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
+                    <path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm4.5-5H6V6h6v6zm6 3.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm0-3.5h-6V6h6v6z"/>
+                  </svg>
+                </div>
+                <span class="service-label">Train</span>
+              </div>
+
+              <div class="service-item-btn">
+                <div class="service-icon-circle metro">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
+                    <path d="M17.75 22h.75v-2h-13v2h.75L8 20h8l1.75 2zM12 2C6.48 2 2 4.48 2 10v6c0 1.66 1.34 3 3 3h14c1.66 0 3-1.34 3-3v-6c0-5.52-4.48-10-10-10zm-4 13c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm2-5H6V5h12v5z"/>
+                  </svg>
+                </div>
+                <span class="service-label">Metro</span>
+              </div>
+
+              <div class="service-item-btn">
+                <div class="service-icon-circle auto">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
+                    <path d="M19 13.5c0-.83-.67-1.5-1.5-1.5h-11c-.83 0-1.5.67-1.5 1.5V17c0 .55.45 1 1 1h13c.55 0 1-.45 1-1v-3.5zM12 2C8 2 4.5 4 3.5 7.5L5 9.5c.8-.5 1.7-.8 2.7-.8H16.3c1 0 1.9.3 2.7.8l1.5-2C19.5 4 16 2 12 2zm-4.5 9c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm9 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1z" />
+                  </svg>
+                </div>
+                <span class="service-label">Auto/Cab</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. BANNER CAROUSEL WITH 4 IMAGES -->
+          <div class="banner-carousel-container" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+            <div class="carousel-inner-slides" [style.transform]="'translateX(' + (-activeBannerIndex * 100) + '%)'">
+              
+              <!-- Slide 1 -->
+              <div class="carousel-slide-item">
+                <img src="assets/images/banner_1.jpg" alt="Banner 1" class="banner-slide-img" />
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="carousel-slide-item">
+                <img src="assets/images/banner_2.jpg" alt="Banner 2" class="banner-slide-img" />
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="carousel-slide-item">
+                <img src="assets/images/banner_3.jpg" alt="Banner 3" class="banner-slide-img" />
+              </div>
+
+              <!-- Slide 4 -->
+              <div class="carousel-slide-item">
+                <img src="assets/images/banner_4.jpg" alt="Banner 4" class="banner-slide-img" />
+              </div>
+
+            </div>
+
+            <!-- Indicator dots for 4 slides -->
+            <div class="carousel-dots-row">
+              <span class="carousel-dot" 
+                    *ngFor="let dot of [0, 1, 2, 3]; let i = index" 
+                    [class.active]="activeBannerIndex === i"
+                    (click)="setBannerIndex(i)">
+              </span>
+            </div>
+          </div>
+
+          <!-- 4. PREMIUM BUS (New Layout) -->
+          <div class="premium-bus-white-card">
+            <div class="premium-bus-header">
+              <h3 class="premium-bus-title">Premium Bus</h3>
+              <p class="premium-bus-subtitle">Comfortable seats, No standing, Book & Go.</p>
+            </div>
+            <div class="premium-bus-body">
+              <div class="premium-bus-image-wrapper">
+                <img src="assets/home_truck.jpg" alt="Premium Bus" class="premium-bus-img" />
+              </div>
+              <div class="premium-bus-buttons">
+                <button class="premium-bus-btn">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
+                  </svg>
+                  <span class="premium-btn-text">P91</span>
+                </button>
+                <button class="premium-bus-btn">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
+                  </svg>
+                  <span class="premium-btn-text">P570S</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. FAVORITES ROW SECTION -->
+          <div class="favorites-section-container">
+            <h4 class="section-header-title">Favorites</h4>
+            <div class="favorites-scroll-row">
+              <button class="favorite-pill-btn add-btn" (click)="userPhone = '9724153346'">
+                <span class="plus-circle-icon">+</span>
+                <span class="fav-label">Add Home</span>
+              </button>
+
+              <button class="favorite-pill-btn add-btn">
+                <span class="plus-circle-icon">+</span>
+                <span class="fav-label">Add Work</span>
+              </button>
+
+              <button class="favorite-pill-btn add-btn">
+                <span class="plus-circle-icon">+</span>
+                <span class="fav-label">Add Favourites</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 6. EXPLORE SECTION -->
+          <div class="explore-section-container">
+            <h4 class="section-header-title">Explore</h4>
+            
+            <!-- Filter Categories Row -->
+            <div class="explore-categories-scroll-row">
+              <button class="category-filter-pill" 
+                      *ngFor="let cat of exploreCategories" 
+                      [class.active]="selectedExploreCategory === cat.id"
+                      (click)="selectExploreCategory(cat.id)">
+                <span class="cat-icon" *ngIf="cat.id !== selectedExploreCategory">{{ cat.icon }}</span>
+                <span class="cat-label">{{ cat.label }}</span>
+              </button>
+            </div>
+
+            <!-- Card list with left-to-right slider layout -->
+            <div class="explore-landmarks-slider">
+              <div class="landmark-card-item" *ngFor="let item of filteredExploreItems">
+                <div class="landmark-image-container">
+                  <img [src]="item.image" [alt]="item.name" class="landmark-img" />
+                </div>
+                <div class="landmark-card-details">
+                  <h5 class="landmark-name">{{ item.name }}</h5>
+                  <span class="landmark-category-tag">{{ item.type }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+    <!-- ================= PASSES TAB ================= -->
+    <div class="tab-content" [hidden]="currentTab !== 'passes'">
+      <div class="image-wrapper">
+        <img src="assets/passes_bg.png" class="bg-img" alt="Passes" onerror="this.src='assets/images/mt_ic_bus_pass_bg.webp'" />
+      </div>
+    </div>
+    <!-- ================= LIVE TAB ================= -->
+    <div class="tab-content live-tab" [hidden]="currentTab !== 'live'">
+      <div class="live-layout-container">
+        
+        <!-- 3D Moving Transit Stage (Ant-line continuous motion on both lanes) -->
+        <div class="live-transit-stage">
+          <div class="transit-viewport">
+            
+            <!-- LANE 1 (Upper Track): Continuous Line of Metro Trains (TRAIN -> TRAIN -> TRAIN -> TRAIN -> TRAIN -> TRAIN...) -->
+            <div class="transit-track rail-track">
+              <div class="vehicle vehicle-metro train-1">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 1" />
+              </div>
+              <div class="vehicle vehicle-metro train-2">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 2" />
+              </div>
+              <div class="vehicle vehicle-metro train-3">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 3" />
+              </div>
+              <div class="vehicle vehicle-metro train-4">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 4" />
+              </div>
+              <div class="vehicle vehicle-metro train-5">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 5" />
+              </div>
+              <div class="vehicle vehicle-metro train-6">
+                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 6" />
+              </div>
+            </div>
+
+            <!-- LANE 2 (Lower Road): Continuous Line of AUTO -> BUS -> AUTO -> BUS -> AUTO -> BUS... -->
+            <div class="transit-track road-lane">
+              <div class="vehicle vehicle-auto road-auto-1">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 1" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-1">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 1" />
+              </div>
+              <div class="vehicle vehicle-auto road-auto-2">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 2" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-2">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 2" />
+              </div>
+              <div class="vehicle vehicle-auto road-auto-3">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 3" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-3">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 3" />
+              </div>
+              <div class="vehicle vehicle-auto road-auto-4">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 4" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-4">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 4" />
+              </div>
+              <div class="vehicle vehicle-auto road-auto-5">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 5" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-5">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 5" />
+              </div>
+              <div class="vehicle vehicle-auto road-auto-6">
+                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 6" />
+              </div>
+              <div class="vehicle vehicle-bus road-bus-6">
+                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 6" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- Text details -->
+        <div class="live-content">
+          <h2 class="live-main-title font-areanormal">You don't have any active journey now!</h2>
+          
+          <!-- Plan journey button -->
+          <button class="plan-journey-btn" (click)="setTab('home')">
+            <svg class="search-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="white">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            Plan a journey now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TICKET TAB ================= -->
+    <div class="tab-content ticket-tab" [hidden]="currentTab !== 'ticket'">
+      <div class="ticket-layout-container">
+        
+        <!-- Active Tickets section (B/W high contrast active cards) -->
+        <div class="active-section" *ngIf="formattedActiveTickets.length > 0" style="margin-bottom: 24px;">
+          <div class="active-section-label" style="font-size: 13px; font-weight: 800; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; margin-left: 4px; display: flex; align-items: center; gap: 6px;">
+            <span class="active-pulse-dot" style="color: #34c759; font-size: 11px;">●</span>
+            Active Tickets ({{ formattedActiveTickets.length }})
+          </div>
+          
+          <div class="active-tickets-list" style="display: flex; flex-direction: column; gap: 14px;">
+            <div 
+              *ngFor="let t of formattedActiveTickets" 
+              class="past-ticket-card active-card" 
+              (click)="viewTicketDetails(t)"
+            >
+              <!-- Card Main Row -->
+              <div class="past-card-main-row">
+                <div class="past-card-left">
+                  <div class="past-bus-icon-container">
+                    <img src="assets/bus_history.png" alt="Bus" class="past-bus-icon" />
+                  </div>
+                </div>
+                <div class="past-card-center">
+                  <span class="past-source-stop">{{ t.source }}</span>
+                  <div class="past-dest-row">
+                    <span class="past-arrow">↘</span>
+                    <span class="past-dest-stop">{{ t.destination }}</span>
+                  </div>
+                </div>
+                <div class="past-card-right">
+                  <div class="past-price">
+                    <span class="rupee-symbol">₹</span>
+                    <span>{{ t.amount }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Perforated Divider -->
+              <div class="past-card-divider"></div>
+
+              <!-- Card Footer Row -->
+              <div class="past-card-footer-row">
+                <div class="past-datetime">{{ t.dateStr }}</div>
+                <div class="status-badge active-badge">
+                  Active
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket tab header / Past Tickets label -->
+        <div class="ticket-header-title" style="text-align: left; font-size: 13px; font-weight: 800; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; margin-left: 4px;">
+          Past Tickets
+        </div>
+        
+        <!-- Scrollable list of past tickets styled exactly like the screenshot -->
+        <div class="past-tickets-list">
+          
+          <!-- Dynamic unified list (Expired) -->
+          <div 
+            *ngFor="let t of allTickets" 
+            class="past-ticket-card expired-card" 
+            (click)="viewTicketDetails(t)"
+          >
+            <!-- Card Main Row -->
+            <div class="past-card-main-row">
+              <div class="past-card-left">
+                <div class="past-bus-icon-container">
+                  <img src="assets/bus_history.png" alt="Bus" class="past-bus-icon" />
+                </div>
+              </div>
+              <div class="past-card-center">
+                <span class="past-source-stop">{{ t.source }}</span>
+                <div class="past-dest-row">
+                  <span class="past-arrow">↘</span>
+                  <span class="past-dest-stop">{{ t.destination }}</span>
+                </div>
+              </div>
+              <div class="past-card-right">
+                <div class="past-price">
+                  <span class="rupee-symbol">₹</span>
+                  <span>{{ t.amount }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perforated Divider -->
+            <div class="past-card-divider"></div>
+
+            <!-- Card Footer Row -->
+            <div class="past-card-footer-row">
+              <div class="past-datetime">{{ t.dateStr }}</div>
+              <div class="status-badge expired-badge">
+                Expired
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PROFILE TAB ================= -->
+    <div class="tab-content profile-tab" [hidden]="currentTab !== 'profile'">
+      <div class="profile-layout-container">
+        
+        <!-- Header Bar -->
+        <div class="profile-header-bar">
+          <button class="profile-back-btn" (click)="setTab('home')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Avatar & Details section -->
+        <div class="profile-avatar-row">
+          <div class="profile-avatar-circle"></div>
+          <div class="profile-details-wrapper" 
+               (mousedown)="onPressStart($event)" 
+               (mouseup)="onPressEnd()" 
+               (mouseleave)="onPressEnd()"
+               (touchstart)="onPressStart($event)" 
+               (touchend)="onPressEnd()">
+            <div class="profile-phone-number">{{ userPhone }}</div>
+            <div class="profile-view-link">View Profile</div>
+          </div>
+        </div>
+
+        <!-- Settings Groups List -->
+        <div class="profile-groups-container">
+          
+          <!-- Group 1 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">❤️</span>
+              <span class="item-label">Favourites</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">⚙️</span>
+              <span class="item-label">Preferences</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🚌</span>
+              <span class="item-label">Transit Preferences</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">💳</span>
+              <span class="item-label">Payment Management</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item (click)" (click)="openEiModal()" style="cursor: pointer; background: rgba(0, 90, 230, 0.05);">
+              <span class="item-icon">💾</span>
+              <span class="item-label" style="font-weight: 700; color: #005ae6;">Export & Import Data (E/I)</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+          <!-- Group 2 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">👥</span>
+              <span class="item-label">Share with Friends</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item" (click)="openEiModal()" style="cursor: pointer;">
+              <span class="item-icon">🗺️</span>
+              <span class="item-label">My Rides (E/I Data)</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🎧</span>
+              <span class="item-label">Help and Support</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🛡️</span>
+              <span class="item-label">Safety</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+          <!-- Group 3 -->
+          <div class="profile-settings-group">
+            <div class="profile-settings-item">
+              <span class="item-icon">ℹ️</span>
+              <span class="item-label">About Us</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🌐</span>
+              <span class="item-label">App Language</span>
+              <span class="item-chevron">➔</span>
+            </div>
+            <div class="profile-settings-item">
+              <span class="item-icon">🚪</span>
+              <span class="item-label">Logout</span>
+              <span class="item-chevron">➔</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= FIXED BOTTOM NAV OVERLAY ================= -->
+    <div class="custom-bottom-nav">
+      <div class="nav-item" [class.active]="currentTab === 'home'" (click)="setTab('home')">
+        <dotlottie-player *ngIf="currentTab === 'home'" src="assets/lottie/home_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <svg *ngIf="currentTab !== 'home'" class="nav-svg" viewBox="0 0 24 24">
+          <rect x="11.5" y="4" width="2" height="15" fill="currentColor" />
+          <path d="M 6.5,5 H 16 L 19.5,7.5 L 16,10 H 6.5 C 6,10 5.5,9.5 5.5,9 V 6 C 5.5,5.5 6,5 6.5,5 Z" fill="currentColor" />
+          <path d="M 17.5,11 H 8 L 4.5,13.5 L 8,16 H 17.5 C 18,16 18.5,15.5 18.5,15 V 12 C 18.5,11.5 18,11 17.5,11 Z" fill="currentColor" />
+        </svg>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'passes'" (click)="setTab('passes')">
+        <dotlottie-player *ngIf="currentTab === 'passes'" src="assets/lottie/tab-pass-animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <svg *ngIf="currentTab !== 'passes'" class="nav-svg" viewBox="0 0 24 24">
+          <rect x="1.5" y="5" width="21" height="15" rx="3.5" fill="currentColor" />
+          <path d="M 0.5,14.5 C 7,7.5 17,7.5 23.5,14.5 L 23.5,17.5 C 17,10.5 7,10.5 0.5,17.5 Z" fill="#ffffff" />
+          <path d="M 11,21 L 11,17 L 8,18.5 L 7.5,17 L 12,13.5 L 15.5,13.5 L 15.5,21 Z" fill="#ffffff" />
+        </svg>
+        <span class="nav-label">Passes</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'live'" (click)="setTab('live')">
+        <dotlottie-player *ngIf="currentTab === 'live'" src="assets/lottie/live_action_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <svg *ngIf="currentTab !== 'live'" class="nav-svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="11.5" r="7.5" stroke="currentColor" stroke-width="5" fill="none" />
+        </svg>
+        <span class="nav-label">Live</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'ticket'" (click)="setTab('ticket')">
+        <dotlottie-player *ngIf="currentTab === 'ticket'" src="assets/lottie/ticket_animation_icon.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <svg *ngIf="currentTab !== 'ticket'" class="nav-svg" viewBox="0 0 24 24">
+          <path d="M 6.5,3 L 9.5,3 C 9.5,4.5 10.5,5.5 12,5.5 C 13.5,5.5 14.5,4.5 14.5,3 L 17.5,3 C 18,3 18.5,3.5 18.5,4 L 18.5,19 C 18.5,19.5 18,20 17.5,20 L 14.5,20 C 14.5,18.5 13.5,17.5 12,17.5 C 10.5,17.5 9.5,18.5 9.5,20 L 6.5,20 C 6,20 5.5,19.5 5.5,19 L 5.5,4 C 5.5,3.5 6,3 6.5,3 Z" fill="currentColor" />
+        </svg>
+        <span class="nav-label">Ticket</span>
+      </div>
+      <div class="nav-item" [class.active]="currentTab === 'profile'" (click)="setTab('profile')">
+        <dotlottie-player *ngIf="currentTab === 'profile'" src="assets/lottie/profile_icon_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <svg *ngIf="currentTab !== 'profile'" class="nav-svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="7.5" r="4" fill="currentColor" />
+          <path d="M 5,20 L 5,18 C 5,14 8,12 12,12 C 16,12 19,14 19,18 L 19,20 C 19,20.5 18.5,21 18,21 L 6,21 C 5.5,21 5,20.5 5,20 Z" fill="currentColor" />
+        </svg>
+        <span class="nav-label">Profile</span>
+      </div>
+    </div>
+
+    <!-- ================= QR POPUP MODAL OVERLAY ================= -->
+    <div class="qr-modal-backdrop" *ngIf="showQrModal" (click)="closeQrModalOnly($event)">
+      <div class="qr-modal-content" (click)="$event.stopPropagation()">
+        <div class="qr-header">
+          <h3>Scan Ticket QR</h3>
+          <button class="qr-close-btn" (click)="closeQrModalOnly($event)">✕</button>
+        </div>
+        <div class="qr-img-container" (click)="closeQrModalAndNavigate()">
+          <img src="assets/qr.png" alt="Scan QR Code" class="qr-code-image" />
+          <div class="scanner-line"></div>
+        </div>
+        <p class="qr-footer-text">Tap QR code image to proceed to booking</p>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NUMBER EDIT DIALOG ================= -->
+    <div class="phone-edit-backdrop" *ngIf="showPhoneEdit">
+      <div class="phone-edit-card">
+        <h3>Edit Phone Number</h3>
+        <p>Enter a new mobile number for your Chennai One profile:</p>
+        <input type="tel" 
+               [(ngModel)]="editingPhone" 
+               placeholder="9724153346" 
+               class="phone-edit-input" 
+               maxlength="15" />
+        <div class="dialog-actions">
+          <button class="dialog-btn cancel" (click)="cancelPhoneEdit()">Cancel</button>
+          <button class="dialog-btn save" (click)="savePhone()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= E/I EXPORT & IMPORT POPUP MODAL ================= -->
+    <div class="ei-modal-backdrop" *ngIf="showEiModal" (click)="closeEiModal()">
+      <div class="ei-modal-content" (click)="$event.stopPropagation()">
+        
+        <!-- Modal Header -->
+        <div class="ei-header">
+          <div class="ei-header-title">
+            <span class="ei-badge">E / I</span>
+            Export & Import Data
+          </div>
+          <button class="ei-close-btn" (click)="closeEiModal()">✕</button>
+        </div>
+
+        <!-- Action Buttons (Export & Import) -->
+        <div class="ei-action-buttons-row">
+          <button class="ei-btn export-btn" (click)="exportDataJson()">
+            <span class="btn-icon">📤</span>
+            <div class="btn-text">
+              <span class="btn-label">Export JSON (E)</span>
+              <span class="btn-sub">Save history & mappings</span>
+            </div>
+          </button>
+
+          <button class="ei-btn import-btn" (click)="triggerImportFile()">
+            <span class="btn-icon">📥</span>
+            <div class="btn-text">
+              <span class="btn-label">Import JSON (I)</span>
+              <span class="btn-sub">Restore history & mappings</span>
+            </div>
+          </button>
+          <input type="file" id="ei-file-input" accept=".json" style="display: none;" (change)="onEiFileSelected($event)" />
+        </div>
+
+        <!-- Status Message Banner -->
+        <div class="ei-status-banner" *ngIf="importStatusMessage" 
+             [class.success]="importStatusMessage.startsWith('✓')" 
+             [class.error]="importStatusMessage.startsWith('❌') || importStatusMessage.startsWith('⚠️')">
+          {{ importStatusMessage }}
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="ei-tabs-row">
+          <button class="ei-tab-btn" [class.active]="eiActiveTab === 'otps'" (click)="eiActiveTab = 'otps'">
+            Bus OTPs ({{ mappedOtpsList.length }})
+          </button>
+          <button class="ei-tab-btn" [class.active]="eiActiveTab === 'places'" (click)="eiActiveTab = 'places'">
+            Buses & Places ({{ mappedBusesList.length }})
+          </button>
+          <button class="ei-tab-btn" [class.active]="eiActiveTab === 'history'" (click)="eiActiveTab = 'history'">
+            Ticket History ({{ totalHistoryCount }})
+          </button>
+        </div>
+
+        <!-- Tab 1: Mapped Bus OTPs -->
+        <div class="ei-tab-content" *ngIf="eiActiveTab === 'otps'">
+          <div class="ei-list-empty" *ngIf="mappedOtpsList.length === 0">
+            <span>🎟️ No OTPs mapped to bus numbers yet. Scan or enter an OTP to map it!</span>
+          </div>
+          <div class="ei-card-item" *ngFor="let item of mappedOtpsList">
+            <div class="ei-card-left">
+              <span class="ei-otp-badge font-geist-mono">{{ item.otp }}</span>
+            </div>
+            <div class="ei-card-arrow">➔</div>
+            <div class="ei-card-right">
+              <span class="ei-bus-label font-geist-mono">Bus {{ item.busNo }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Buses & Added Places -->
+        <div class="ei-tab-content" *ngIf="eiActiveTab === 'places'">
+          <div class="ei-list-empty" *ngIf="mappedBusesList.length === 0">
+            <span>🚌 No custom buses or added places configured yet.</span>
+          </div>
+          <div class="ei-bus-detail-card" *ngFor="let bus of mappedBusesList">
+            <div class="ei-bus-header-row">
+              <span class="ei-bus-no font-geist-mono">Bus {{ bus.busNo }}</span>
+              <span class="ei-bus-route-text">{{ bus.lastSource }} ⇄ {{ bus.lastDestination }}</span>
+            </div>
+            <div class="ei-bus-stops-tags" *ngIf="bus.stopsList.length > 0">
+              <span class="ei-stop-tag" *ngFor="let stop of bus.stopsList">📍 {{ stop }}</span>
+            </div>
+            <div class="ei-no-stops" *ngIf="bus.stopsList.length === 0">
+              Standard route stops configured
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: History Summary -->
+        <div class="ei-tab-content" *ngIf="eiActiveTab === 'history'">
+          <div class="ei-history-summary">
+            <div class="ei-summary-box active-box">
+              <div class="summary-val">{{ formattedActiveTickets.length }}</div>
+              <div class="summary-lbl">Active Tickets</div>
+            </div>
+            <div class="ei-summary-box expired-box">
+              <div class="summary-val">{{ allTickets.length }}</div>
+              <div class="summary-lbl">Past / Expired Tickets</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ================= FULLSCREEN SEARCH OVERLAY ================= -->
+    <div class="fullscreen-search-overlay" *ngIf="showSearch">
+      
+      <!-- Top Actions Bar -->
+      <div class="search-top-bar">
+        <button class="exit-search-btn" (click)="closeSearch()">
+          <span class="exit-icon">✕</span> Exit
+        </button>
+      </div>
+
+      <!-- Scrollable Content Section -->
+      <div class="search-scroll-container">
+        
+        <!-- Header -->
+        <div class="recent-searches-title">Recent Searches</div>
+
+        <!-- Cards List -->
+        <div class="recent-cards-list">
+          <div 
+            *ngFor="let item of filteredRecentSearches" 
+            class="recent-search-card"
+            (click)="selectSearchItem(item)"
+          >
+            <!-- Left Icon -->
+            <div class="recent-icon-wrapper">
+              <!-- Stop Pin Icon -->
+              <div class="maroon-pin-icon" *ngIf="item.type === 'stop'">
+                <svg viewBox="0 0 24 24" class="pin-bus-svg">
+                  <!-- Custom Pin shape -->
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#591729"/>
+                  <!-- Mini white bus inside -->
+                  <path d="M14.5 7.5h-5c-.3 0-.5.2-.5.5v3.5c0 .3.2.5.5.5h5c.3 0 .5-.2.5-.5V8c0-.3-.2-.5-.5-.5zm-4.3 1.2c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5zm3.6 0c-.3 0-.5-.2-.5-.5s.2-.5.5-.5.5.2.5.5-.2.5-.5.5z" fill="white"/>
+                </svg>
+              </div>
+
+              <!-- Route Yellow Icon -->
+              <div class="yellow-square-icon" *ngIf="item.type === 'route'">
+                <svg viewBox="0 0 24 24" class="route-bus-svg">
+                  <!-- Rounded square bg -->
+                  <rect x="2" y="2" width="20" height="20" rx="5" fill="#fde282" />
+                  <!-- Black bus inside -->
+                  <path d="M17 6H7c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2l-.8.8v.7c0 .3.2.5.5.5h10.6c.3 0 .5-.2.5-.5v-.7l-.8-.8c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9.5 14c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm5 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM17 10H7V8h10v2z" fill="#2c2c2e"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Center Info -->
+            <div class="recent-info-wrapper">
+              <div class="recent-item-title">{{ item.title }}</div>
+              <div class="recent-item-subtitle">{{ item.subtitle }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Categories Pills Row -->
+      <div class="search-categories-row">
+        <div class="search-category-pill">Bus No.</div>
+        <div class="search-category-pill">Bus Stops</div>
+        <div class="search-category-pill">Metro Stations</div>
+        <div class="search-category-pill">Suburban</div>
+      </div>
+
+      <!-- Bottom Input Field -->
+      <div class="search-bottom-input-container">
+        <div class="search-input-inner">
+          <span class="search-input-magnifier">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#8e8e93" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (ngModelChange)="onSearchQueryChange()"
+            placeholder='Search "Destination"' 
+            class="search-input-element"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,56 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular & Ionic build output
+.angular/
+.ionic/
+www/
+dist/
+
+# Capacitor / Android build outputs & temporary files
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+android/app/release/
+android/captures/
+
+# Binary & Package files
+*.apk
+*.aab
+*.jar
+
+# Local decompilation & scratch directories
+apktool/
+extracted/
+jadx-source/
+jadx_output/
+react_native/
+mtc_database/
+Chennai One/
+unused_assets/
+
+# Environment files and secrets
+.env
+.env.*
+*.keystore
+*.jks
+*.pem
+
+# Editor & IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,419 @@
+<ion-content fullscreen>
+
+  <div class="page">
+    
+    <!-- HEADER -->
+    <div class="header-container">
+      <!-- Close button -->
+      <button class="close-btn" (click)="goBack()">
+        ✕
+      </button>
+
+      <!-- Route Number Display/Edit (shows route_no, e.g. "19 R", "102X") -->
+      <div class="bus-route-wrapper">
+        <div class="bus-route-title" *ngIf="!isEditingBus" (click)="toggleEditingBus()">
+          {{ displayRouteNo }}
+          <span class="edit-pencil-icon">
+            <!-- Inline SVG Pencil -->
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="#1477ff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+          </span>
+        </div>
+        
+        <!-- Input field when editing route -->
+        <div class="bus-route-input-container" *ngIf="isEditingBus" style="position: relative;">
+          <div style="display: flex; gap: 8px;">
+            <input
+              type="text"
+              class="bus-edit-input"
+              [(ngModel)]="editingBusInput"
+              (keyup.enter)="confirmBusNoChange()"
+              placeholder="Enter Bus No"
+              style="text-transform: uppercase;"
+            />
+            <button class="bus-edit-done-btn" (click)="confirmBusNoChange()">Done</button>
+          </div>
+          
+          <div class="bus-suggestions-dropdown" *ngIf="busList.length > 0">
+            <div class="bus-suggestion-item" 
+                 *ngFor="let bus of filteredBusList()" 
+                 (click)="selectBus(bus)">
+              {{ bus }}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Bus Type -->
+        <select class="type-select" [(ngModel)]="busType" (change)="userOverridePrice = null">
+          <option *ngFor="let type of busTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <!-- Corner Bus Illustration -->
+      <img [src]="busImage" class="red-bus-image" alt="Bus" onerror="this.src='assets/images/mt_ic_deluxe_service.webp'" />
+    </div>
+
+    <!-- Route data loading indicator -->
+    <div *ngIf="isLoading" class="loading-indicator">
+      Fetching route data from MTC...
+    </div>
+
+    <!-- MAIN FORM FIELDS -->
+    <div class="form-container">
+      
+      <!-- ================= SOURCE STOP ================= -->
+      <!-- Collapsed Source card -->
+      <div class="card collapsed-card" *ngIf="!showSourceSelect" (click)="toggleSourceSelect()">
+        <div class="card-details">
+          <span class="card-label">Source Stop</span>
+          <span class="card-value">{{ source || 'Select Source Stop' }}</span>
+        </div>
+        <button class="card-edit-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Expanded Source card (Search input) -->
+      <div class="card search-card" *ngIf="showSourceSelect">
+        <span class="card-label">Source station</span>
+        <div class="search-input-wrapper">
+          <span class="search-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#a0a0a0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            [(ngModel)]="sourceSearchQuery" 
+            placeholder="Search or Enter Source Stop"
+          />
+        </div>
+      </div>
+
+      <!-- Source stops grey container -->
+      <div class="grey-container" *ngIf="showSourceSelect">
+        <div class="container-title">Select Source Stop</div>
+        <div class="stops-list">
+          <button 
+            *ngFor="let stop of filteredSourceStops()" 
+            class="stop-btn"
+            [class.selected]="stop === source"
+            (click)="selectSourceStop(stop)"
+          >
+            {{ stop }}
+          </button>
+          <div *ngIf="filteredSourceStops().length === 0" class="no-stops">
+            No stops found. Type to use custom name.
+          </div>
+        </div>
+      </div>
+
+      <!-- DOWN ARROW SEPARATOR -->
+      <div class="arrow-separator" *ngIf="!showSourceSelect && !showDestSelect">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#b0b0b0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <!-- ================= DESTINATION STOP ================= -->
+      <!-- Collapsed Destination card -->
+      <div class="card collapsed-card" *ngIf="!showDestSelect" (click)="toggleDestSelect()">
+        <div class="card-details">
+          <span class="card-label">Destination Stop</span>
+          <span class="card-value">{{ destination || 'Select Destination Stop' }}</span>
+        </div>
+        <button class="card-edit-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Expanded Destination card (Search input) -->
+      <div class="card search-card" *ngIf="showDestSelect">
+        <span class="card-label">Destination station</span>
+        <div class="search-input-wrapper">
+          <span class="search-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="#a0a0a0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input 
+            type="text" 
+            [(ngModel)]="destSearchQuery" 
+            placeholder="Search or Enter Destination Stop"
+          />
+        </div>
+      </div>
+
+      <!-- Destination stops grey container -->
+      <div class="grey-container" *ngIf="showDestSelect">
+        <div class="container-title">Select Destination Stop</div>
+        
+        <div class="towards-label">
+          {{ displayRouteNo }} ↓ towards {{ routesCache[displayRouteNo.trim().toUpperCase()]?.destination || destination }}
+        </div>
+
+        <div class="stops-list">
+          <button 
+            *ngFor="let stop of filteredDestStops()" 
+            class="stop-btn"
+            [class.selected]="stop === destination"
+            (click)="selectDestStop(stop)"
+          >
+            {{ stop }}
+          </button>
+          <div *ngIf="filteredDestStops().length === 0" class="no-stops">
+            No stops found. Type to use custom name.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM FIXED BOOKING PANEL -->
+    <div class="bottom-panel" *ngIf="!showSourceSelect && !showDestSelect">
+      <div class="payment-info-row">
+        <span class="payment-label">Ticket payment information</span>
+        
+        <!-- Count pill (- 01 [person] +) -->
+        <div class="person-selector-pill">
+          <button class="pill-btn minus-btn" (click)="decrease()">−</button>
+          <span class="pill-count">
+            {{ persons < 10 ? '0' + persons : persons }}
+            <span class="person-pill-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+              </svg>
+            </span>
+          </span>
+          <button class="pill-btn plus-btn" (click)="increase()">+</button>
+        </div>
+      </div>
+
+      <button class="book-button"
+              (mousedown)="onBookPressStart($event)" 
+              (mouseup)="onBookPressEnd($event)" 
+              (mouseleave)="onBookPressEnd($event)"
+              (touchstart)="onBookPressStart($event)" 
+              (touchend)="onBookPressEnd($event)"
+              (click)="onBookClick($event)">
+        Book Bus @ ₹{{ total }}
+      </button>
+    </div>
+
+    <!-- ================= PRICE EDIT DIALOG ================= -->
+    <div class="price-edit-backdrop" *ngIf="showPriceEdit">
+      <div class="price-edit-card">
+        <h3>Edit Ticket Price</h3>
+        <p>Enter the base ticket price (₹):</p>
+        <input type="number" 
+               [(ngModel)]="editingPrice" 
+               placeholder="13" 
+               class="price-edit-input" />
+        <div class="dialog-actions">
+          <button class="dialog-btn cancel" (click)="cancelPriceEdit()">Cancel</button>
+          <button class="dialog-btn save" (click)="savePrice()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 1. TO PAY BOTTOM SHEET OVERLAY (Image 1) ================= -->
+    <div class="topay-backdrop" *ngIf="showToPaySheet" (click)="closeToPaySheet()">
+      <div class="topay-sheet-content" (click)="$event.stopPropagation()">
+        <!-- Header -->
+        <div class="topay-header">
+          <div class="topay-title-group">
+            <span class="topay-title">To Pay</span>
+            <span class="topay-amount">₹{{ total }}</span>
+          </div>
+          <button class="topay-more-options">More Options &gt;</button>
+        </div>
+
+        <!-- Options Container -->
+        <div class="topay-methods-card">
+          <!-- Option 1: BHIM App (Default Selected) -->
+          <div class="topay-method-row" [class.selected]="selectedPaymentMethod === 'bhim'" (click)="selectPaymentMethod('bhim')">
+            <div class="method-logo-box bhim-logo">
+              <img src="assets/images/jp_bhim_upi.png" alt="BHIM UPI" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='assets/images/jp_bhim.png'">
+            </div>
+            <div class="method-details">
+              <span class="method-name">BHIM App</span>
+              <span class="method-cashback">Get Upto ₹10 cashback everyday using BHIM App <u style="font-weight: 700;">T&amp;C</u></span>
+            </div>
+            <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bhim'">
+              <span class="radio-check" *ngIf="selectedPaymentMethod === 'bhim'">✓</span>
+            </div>
+          </div>
+
+          <div class="topay-divider"></div>
+
+          <!-- Option 2: INDIAN BANK -->
+          <div class="topay-method-row" [class.selected]="selectedPaymentMethod === 'bank'" (click)="selectPaymentMethod('bank')">
+            <div class="method-logo-box bank-logo">
+              <!-- Indian Bank Logo SVG -->
+              <svg viewBox="0 0 40 40" width="30" height="30">
+                <circle cx="20" cy="20" r="18" fill="#f5a623" />
+                <path d="M 13,26 L 20,12 L 27,26 Z" fill="#ffffff" />
+              </svg>
+            </div>
+            <div class="method-details">
+              <span class="method-name">INDIAN BANK</span>
+              <span class="method-sub">XXXXXX9952</span>
+            </div>
+            <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bank'">
+              <span class="radio-check" *ngIf="selectedPaymentMethod === 'bank'">✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Action Button -->
+        <button class="topay-proceed-btn" (click)="proceedToUpiPin()">
+          Proceed to Pay ₹{{ total }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 2. UPI PIN ENTRY MODAL (Matching Screenshot - Password 9008) ================= -->
+    <div class="upi-modal-backdrop" *ngIf="showUpiPinModal" (click)="closeUpiPinModal()">
+      <div class="upi-modal-card" (click)="$event.stopPropagation()">
+        
+        <!-- Top Bar with Bank & UPI Logo -->
+        <div class="upi-top-bar">
+          <div class="upi-bank-info">
+            <button class="upi-top-close" (click)="closeUpiPinModal()">✕</button>
+            <div class="bank-text-group">
+              <span class="bank-name">{{ selectedPaymentMethod === 'bank' ? 'INDIAN BANK' : 'Union Bank Of India' }}</span>
+              <span class="bank-acc-no">XXXXXX9952</span>
+            </div>
+          </div>
+          <div class="upi-official-logo">
+            <svg viewBox="0 0 120 40" width="70" height="24">
+              <path d="M 10,6 L 26,20 L 10,34 Z" fill="#008800"/>
+              <path d="M 22,6 L 38,20 L 22,34 Z" fill="#ff6b00"/>
+              <text x="44" y="24" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="20" fill="#333333">UPI</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Subheader bar -->
+        <div class="upi-subheader-bar">
+          <span class="sub-title">Verify UPI PIN</span>
+          <span class="sub-arrow">˅</span>
+        </div>
+
+        <!-- Center PIN Entry Body -->
+        <div class="upi-center-body">
+          <h4 class="upi-enter-title">ENTER 4-DIGIT UPI PIN</h4>
+
+          <!-- 4 Underline PIN Slots -->
+          <div class="upi-underline-slots">
+            <div class="slot-item" [class.active]="upiPinDigits.length === 0" [class.filled]="upiPinDigits.length >= 1">
+              <span class="slot-dot" *ngIf="upiPinDigits.length >= 1">●</span>
+            </div>
+            <div class="slot-item" [class.active]="upiPinDigits.length === 1" [class.filled]="upiPinDigits.length >= 2">
+              <span class="slot-dot" *ngIf="upiPinDigits.length >= 2">●</span>
+            </div>
+            <div class="slot-item" [class.active]="upiPinDigits.length === 2" [class.filled]="upiPinDigits.length >= 3">
+              <span class="slot-dot" *ngIf="upiPinDigits.length >= 3">●</span>
+            </div>
+            <div class="slot-item" [class.active]="upiPinDigits.length === 3" [class.filled]="upiPinDigits.length >= 4">
+              <span class="slot-dot" *ngIf="upiPinDigits.length >= 4">●</span>
+            </div>
+          </div>
+
+          <!-- Error message if wrong PIN -->
+          <div class="upi-error-text" *ngIf="upiPinError">{{ upiPinError }}</div>
+
+          <!-- Yellow Security Warning Card -->
+          <div class="upi-warning-box">
+            <div class="warning-icon-circle">!</div>
+            <div class="warning-text">
+              UPI PIN will keep your account secure from unauthorized access. Do not share this PIN with anyone.
+            </div>
+          </div>
+        </div>
+
+        <!-- Keypad Grid (3x4 Layout) -->
+        <div class="upi-keypad-container">
+          <div class="keypad-row">
+            <button class="upi-num-btn" (click)="pressUpiPin('1')">1</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('2')">2</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('3')">3</button>
+          </div>
+          <div class="keypad-row">
+            <button class="upi-num-btn" (click)="pressUpiPin('4')">4</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('5')">5</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('6')">6</button>
+          </div>
+          <div class="keypad-row">
+            <button class="upi-num-btn" (click)="pressUpiPin('7')">7</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('8')">8</button>
+            <button class="upi-num-btn" (click)="pressUpiPin('9')">9</button>
+          </div>
+          <div class="keypad-row">
+            <button class="upi-action-btn delete" (click)="backspaceUpiPin()">
+              <span class="delete-icon">✖</span>
+            </button>
+            <button class="upi-num-btn" (click)="pressUpiPin('0')">0</button>
+            <button class="upi-action-btn submit" (click)="verifyUpiPin()">
+              <span class="submit-check">✓</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= 3. PAYMENT PROCESSING OVERLAY (Image 2 - Train Moving Animation) ================= -->
+    <div class="processing-full-overlay" *ngIf="showPaymentProcessing">
+      
+      <!-- Processing state -->
+      <div class="processing-content" *ngIf="!isPaymentSuccess">
+        <!-- Top bar -->
+        <div class="processing-top-bar">
+          <button class="proc-back-btn">←</button>
+          <div class="proc-titles">
+            <span class="proc-main-title">Payment Details</span>
+            <span class="proc-sub-title">Ticket Amount ₹{{ total }}</span>
+          </div>
+        </div>
+
+        <!-- Center content with Train Animation -->
+        <div class="processing-center-body">
+          
+          <!-- Lottie Train Loader Animation -->
+          <dotlottie-player src="assets/lottie/mt_train_loader.lottie" autoplay loop style="width: 160px; height: 160px; margin: 0 auto;"></dotlottie-player>
+
+          <h3 class="proc-status-title">Payment Processing</h3>
+          <p class="proc-status-desc">The payment for Ticket is getting processed.</p>
+        </div>
+
+        <!-- Footer note -->
+        <div class="processing-footer-note">
+          Note: Do not hit back button or close this screen until the transaction is complete.
+        </div>
+      </div>
+
+      <!-- Success state screen -->
+      <div class="processing-success-body" *ngIf="isPaymentSuccess">
+        <div class="success-lottie-container">
+          <dotlottie-player src="assets/lottie/success_lottie_v2.lottie" autoplay style="width: 130px; height: 130px; margin: 0 auto; display: block;"></dotlottie-player>
+        </div>
+        <h2 class="success-title font-areanormal">Payment Successful!</h2>
+        <p class="success-sub font-inter">Generating your MTC Bus Ticket...</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>
