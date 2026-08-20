@@ -801,6 +801,61 @@ export class BookingPage implements OnInit {
     return matches;
   }
 
+  formatStopName(stopName: string): string {
+    if (!stopName) return '';
+    return stopName
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        if (!word) return '';
+        if (word.includes('.')) {
+          return word.split('.').map(part => part ? part.charAt(0).toUpperCase() + part.slice(1) : '').join('.');
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  }
+
+  frequentlyVisitedStop: string | null = null;
+
+  loadFrequentlyVisitedStop() {
+    try {
+      const stored = localStorage.getItem('frequently_visited_destinations');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const routeKey = this.displayRouteNo.trim().toUpperCase();
+        if (parsed[routeKey]) {
+          this.frequentlyVisitedStop = parsed[routeKey];
+        } else if (parsed['last_visited']) {
+          this.frequentlyVisitedStop = parsed['last_visited'];
+        } else {
+          this.frequentlyVisitedStop = null;
+        }
+      } else {
+        this.frequentlyVisitedStop = null;
+      }
+    } catch (e) {
+      this.frequentlyVisitedStop = null;
+    }
+  }
+
+  saveFrequentlyVisitedStop(stop: string) {
+    try {
+      let stored: Record<string, string> = {};
+      const raw = localStorage.getItem('frequently_visited_destinations');
+      if (raw) {
+        stored = JSON.parse(raw);
+      }
+      const routeKey = this.displayRouteNo.trim().toUpperCase();
+      stored[routeKey] = stop;
+      stored['last_visited'] = stop;
+      localStorage.setItem('frequently_visited_destinations', JSON.stringify(stored));
+      this.frequentlyVisitedStop = stop;
+    } catch (e) {
+      console.warn('Failed to save frequently visited stop:', e);
+    }
+  }
+
   selectSourceStop(stop: string) {
     this.userHasChangedDestination = true;
     this.source = stop;
@@ -815,6 +870,7 @@ export class BookingPage implements OnInit {
     this.showDestSelect = false;
     this.destSearchQuery = '';
     this.userOverridePrice = null;
+    this.saveFrequentlyVisitedStop(stop);
   }
 
   toggleSourceSelect() {
@@ -823,6 +879,9 @@ export class BookingPage implements OnInit {
 
   toggleDestSelect() {
     this.showDestSelect = !this.showDestSelect;
+    if (this.showDestSelect) {
+      this.loadFrequentlyVisitedStop();
+    }
   }
 
   previousBusNo = '570S';
@@ -984,6 +1043,7 @@ export class BookingPage implements OnInit {
   }
 
   // Payment Flow State
+  isBookingBtnLoading = false;
   showToPaySheet = false;
   selectedPaymentMethod: 'bhim' | 'bank' = 'bhim';
   showUpiPinModal = false;
@@ -1041,7 +1101,8 @@ export class BookingPage implements OnInit {
       this.showUpiPinModal = false;
       this.startPaymentProcessing();
     } else {
-      this.upiPinError = 'Incorrect PIN! Enter 9008';
+      // this.upiPinError = 'Incorrect PIN! Enter 9008';
+      this.upiPinError = '';
       setTimeout(() => {
         this.upiPinDigits = [];
       }, 900);
@@ -1052,6 +1113,7 @@ export class BookingPage implements OnInit {
     this.showPaymentProcessing = true;
     this.isPaymentSuccess = false;
 
+    // Increased train loading duration by +2 seconds (4800ms)
     setTimeout(() => {
       this.isPaymentSuccess = true;
 
@@ -1066,12 +1128,13 @@ export class BookingPage implements OnInit {
         }
       } catch (e) {}
 
+      // Increased payment success display duration by +2 seconds (3200ms)
       setTimeout(() => {
         this.showPaymentProcessing = false;
         this.isPaymentSuccess = false;
         this.bookFinalTicket();
-      }, 1200);
-    }, 2800);
+      }, 2200);
+    }, 3800);
   }
 
   onBookClick(event: Event) {
@@ -1081,11 +1144,25 @@ export class BookingPage implements OnInit {
       this.isLongPress = false;
       return;
     }
-    this.openToPaySheet();
+    if (this.isBookingBtnLoading) return;
+
+    this.isBookingBtnLoading = true;
+    setTimeout(() => {
+      this.isBookingBtnLoading = false;
+      this.openToPaySheet();
+    }, 1000);
   }
 
   bookFinalTicket() {
     this.book();
+  }
+
+  quickGenerateTicket(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.closeToPaySheet();
+    this.bookFinalTicket();
   }
 
   changeTicketPrice() {

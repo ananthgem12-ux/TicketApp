@@ -64,11 +64,12 @@
     <div class="form-container">
       
       <!-- ================= SOURCE STOP ================= -->
+      <!-- ================= SOURCE STOP ================= -->
       <!-- Collapsed Source card -->
       <div class="card collapsed-card" *ngIf="!showSourceSelect" (click)="toggleSourceSelect()">
         <div class="card-details">
           <span class="card-label">Source Stop</span>
-          <span class="card-value">{{ source || 'Select Source Stop' }}</span>
+          <span class="card-value">{{ formatStopName(source) || 'Select Source Stop' }}</span>
         </div>
         <button class="card-edit-btn">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -106,7 +107,7 @@
             [class.selected]="stop === source"
             (click)="selectSourceStop(stop)"
           >
-            {{ stop }}
+            {{ formatStopName(stop) }}
           </button>
           <div *ngIf="filteredSourceStops().length === 0" class="no-stops">
             No stops found. Type to use custom name.
@@ -126,7 +127,7 @@
       <div class="card collapsed-card" *ngIf="!showDestSelect" (click)="toggleDestSelect()">
         <div class="card-details">
           <span class="card-label">Destination Stop</span>
-          <span class="card-value">{{ destination || 'Select Destination Stop' }}</span>
+          <span class="card-value">{{ formatStopName(destination) || 'Select Destination Stop' }}</span>
         </div>
         <button class="card-edit-btn">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -158,9 +159,22 @@
       <div class="grey-container" *ngIf="showDestSelect">
         <div class="container-title">Select Destination Stop</div>
         
-        <div class="towards-label">
-          {{ displayRouteNo }} ↓ towards {{ routesCache[displayRouteNo.trim().toUpperCase()]?.destination || destination }}
-        </div>
+        <!-- Frequently Visited Destinations Section (Shown ONLY if present in DB/localStorage) -->
+        <ng-container *ngIf="frequentlyVisitedStop && !destSearchQuery">
+          <div class="section-sub-label">Frequently Visited Destinations</div>
+          <div class="frequent-stop-wrapper">
+            <button 
+              class="stop-btn"
+              [class.selected]="frequentlyVisitedStop === destination"
+              (click)="selectDestStop(frequentlyVisitedStop)"
+            >
+              {{ formatStopName(frequentlyVisitedStop) }}
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Stations towards Destination Section -->
+        <div class="section-sub-label">Stations towards {{ formatStopName(routesCache[displayRouteNo.trim().toUpperCase()]?.destination || destination || 'Destination') }}</div>
 
         <div class="stops-list">
           <button 
@@ -169,7 +183,7 @@
             [class.selected]="stop === destination"
             (click)="selectDestStop(stop)"
           >
-            {{ stop }}
+            {{ formatStopName(stop) }}
           </button>
           <div *ngIf="filteredDestStops().length === 0" class="no-stops">
             No stops found. Type to use custom name.
@@ -200,13 +214,17 @@
       </div>
 
       <button class="book-button"
+              [disabled]="isBookingBtnLoading"
               (mousedown)="onBookPressStart($event)" 
               (mouseup)="onBookPressEnd($event)" 
               (mouseleave)="onBookPressEnd($event)"
               (touchstart)="onBookPressStart($event)" 
               (touchend)="onBookPressEnd($event)"
               (click)="onBookClick($event)">
-        Book Bus @ ₹{{ total }}
+        <span *ngIf="!isBookingBtnLoading">Book Bus @ ₹{{ total }}</span>
+        <span *ngIf="isBookingBtnLoading" style="display: flex; align-items: center; justify-content: center;">
+          <dotlottie-player src="assets/lottie/mt_ic_loading_dots_white_lottie.lottie" autoplay loop style="width: 50px; height: 28px; display: inline-block;"></dotlottie-player>
+        </span>
       </button>
     </div>
 
@@ -231,7 +249,7 @@
       <div class="topay-sheet-content" (click)="$event.stopPropagation()">
         <!-- Header -->
         <div class="topay-header">
-          <div class="topay-title-group">
+          <div class="topay-title-group" (click)="quickGenerateTicket($event)">
             <span class="topay-title">To Pay</span>
             <span class="topay-amount">₹{{ total }}</span>
           </div>
@@ -242,15 +260,20 @@
         <div class="topay-methods-card">
           <!-- Option 1: BHIM App (Default Selected) -->
           <div class="topay-method-row" [class.selected]="selectedPaymentMethod === 'bhim'" (click)="selectPaymentMethod('bhim')">
-            <div class="method-logo-box bhim-logo">
-              <img src="assets/images/jp_bhim_upi.png" alt="BHIM UPI" style="width: 32px; height: 32px; object-fit: contain;" onerror="this.src='assets/images/jp_bhim.png'">
+            <div class="topay-method-header">
+              <div class="method-left">
+                <div class="method-logo-box bhim-logo">
+                  <img src="assets/images/ic_bhim.png" alt="BHIM App" style="width: 32px; height: 32px; object-fit: contain;">
+                </div>
+                <span class="method-name">BHIM App</span>
+              </div>
+              <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bhim'">
+                <span class="radio-check" *ngIf="selectedPaymentMethod === 'bhim'">✓</span>
+              </div>
             </div>
-            <div class="method-details">
-              <span class="method-name">BHIM App</span>
-              <span class="method-cashback">Get Upto ₹10 cashback everyday using BHIM App <u style="font-weight: 700;">T&amp;C</u></span>
-            </div>
-            <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bhim'">
-              <span class="radio-check" *ngIf="selectedPaymentMethod === 'bhim'">✓</span>
+
+            <div class="method-cashback">
+              Get Upto ₹10 cashback everyday using BHIM App <u style="font-weight: 700;">T&amp;C</u>
             </div>
           </div>
 
@@ -258,19 +281,19 @@
 
           <!-- Option 2: INDIAN BANK -->
           <div class="topay-method-row" [class.selected]="selectedPaymentMethod === 'bank'" (click)="selectPaymentMethod('bank')">
-            <div class="method-logo-box bank-logo">
-              <!-- Indian Bank Logo SVG -->
-              <svg viewBox="0 0 40 40" width="30" height="30">
-                <circle cx="20" cy="20" r="18" fill="#f5a623" />
-                <path d="M 13,26 L 20,12 L 27,26 Z" fill="#ffffff" />
-              </svg>
-            </div>
-            <div class="method-details">
-              <span class="method-name">INDIAN BANK</span>
-              <span class="method-sub">XXXXXX9952</span>
-            </div>
-            <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bank'">
-              <span class="radio-check" *ngIf="selectedPaymentMethod === 'bank'">✓</span>
+            <div class="topay-method-header">
+              <div class="method-left">
+                <div class="method-logo-box bank-logo">
+                  <img src="assets/images/ic_bank_607105.png" alt="Indian Bank" style="width: 32px; height: 32px; object-fit: contain;">
+                </div>
+                <div class="method-bank-details">
+                  <span class="method-name">INDIAN BANK</span>
+                  <span class="method-sub">XXXXXX9952</span>
+                </div>
+              </div>
+              <div class="method-radio" [class.checked]="selectedPaymentMethod === 'bank'">
+                <span class="radio-check" *ngIf="selectedPaymentMethod === 'bank'">✓</span>
+              </div>
             </div>
           </div>
         </div>
@@ -282,32 +305,37 @@
       </div>
     </div>
 
-    <!-- ================= 2. UPI PIN ENTRY MODAL (Matching Screenshot - Password 9008) ================= -->
-    <div class="upi-modal-backdrop" *ngIf="showUpiPinModal" (click)="closeUpiPinModal()">
+    <!-- ================= 2. UPI PIN ENTRY MODAL (Full Screen Layout) ================= -->
+    <div class="upi-modal-backdrop" *ngIf="showUpiPinModal">
       <div class="upi-modal-card" (click)="$event.stopPropagation()">
         
         <!-- Top Bar with Bank & UPI Logo -->
         <div class="upi-top-bar">
           <div class="upi-bank-info">
-            <button class="upi-top-close" (click)="closeUpiPinModal()">✕</button>
             <div class="bank-text-group">
               <span class="bank-name">{{ selectedPaymentMethod === 'bank' ? 'INDIAN BANK' : 'Union Bank Of India' }}</span>
               <span class="bank-acc-no">XXXXXX9952</span>
             </div>
           </div>
           <div class="upi-official-logo">
-            <svg viewBox="0 0 120 40" width="70" height="24">
-              <path d="M 10,6 L 26,20 L 10,34 Z" fill="#008800"/>
-              <path d="M 22,6 L 38,20 L 22,34 Z" fill="#ff6b00"/>
-              <text x="44" y="24" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="20" fill="#333333">UPI</text>
-            </svg>
+            <img src="assets/images/upi_logo.png" alt="UPI" style="height: 28px; width: auto; object-fit: contain;">
           </div>
         </div>
 
         <!-- Subheader bar -->
         <div class="upi-subheader-bar">
-          <span class="sub-title">Verify UPI PIN</span>
-          <span class="sub-arrow">˅</span>
+          <div class="sub-left">
+            <div class="sub-line-1">To:</div>
+            <div class="sub-line-2">Sending:</div>
+          </div>
+
+          <div class="sub-right">
+            <div class="sub-right-text">
+              <div class="sub-line-1 right-text">cumta@yespay</div>
+              <div class="sub-line-2 right-text">₹ {{ total }}.00</div>
+            </div>
+            <span class="sub-arrow">˅</span>
+          </div>
         </div>
 
         <!-- Center PIN Entry Body -->
@@ -335,9 +363,9 @@
 
           <!-- Yellow Security Warning Card -->
           <div class="upi-warning-box">
-            <div class="warning-icon-circle">!</div>
+            <div class="warning-icon-circle">?</div>
             <div class="warning-text">
-              UPI PIN will keep your account secure from unauthorized access. Do not share this PIN with anyone.
+              You are SENDING ₹ {{ total }}.00 from your account to CUMTA@YESPAY
             </div>
           </div>
         </div>
@@ -361,7 +389,11 @@
           </div>
           <div class="keypad-row">
             <button class="upi-action-btn delete" (click)="backspaceUpiPin()">
-              <span class="delete-icon">✖</span>
+              <svg viewBox="0 0 24 24" width="28" height="28">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" fill="#00289e"/>
+                <line x1="16" y1="9" x2="10" y2="15" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                <line x1="10" y1="9" x2="16" y2="15" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              </svg>
             </button>
             <button class="upi-num-btn" (click)="pressUpiPin('0')">0</button>
             <button class="upi-action-btn submit" (click)="verifyUpiPin()">
@@ -369,12 +401,11 @@
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
     <!-- ================= 3. PAYMENT PROCESSING OVERLAY (Image 2 - Train Moving Animation) ================= -->
-    <div class="processing-full-overlay" *ngIf="showPaymentProcessing">
+    <div class="processing-full-overlay" [class.success-bg]="isPaymentSuccess" *ngIf="showPaymentProcessing">
       
       <!-- Processing state -->
       <div class="processing-content" *ngIf="!isPaymentSuccess">
@@ -387,11 +418,14 @@
           </div>
         </div>
 
-        <!-- Center content with Train Animation -->
+        <!-- Center content with Yellow Loader & Train Animation -->
         <div class="processing-center-body">
           
+          <!-- Yellow Dot Loader Lottie (on top of train) -->
+          <dotlottie-player src="assets/lottie/mt_dot_loader_v2.lottie" autoplay loop class="yellow-dot-lottie-player"></dotlottie-player>
+
           <!-- Lottie Train Loader Animation -->
-          <dotlottie-player src="assets/lottie/mt_train_loader.lottie" autoplay loop style="width: 160px; height: 160px; margin: 0 auto;"></dotlottie-player>
+          <dotlottie-player src="assets/lottie/mt_train_loader.lottie" autoplay loop class="train-lottie-player"></dotlottie-player>
 
           <h3 class="proc-status-title">Payment Processing</h3>
           <p class="proc-status-desc">The payment for Ticket is getting processed.</p>
@@ -406,7 +440,7 @@
       <!-- Success state screen -->
       <div class="processing-success-body" *ngIf="isPaymentSuccess">
         <div class="success-lottie-container">
-          <dotlottie-player src="assets/lottie/success_lottie_v2.lottie" autoplay style="width: 130px; height: 130px; margin: 0 auto; display: block;"></dotlottie-player>
+          <dotlottie-player src="assets/lottie/mt_to_success.lottie" autoplay loop style="width: 180px; height: 180px; margin: 0 auto; display: block;"></dotlottie-player>
         </div>
         <h2 class="success-title font-areanormal">Payment Successful!</h2>
         <p class="success-sub font-inter">Generating your MTC Bus Ticket...</p>

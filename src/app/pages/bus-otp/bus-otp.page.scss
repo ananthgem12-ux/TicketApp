@@ -1,3 +1,25 @@
+:host {
+  --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-semibold: 'Areanormal-SemiBold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter-SemiBold', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil-Regular', 'AnekTamil', system-ui, sans-serif;
+  --font-departure-mono: 'DepartureMono-Regular', 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono-SemiBold', 'GeistMono', monospace;
+  --font-pixel-operator: 'PixelOperator', sans-serif;
+  --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
+  --font-vt323: 'VT323-Regular', 'VT323', monospace;
+  --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+}
+
+.font-areanormal { font-family: var(--font-areanormal) !important; }
+.font-areanormal-bold { font-family: var(--font-areanormal-bold) !important; }
+.font-inter { font-family: var(--font-inter) !important; }
+.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
+.font-departure-mono { font-family: var(--font-departure-mono) !important; }
+.font-geist-mono { font-family: var(--font-geist-mono) !important; }
+.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+
 .manual-otp-container {
   background: #000;
   height: 100vh;
@@ -346,17 +368,16 @@
 }
 
 .saint-avatar-img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  padding: 1px;
   margin-right: 10px;
-  border: 1px solid #f2f2f7;
   flex-shrink: 0;
 }
 
 .saint-quote-text {
-  font-size: 8px;
+  font-size: 7px;
   line-height: 1.4;
   color: #434344;
   font-weight: 500;
@@ -533,7 +554,7 @@
       pointer-events: none;
     }
     .font-number {
-      color: #3a3a3c;
+      color: #78787c;
       opacity: 1;
     }
   }
@@ -548,13 +569,14 @@
   gap: 12px;
 }
 
+.keyboard-key-btn.alphabet-key,
 .alphabet-key {
   flex: 1;
   max-width: 58px;
   height: 52px;
   border-radius: 20px;
   background: #ffffff;
-  border: 1px solid #e5e5ea;
+  border: 1px solid #f1f1f8 !important;
   color: #3a3a3c;
   font-family: 'GeistMono', monospace !important;
   font-size: 24px;

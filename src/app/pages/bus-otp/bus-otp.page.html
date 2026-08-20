@@ -26,7 +26,6 @@
           </span>
         </div>
         <div class="scanner-loading-text" *ngIf="!scanMode">
-          Loading camera...
         </div>
       </div>
       
@@ -102,8 +101,8 @@
       <!-- Book button with loader state -->
       <button class="book-bus-ticket-btn" [class.active]="isComplete && !isFetchingData" [disabled]="isFetchingData" (click)="goBooking()">
         <span *ngIf="!isFetchingData">Book Bus ticket &gt;&gt;</span>
-        <span *ngIf="isFetchingData" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <span class="btn-spinner-icon"></span>
+        <span *ngIf="isFetchingData" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <dotlottie-player src="assets/lottie/mt_ic_loading_dots_white_lottie.lottie" autoplay loop style="width: 50px; height: 28px; display: inline-block;"></dotlottie-player>
           <span>Fetching bus details...</span>
         </span>
       </button>

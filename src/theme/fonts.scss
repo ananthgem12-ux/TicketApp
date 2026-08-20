@@ -1,10 +1,34 @@
 /*
  * App Fonts System - Chennai One Authentic Typography
  * ----------------------------------------------------------------------------
- * Font face declarations using `../assets/` relative to `src/theme/`.
+ * Font face declarations using exact font file names and font aliases.
  */
 
-/* 1. Core Brand Fonts */
+/* 1. Core Brand Fonts (Exact File Names) */
+
+@font-face {
+  font-family: 'Areanormal-Regular';
+  src: url('../assets/fonts/Areanormal-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Areanormal-SemiBold';
+  src: url('../assets/fonts/Areanormal-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Areanormal-Bold';
+  src: url('../assets/fonts/Areanormal-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Areanormal';
@@ -31,9 +55,25 @@
 }
 
 @font-face {
+  font-family: 'Inter-SemiBold';
+  src: url('../assets/fonts/Inter-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Inter';
   src: url('../assets/fonts/Inter-SemiBold.ttf') format('truetype');
   font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AnekTamil-Regular';
+  src: url('../assets/fonts/AnekTamil-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -48,18 +88,36 @@
 
 /* DepartureMono for Ticket Page Timer & Monospace Displays */
 @font-face {
-  font-family: 'DepartureMono';
-  src: url('../assets/videos/fonts/DepartureMono-Regular.otf') format('opentype'),
-       url('../assets/fonts/DepartureMono-Regular.otf') format('opentype');
+  font-family: 'DepartureMono-Regular';
+  src: url('../assets/fonts/DepartureMono-Regular.otf') format('opentype'),
+       url('../assets/videos/fonts/DepartureMono-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'DepartureMono';
+  src: url('../assets/fonts/DepartureMono-Regular.otf') format('opentype'),
+       url('../assets/videos/fonts/DepartureMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GeistMono-SemiBold';
+  src: url('../assets/fonts/GeistMono-SemiBold.ttf') format('truetype'),
+       url('../assets/videos/fonts/GeistMono-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'GeistMono';
-  src: url('../assets/videos/fonts/GeistMono-SemiBold.ttf') format('truetype'),
-       url('../assets/fonts/GeistMono-SemiBold.ttf') format('truetype');
+  src: url('../assets/fonts/GeistMono-SemiBold.ttf') format('truetype'),
+       url('../assets/videos/fonts/GeistMono-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -96,6 +154,13 @@
 }
 
 @font-face {
+  font-family: 'VT323-Regular';
+  src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'VT323';
   src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
   font-weight: normal;
@@ -112,15 +177,17 @@
 /* 3. Global CSS Custom Properties (Variables) */
 
 :root {
-  --font-areanormal: 'Areanormal', system-ui, -apple-system, sans-serif;
-  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-anek-tamil: 'AnekTamil', sans-serif;
-  --font-departure-mono: 'DepartureMono', monospace;
-  --font-geist-mono: 'GeistMono', monospace;
+  --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-semibold: 'Areanormal-SemiBold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter-SemiBold', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil-Regular', 'AnekTamil', sans-serif;
+  --font-departure-mono: 'DepartureMono-Regular', 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono-SemiBold', 'GeistMono', monospace;
   
   --font-pixel-operator: 'PixelOperator', sans-serif;
   --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
-  --font-vt323: 'VT323', monospace;
+  --font-vt323: 'VT323-Regular', 'VT323', monospace;
   --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
 }
 

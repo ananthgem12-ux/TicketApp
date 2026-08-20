@@ -1,3 +1,25 @@
+:host {
+  --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-semibold: 'Areanormal-SemiBold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter-SemiBold', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil-Regular', 'AnekTamil', system-ui, sans-serif;
+  --font-departure-mono: 'DepartureMono-Regular', 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono-SemiBold', 'GeistMono', monospace;
+  --font-pixel-operator: 'PixelOperator', sans-serif;
+  --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
+  --font-vt323: 'VT323-Regular', 'VT323', monospace;
+  --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+}
+
+.font-areanormal { font-family: var(--font-areanormal) !important; }
+.font-areanormal-bold { font-family: var(--font-areanormal-bold) !important; }
+.font-inter { font-family: var(--font-inter) !important; }
+.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
+.font-departure-mono { font-family: var(--font-departure-mono) !important; }
+.font-geist-mono { font-family: var(--font-geist-mono) !important; }
+.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+
 ion-content {
   --background: #f5f6f8;
   font-family: 'Inter', sans-serif;

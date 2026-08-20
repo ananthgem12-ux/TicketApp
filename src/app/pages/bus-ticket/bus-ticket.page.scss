@@ -1,3 +1,25 @@
+:host {
+  --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-semibold: 'Areanormal-SemiBold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter-SemiBold', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil-Regular', 'AnekTamil', system-ui, sans-serif;
+  --font-departure-mono: 'DepartureMono-Regular', 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono-SemiBold', 'GeistMono', monospace;
+  --font-pixel-operator: 'PixelOperator', sans-serif;
+  --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
+  --font-vt323: 'VT323-Regular', 'VT323', monospace;
+  --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+}
+
+.font-areanormal { font-family: var(--font-areanormal) !important; }
+.font-areanormal-bold { font-family: var(--font-areanormal-bold) !important; }
+.font-inter { font-family: var(--font-inter) !important; }
+.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
+.font-departure-mono { font-family: var(--font-departure-mono) !important; }
+.font-geist-mono { font-family: var(--font-geist-mono) !important; }
+.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+
 ion-content {
   --background: #000000;
 }
@@ -113,9 +135,9 @@ ion-content {
   top: 60%;
   transform: translate(-50%, -50%);
   font-size: 80px;
-  font-weight: 900;
+  font-weight: 900 !important;
   color: #ffd43e;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   line-height: 1;
 }
 
@@ -181,8 +203,8 @@ ion-content {
   position: relative;
   margin-top: 15px;
   width: 100%;
-  max-width: 320px; /* Perfectly compact ticket dimensions */
-  height: 515px;
+  max-width: 350px;
+  height: 520px;
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
@@ -228,20 +250,21 @@ ion-content {
 /* CONTENT OVER PAPER */
 .paper-content {
   position: absolute;
-  top: 7%;
+  top: 0;
   left: 10%;
   right: 10%;
-  bottom: 7%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  bottom: 0;
   box-sizing: border-box;
   text-align: center;
   z-index: 2;
 }
 
-/* HEADER GROUP */
+/* HEADER GROUP (Top ~6.5%) */
 .ticket-header-group {
+  position: absolute;
+  top: 4.5%;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -250,21 +273,21 @@ ion-content {
 
 .company-name {
   font-family: var(--font-anek-tamil);
-  font-size: min(18.5px, 4.3vw);
-  font-weight: 700;
-  margin-bottom: 2px;
+  font-size: min(19px, 4.4vw);
+  font-weight: 800;
+  margin-bottom: 10px;
   color: #1a1a1a;
   letter-spacing: 0.2px;
 }
 
 .header-source {
   font-family: var(--font-areanormal);
-  font-size: min(13px, 3.1vw);
-  font-weight: 500;
+  font-size: min(13.5px, 3.2vw);
+  font-weight: 600;
   color: #555555;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  margin-bottom: 12px;
+  margin-bottom: 30px;
 }
 
 .ticket-header {
@@ -273,22 +296,35 @@ ion-content {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  font-size: min(13px, 3.1vw);
-  color: #4a4a4a;
+  font-size: 13px;
+  color: #767676;
   font-weight: 500;
+  transform: scaleY(1.1);
   letter-spacing: 0.2px;
 }
 
+/* MIDDLE SECTION (Positioned at 40%) */
 .ticket-middle-section {
-  border-top: 1px dashed #dcdcdc;
-  border-bottom: 1px dashed #dcdcdc;
-  padding: 10px 0;
-  margin-top: 10px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  border-top: 1px solid #dcdcdc;
+  padding: 10px 0 0 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+
+  &::after {
+    content: "";
+    width: 65%; /* Less width than top border */
+    height: 1px;
+    background-color: #dcdcdc;
+    margin-top: 4px;
+  }
 }
 
 /* ROUTE GROUP */
@@ -305,7 +341,7 @@ ion-content {
   font-weight: 700;
   color: #1a1a1a;
   text-transform: uppercase;
-  line-height: 1.25;
+  line-height: 1.65;
 }
 
 .destination {
@@ -315,25 +351,30 @@ ion-content {
 /* FARE */
 .fare-section {
   font-family: 'Roboto', system-ui, -apple-system, sans-serif;
-  font-size: min(14px, 3.5vw);
+  font-size: 15px;
   font-weight: 500;
-  color: #333333;
-  margin-top: 4px;
+  color: #656464;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 
 /* TOTAL PRICE */
 .total-price {
-  font-family: var(--font-anek-tamil);
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
   font-size: min(40px, 9vw);
   font-weight: 700;
   color: #1a1a1a;
   line-height: 1;
-  margin-top: 8px;
-  margin-bottom: 4px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
-/* BOTTOM GROUP */
+/* BOTTOM GROUP (Bottom ~6.5%) */
 .ticket-bottom-group {
+  position: absolute;
+  top: 70.5%;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -352,10 +393,10 @@ ion-content {
 
 .tamil-line {
   font-family: var(--font-anek-tamil);
-  font-size: min(14.5px, 3.5vw);
-  font-weight: 500;
-  color: #555555;
-  line-height: 1.3;
+  font-size: min(15px, 3.6vw);
+  font-weight: 600 ;
+  color: #8a8a8a;
+  line-height: 1.5;
 }
 
 /* MOBILE OVERRIDES */
@@ -374,13 +415,13 @@ ion-content {
   width: 100%;
   max-width: 320px;
   height: 52px;
-  border-radius: 18px;
+  border-radius: 15px;
   border: none;
   background-color: #ffffff;
-  color: #1a1a1a;
-  font-family: var(--font-areanormal);
-  font-size: 17px;
-  font-weight: 700;
+  color: #525252;
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;;
+  font-size: 19px;
+  font-weight: 600;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: transform 0.15s ease, background-color 0.15s ease;

@@ -1,10 +1,32 @@
 
+:host {
+  --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-areanormal-semibold: 'Areanormal-SemiBold', 'Areanormal', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter-SemiBold', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-anek-tamil: 'AnekTamil-Regular', 'AnekTamil', system-ui, sans-serif;
+  --font-departure-mono: 'DepartureMono-Regular', 'DepartureMono', monospace;
+  --font-geist-mono: 'GeistMono-SemiBold', 'GeistMono', monospace;
+  --font-pixel-operator: 'PixelOperator', sans-serif;
+  --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
+  --font-vt323: 'VT323-Regular', 'VT323', monospace;
+  --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+}
+
+.font-areanormal { font-family: var(--font-areanormal) !important; }
+.font-areanormal-bold { font-family: var(--font-areanormal-bold) !important; }
+.font-inter { font-family: var(--font-inter) !important; }
+.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
+.font-departure-mono { font-family: var(--font-departure-mono) !important; }
+.font-geist-mono { font-family: var(--font-geist-mono) !important; }
+.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+
 ion-content {
   --background: #000000;
 }
 
 .page {
-  padding: calc(var(--ion-safe-area-top, 20px) + 16px) 16px 16px 16px;
+  padding: calc(var(--ion-safe-area-top, 20px) + 16px) 3px 3px 3px;
   box-sizing: border-box;
 }
 
@@ -88,11 +110,9 @@ ion-content {
 
 .mtc-title {
   font-family: var(--font-departure-mono);
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 500;
   color: #5a5959;
-  transform: scaleY(1.5);
-  transform: scaleX(0.7);
 }
 
 .mtc-tamil {
@@ -258,12 +278,11 @@ ion-content {
 .bus-header {
   display: flex;
   align-items: center;
-  gap: 3px;
 }
 
 .bus-icon {
-  width: 38px;
-  height: 38px;
+  width: 30px;
+  height: 30px;
   border-radius: 11px;
   background-color: #FEECA6;
   display: flex;
@@ -278,18 +297,18 @@ ion-content {
 
   align-items: center;
 
-  gap: 4px;
+  gap: 1px;
 
 }
 
 /* 570 */
 
 .bus-number {
-  font-family: var(--font-areanormal);
+  font-family: var(--font-inter);
   font-size: 20px;
   padding-right: 5px;
-  font-weight: 600;
-  font-style: normal;
+  font-weight: 700 !important;
+  font-style: normal !important;
   color: #111;
 }
 
@@ -308,7 +327,7 @@ ion-content {
 
 .bus-type {
   font-family: var(--font-departure-mono);
-  font-size: 20px;
+  font-size: 18px;
   color: #666;
 
 }
@@ -342,7 +361,7 @@ ion-content {
 .price {
 
   font-size: 35px;
-  font-family: var(--font-areanormal);
+  font-family: var(---font-inter);
 
   font-weight: 700;
 
@@ -435,7 +454,6 @@ ion-content {
 /* Yellow Watermark Circular "1" */
 .activated-watermark {
   position: absolute;
-  font-family: var(--font-areanormal);
   right: -96px;
   top: -20px;
   width: 180px;
@@ -469,7 +487,8 @@ ion-content {
   top: 60%;
   transform: translate(-50%, -50%);
   font-size: 160px;
-  font-weight: 900;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-weight: 900 !important;
   color: #ffd43e;
   line-height: 1;
 }
@@ -487,6 +506,7 @@ ion-content {
   display: flex;
   align-items: center;
   gap: 0px;
+  font-family: var(--font-areanormal-bold);
   font-size: 17px;
   color: #898989;
   font-weight: 650;
@@ -498,8 +518,9 @@ ion-content {
 
 .route-value {
   margin-top: 8px;
-  font-size: 19px;
-  font-weight: 700;
+  font-size: 18px;
+  font-family: var(--font-areanormal-bold);
+  font-weight: 900;
   color: #464646;
   text-transform: uppercase;
 }
@@ -544,9 +565,9 @@ ion-content {
 }
 
 .arrival-label {
-  font-family: 'PixelOperatorMono';
-  font-weight: 500;
-  font-size: 16px;
+  font-family: var(--font-departure-mono);
+  font-weight: 200;
+  font-size: 13px;
   margin-top: 10px;
   color: #545454;
   letter-spacing: 0.5px;
