@@ -26,6 +26,16 @@ export class BusTicketPage implements OnInit, AfterViewInit {
 
   @Output() close = new EventEmitter<void>();
 
+  get formattedAmount(): string {
+    const num = Number(this.amount) || 0;
+    return num.toFixed(2);
+  }
+
+  get totalAmount(): string {
+    const num = (Number(this.amount) || 0) * (Number(this.persons) || 1);
+    return num.toFixed(2);
+  }
+
   constructor(private router: Router) {}
 
   ngOnInit() {

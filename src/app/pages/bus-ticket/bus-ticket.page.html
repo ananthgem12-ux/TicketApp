@@ -35,14 +35,16 @@
 }
 
 <ng-template #ticketContent>
-  <!-- TITLE -->
-  <div class="title">
-    Your bus ticket for {{bus}} bus is ready!
-  </div>
+  @if (!isOverlay) {
+    <!-- TITLE -->
+    <div class="title">
+      Your bus ticket for {{bus}} bus is ready!
+    </div>
 
-  <div class="sub-title">
-    You can view your ticket details below.
-  </div>
+    <div class="sub-title">
+      You can view your ticket details below.
+    </div>
+  }
 
   <!-- PAPER TICKET -->
   <div class="paper-container">
@@ -53,8 +55,17 @@
       class="paper-image"
       onerror="this.src='assets/images/start_journey_ticket.webp'">
 
-    <div class="paper-side-text left-paper-side">MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC , CHENNAI MTC , CHENNAI MTC , CHENNAI MTC</div>
-    <div class="paper-side-text right-paper-side">MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC , CHENNAI MTC , CHENNAI MTC , CHENNAI MTC</div>
+    <div class="paper-side-text left-paper-side">MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI</div>
+    <div class="paper-side-text right-paper-side">MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI MTC, CHENNAI</div>
+
+    <!-- MTC WATERMARK EMBLEM IN CENTER -->
+    <div class="center-watermark-logo">
+      <svg viewBox="0 0 200 120" width="180" height="108" fill="none">
+        <ellipse cx="100" cy="60" rx="90" ry="50" stroke="#000000" stroke-width="3" opacity="0.06" />
+        <ellipse cx="100" cy="60" rx="80" ry="42" stroke="#000000" stroke-width="1.5" opacity="0.06" />
+        <text x="100" y="70" font-family="'Areanormal', system-ui, sans-serif" font-size="34" font-weight="900" text-anchor="middle" fill="#000000" opacity="0.07">MTC</text>
+      </svg>
+    </div>
 
     <div class="paper-content">
       
@@ -80,7 +91,7 @@
 
         <!-- FARE GROUP -->
         <div class="fare-section">
-          Ad: {{persons}} x {{amount}}.00 = Rs.{{amount}}.00
+          Ad: {{persons}} x {{formattedAmount}} = Rs. {{totalAmount}}
         </div>
       </div>
 
@@ -88,7 +99,7 @@
       <div class="ticket-bottom-group">
         <!-- TOTAL GROUP -->
         <div class="total-price font-anek-tamil">
-          ரூ. {{amount}}.00
+          ரூ. {{totalAmount}}
         </div>
 
         <!-- FOOTER GROUP -->
