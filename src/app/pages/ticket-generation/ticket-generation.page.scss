@@ -432,77 +432,6 @@ ion-content {
   font-family: var(--font-geist-mono), monospace !important;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-
-  span {
-    display: inline-block;
-  }
-}
-
-.char-zero {
-  position: relative;
-  display: inline-block;
-  line-height: 1;
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0.15em;
-    bottom: 0.19em;
-    left: 38%;
-    width: 0.09em;
-    background-color: currentColor;
-    transform: translate(-50%) rotate(30deg);
-    border-radius: 0.03em;
-    pointer-events: none;
-    opacity: 1;
-  }
-}
-
-.char-serif-i {
-  position: relative;
-  display: inline-block;
-  line-height: 1;
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0.1em;
-    left: 50%;
-    width: 0.40em;
-    height: 0.1em;
-    background-color: currentColor;
-    transform: translateX(-50%);
-    pointer-events: none;
-    border-radius: 0.02em;
-  }
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0.15em;
-    left: 50%;
-    width: 0.40em;
-    height: 0.1em;
-    background-color: currentColor;
-    transform: translateX(-50%);
-    pointer-events: none;
-    border-radius: 0.02em;
-  }
-}
-
-.char-flat-one {
-  position: relative;
-  display: inline-block;
-  line-height: 1;
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0.15em;
-    left: 40%;
-    width: 0.50em;
-    height: 0.1em;
-    background-color: currentColor;
-    transform: translateX(-50%);
-    pointer-events: none;
-    border-radius: 0.02em;
-  }
 }
 
 /* Yellow Watermark Circular "1" */
@@ -544,7 +473,6 @@ ion-content {
   font-size: 160px;
   font-weight: 900;
   color: #ffd43e;
-  font-family: 'Roboto', sans-serif;
   line-height: 1;
 }
 

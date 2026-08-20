@@ -168,9 +168,6 @@ export class TicketGenerationPage {
     }
   }
 
-  get ticketChars(): string[] {
-    return this.ticket ? this.ticket.split('') : [];
-  }
 
   private ticketPressTimer: any;
 
