@@ -32,7 +32,8 @@
 
       <div class="side-text left-side">
 
-        BUS.TICKET
+        BUS.TICKET.
+        BUS.TICKET.
         BUS.TICKET
         BUS.TICKET
         BUS.TICKET
@@ -51,6 +52,15 @@
 
       <div class="side-text right-side">
 
+        BUS.TICKET
+        BUS.TICKET
+        BUS.TICKET.
+        BUS.TICKET
+        BUS.TICKET
+        BUS.TICKET
+        BUS.TICKET
+        BUS.TICKET
+        BUS.TICKET
         BUS.TICKET
         BUS.TICKET
         BUS.TICKET
@@ -101,7 +111,7 @@
 
         <span class="info-text-sepa">|</span>
 
-        <span class="info-text">ID: {{ticketId}}...<svg viewBox="0 0 24 24" width="16" height="18" fill="none"
+        <span class="info-text">ID: {{displayTicketId}}...<svg viewBox="0 0 24 24" width="16" height="18" fill="none"
             stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
             style="cursor: pointer; opacity: 0.8; margin-top:-6px;" (click)="copyId()">
             <rect x="9" y="2" width="13" height="16" rx="2" ry="2"></rect>
@@ -367,9 +377,49 @@
 
       </div>
 
+      <!-- BOTTOM SPACER -->
+      <div class="bottom-page-spacer"></div>
+
     </div>
 
 
+  </div>
+
+  <!-- ================= FIXED BOTTOM NAV OVERLAY ================= -->
+  <div class="custom-bottom-nav">
+    <div class="nav-item" (click)="navTab('home')">
+      <svg class="nav-svg" viewBox="0 0 24 24">
+        <rect x="11.5" y="4" width="2" height="15" fill="currentColor" />
+        <path d="M 6.5,5 H 16 L 19.5,7.5 L 16,10 H 6.5 C 6,10 5.5,9.5 5.5,9 V 6 C 5.5,5.5 6,5 6.5,5 Z" fill="currentColor" />
+        <path d="M 17.5,11 H 8 L 4.5,13.5 L 8,16 H 17.5 C 18,16 18.5,15.5 18.5,15 V 12 C 18.5,11.5 18,11 17.5,11 Z" fill="currentColor" />
+      </svg>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" (click)="navTab('passes')">
+      <svg class="nav-svg" viewBox="0 0 24 24">
+        <rect x="1.5" y="5" width="21" height="15" rx="3.5" fill="currentColor" />
+        <path d="M 0.5,14.5 C 7,7.5 17,7.5 23.5,14.5 L 23.5,17.5 C 17,10.5 7,10.5 0.5,17.5 Z" fill="#ffffff" />
+        <path d="M 11,21 L 11,17 L 8,18.5 L 7.5,17 L 12,13.5 L 15.5,13.5 L 15.5,21 Z" fill="#ffffff" />
+      </svg>
+      <span class="nav-label">Passes</span>
+    </div>
+    <div class="nav-item" (click)="navTab('live')">
+      <svg class="nav-svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="11.5" r="7.5" stroke="currentColor" stroke-width="5" fill="none" />
+      </svg>
+      <span class="nav-label">Live</span>
+    </div>
+    <div class="nav-item active" (click)="navTab('ticket')">
+      <dotlottie-player src="assets/lottie/ticket_animation_icon.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+      <span class="nav-label">Ticket</span>
+    </div>
+    <div class="nav-item" (click)="navTab('profile')">
+      <svg class="nav-svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="7.5" r="4" fill="currentColor" />
+        <path d="M 5,20 L 5,18 C 5,14 8,12 12,12 C 16,12 19,14 19,18 L 19,20 C 19,20.5 18.5,21 18,21 L 6,21 C 5.5,21 5,20.5 5,20 Z" fill="currentColor" />
+      </svg>
+      <span class="nav-label">Profile</span>
+    </div>
   </div>
 
   <!-- BUS TICKET OVERLAY / MODAL -->

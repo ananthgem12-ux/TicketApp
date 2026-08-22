@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { BackNavigationService } from '../services/back-navigation.service';
 
 @Component({
   selector: 'app-home',
@@ -263,14 +264,46 @@ export class HomePage implements OnInit, OnDestroy {
     }
   ];
 
-  constructor(private router: Router, private sanitizer: DomSanitizer) {
+  constructor(
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private backNavService: BackNavigationService
+  ) {
     const state = history.state;
     if (state && state.activeTab) {
       this.currentTab = state.activeTab;
     }
   }
 
+  ionViewWillEnter() {
+    this.registerBackHandler();
+  }
+
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('home-page');
+  }
+
+  private registerBackHandler() {
+    this.backNavService.registerHandler('home-page', () => {
+      if (this.showEiModal) {
+        this.showEiModal = false;
+        return true;
+      }
+      if (this.showPhoneEdit) {
+        this.showPhoneEdit = false;
+        return true;
+      }
+      if (this.currentTab !== 'home') {
+        this.currentTab = 'home';
+        return true;
+      }
+      // If on main 'home' tab, let backNavService exit the app
+      return false;
+    }, 10);
+  }
+
   ngOnInit() {
+    this.registerBackHandler();
     this.loadUserPhone();
     this.loadActiveTickets();
     this.startCountdownTimer();
@@ -292,6 +325,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.backNavService.unregisterHandler('home-page');
     if (this.intervalId) clearInterval(this.intervalId);
     if (this.pressTimer) clearTimeout(this.pressTimer);
     if (this.bannerTimer) clearInterval(this.bannerTimer);

@@ -178,6 +178,7 @@ ion-content {
   outline: none;
   color: #888;
   font-size: 14px;
+  font-family: var(--font-departure-mono);;
   font-weight: 600;
   margin-top: 4px;
   text-align: center;
@@ -380,12 +381,15 @@ ion-content {
 .card {
   background: white;
   border-radius: 20px;
-  padding: 16px 24px;
+  padding: 18px 24px;
+  min-height: 80px;
   display: flex;
+  margin-bottom: 10px;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   cursor: pointer;
+  box-sizing: border-box;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -397,6 +401,8 @@ ion-content {
   position: relative;
   justify-content: center;
   text-align: center;
+  min-height: 82px;
+  padding: 18px 24px;
 
   .card-edit-btn {
     position: absolute;
@@ -409,12 +415,12 @@ ion-content {
 .card-details {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   flex-grow: 1;
 }
 
 .card-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #a0a0a0;
   text-transform: none;
@@ -422,15 +428,15 @@ ion-content {
 }
 
 .card-value {
-  font-size: 18px;
+  font-size: 18.5px;
   font-weight: 700;
   color: #262626;
   text-transform: none;
 }
 
 .card-edit-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: none;
   background-color: #f2f2f2;
@@ -438,6 +444,26 @@ ion-content {
   align-items: center;
   justify-content: center;
   color: #666;
+}
+
+.source-card {
+  margin-bottom: 2px !important;
+}
+
+.arrow-separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  margin-bottom: 10px;
+
+  .jp-arrow-down {
+    width: 13px;
+    height: 13px;
+    object-fit: contain;
+    display: block;
+    transform: rotate(180deg);
+  }
 }
 
 /* EXPANDED ACTIVE SEARCH CARD */
@@ -668,7 +694,7 @@ ion-content {
 }
 
 .payment-label {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #8e8e93;
 }
@@ -723,7 +749,7 @@ ion-content {
   height: 60px;
   border-radius: 16px;
   border: none;
-  background-color: #dc4c4c;
+  background-color: #e25252;
   color: white;
   font-size: 18px;
   font-weight: 700;
@@ -892,8 +918,8 @@ ion-content {
   }
 
   .topay-amount {
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 500;
     color: #a4a4a8;
     margin-top: 4px;
     font-family: var(--font-areanormal-semibold), 'Inter', sans-serif;
@@ -938,25 +964,10 @@ ion-content {
   gap: 12px;
 }
 
-.method-logo-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  padding-right: 10px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #f0f0f0;
-  flex-shrink: 0;
-
-  &.bhim-logo { background-color: #ffffff; }
-  &.bank-logo { border: none; background: transparent; }
-}
-
 .method-name {
-  font-size: 13px;
-  font-family: var(--font-areanormal);
-  font-weight: 700;
+  font-size: 14px;
+  font-family: var(--font-areanormal-bold);
+  font-weight: 800;
   color: #1c1c1e;
   
 }
@@ -975,7 +986,7 @@ ion-content {
 }
 
 .method-cashback {
-  font-size: min(11px, 3.3vw);
+  font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1019,7 +1030,7 @@ ion-content {
   width: 100%;
   height: 52px;
   border-radius: 10px;
-  background-color: #ec0128ea; /* Exact vibrant magenta-red from screenshot */
+  background-color: #f70046; /* Exact vibrant magenta-red from screenshot */
   color: #ffffff;
   border: none;
   font-size: min(16px, 4.2vw);

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
+import { BackNavigationService } from '../../services/back-navigation.service';
 
 @Component({
   selector: 'app-temp-home',
@@ -29,9 +30,69 @@ export class TempHomePage implements OnInit, OnDestroy {
   // Active tickets state
   activeTickets: any[] = [];
   
+  // Custom stops for suggestions
+  customStops: any[] = [];
+  
+  // Bus Sugesstions
+  busSuggestions = [
+    '555G',
+    '570S',
+    'MAA2',
+    '19',
+    '102P',
+    '102Xct'
+  ];
+
   // Digits keypad entry state
   digits: string[] = [];
   showOtpInput = false;
+
+  get isComplete() {
+    return this.digits.length === 5;
+  }
+  
+  private intervalId: any;
+  private pressTimer: any;
+
+  constructor(
+    private router: Router,
+    private backNavService: BackNavigationService
+  ) {
+    const state = history.state;
+    if (state && state.activeTab) {
+      this.currentTab = state.activeTab;
+    }
+  }
+
+  ionViewWillEnter() {
+    this.registerBackHandler();
+  }
+
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('temp-home-page');
+  }
+
+  private registerBackHandler() {
+    this.backNavService.registerHandler('temp-home-page', () => {
+      if (this.showOtpInput) {
+        this.showOtpInput = false;
+        return true;
+      }
+      if (this.showQrModal) {
+        this.showQrModal = false;
+        return true;
+      }
+      if (this.showPhoneEdit) {
+        this.showPhoneEdit = false;
+        return true;
+      }
+      if (this.currentTab !== 'home') {
+        this.currentTab = 'home';
+        return true;
+      }
+      return false;
+    }, 10);
+  }
 
   openBusOtp() {
     this.digits = [];
@@ -78,21 +139,8 @@ export class TempHomePage implements OnInit, OnDestroy {
     }
   }
 
-  get isComplete() {
-    return this.digits.length === 5;
-  }
-  
-  private intervalId: any;
-  private pressTimer: any;
-
-  constructor(private router: Router) {
-    const state = history.state;
-    if (state && state.activeTab) {
-      this.currentTab = state.activeTab;
-    }
-  }
-
   ngOnInit() {
+    this.registerBackHandler();
     this.loadUserPhone();
     this.loadActiveTickets();
     this.startCountdownTimer();

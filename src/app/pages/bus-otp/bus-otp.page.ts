@@ -6,6 +6,7 @@ import { IonContent } from '@ionic/angular/standalone';
 
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { lookupBusDetails } from '../../services/mtc-bus-lookup.service';
+import { BackNavigationService } from '../../services/back-navigation.service';
 
 @Component({
   selector: 'app-bus-otp',
@@ -48,7 +49,10 @@ export class BusOtpPage implements OnInit, OnDestroy {
   scanOnly = false;
   originalTicket: any = null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private backNavService: BackNavigationService
+  ) {
     const state = history.state;
     if (state && state.scanOnly) {
       this.scanOnly = true;
@@ -62,6 +66,22 @@ export class BusOtpPage implements OnInit, OnDestroy {
     if (this.scanOnly) {
       this.startCamera();
     }
+  }
+
+  ionViewWillEnter() {
+    this.backNavService.registerHandler('bus-otp-page', () => {
+      if (this.showQrModal) {
+        this.showQrModal = false;
+        return true;
+      }
+      this.goBack();
+      return true;
+    }, 20);
+  }
+
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('bus-otp-page');
+    this.stopCamera();
   }
 
   async requestCameraPermission() {
@@ -78,6 +98,7 @@ export class BusOtpPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.backNavService.unregisterHandler('bus-otp-page');
     this.stopCamera();
   }
 
@@ -144,7 +165,7 @@ export class BusOtpPage implements OnInit, OnDestroy {
 
   goBack() {
     this.stopCamera();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home'], { replaceUrl: true });
   }
 
   press(value: string) {

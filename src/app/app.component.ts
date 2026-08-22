@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
-import { App } from '@capacitor/app';
+import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { BackNavigationService } from './services/back-navigation.service';
 
 @Component({
   selector: 'app-root',
@@ -10,19 +9,11 @@ import { App } from '@capacitor/app';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private platform: Platform,
-    private router: Router
+    private backNavService: BackNavigationService
   ) {}
 
   ngOnInit() {
-    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
-      const currentUrl = this.router.url;
-      if (currentUrl === '/home' || currentUrl === '/splash' || currentUrl === '/' || currentUrl.startsWith('/home')) {
-        App.exitApp();
-      } else {
-        processNextHandler();
-      }
-    });
+    this.backNavService.init();
   }
 }
 

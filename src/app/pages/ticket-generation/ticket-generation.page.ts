@@ -1,9 +1,10 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import confetti from 'canvas-confetti';
 import { BusTicketPage } from '../bus-ticket/bus-ticket.page';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { BackNavigationService } from '../../services/back-navigation.service';
 
 @Component({
   selector: 'app-ticket-generation',
@@ -13,7 +14,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [IonContent, BusTicketPage, QRCodeComponent]
 })
-export class TicketGenerationPage {
+export class TicketGenerationPage implements OnInit, OnDestroy {
 
   rawQrData = '';
 
@@ -39,6 +40,10 @@ export class TicketGenerationPage {
 
   ticketId = '';
 
+  get displayTicketId(): string {
+    return this.ticketId ? this.ticketId.slice(0, 5) : '';
+  }
+
   arrivalTime = '';
 
   validityTime = '';
@@ -56,7 +61,8 @@ export class TicketGenerationPage {
   time24 = '';
 
   constructor(
-    private router: Router
+    private router: Router,
+    private backNavService: BackNavigationService
   ) {
 
     const state = history.state;
@@ -106,7 +112,7 @@ export class TicketGenerationPage {
     this.ticketId =
       state.id || String(
         Math.floor(
-          1000 + Math.random() * 9000
+          10000 + Math.random() * 90000
         )
       );
 
@@ -168,7 +174,36 @@ export class TicketGenerationPage {
     }
   }
 
+  ngOnInit() {
+    this.registerBackHandler();
+  }
 
+  ionViewWillEnter() {
+    this.registerBackHandler();
+  }
+
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('ticket-generation-page');
+  }
+
+  ngOnDestroy() {
+    this.backNavService.unregisterHandler('ticket-generation-page');
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    if (this.ticketPressTimer) clearTimeout(this.ticketPressTimer);
+  }
+
+  private registerBackHandler() {
+    this.backNavService.registerHandler('ticket-generation-page', () => {
+      if (this.showBusTicket) {
+        this.showBusTicket = false;
+        return true;
+      }
+      this.goBackFromPage();
+      return true;
+    }, 20);
+  }
+
+  private timerInterval: any;
   private ticketPressTimer: any;
 
   onTicketPressStart(event: Event) {
@@ -266,7 +301,8 @@ export class TicketGenerationPage {
     this.time =
       `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
-    const interval = setInterval(() => {
+    if (this.timerInterval) clearInterval(this.timerInterval);
+    this.timerInterval = setInterval(() => {
 
       if (this.seconds > 0) {
 
@@ -281,7 +317,7 @@ export class TicketGenerationPage {
 
       } else {
 
-        clearInterval(interval);
+        clearInterval(this.timerInterval);
 
         this.time = '00:00:00';
 
@@ -359,9 +395,18 @@ export class TicketGenerationPage {
   }
 
   goToHistory() {
-    this.router.navigate(['/temp-home'], {
+    this.router.navigate(['/home'], {
       state: {
         activeTab: 'ticket'
+      },
+      replaceUrl: true
+    });
+  }
+
+  navTab(tab: 'home' | 'passes' | 'live' | 'ticket' | 'profile') {
+    this.router.navigate(['/home'], {
+      state: {
+        activeTab: tab
       },
       replaceUrl: true
     });

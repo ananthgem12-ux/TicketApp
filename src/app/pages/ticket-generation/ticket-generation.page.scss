@@ -26,7 +26,7 @@ ion-content {
 }
 
 .page {
-  padding: calc(var(--ion-safe-area-top, 20px) + 16px) 3px 3px 3px;
+  padding: calc(var(--ion-safe-area-top, 20px) + 16px) 12px calc(var(--ion-safe-area-bottom, 20px) + 90px) 12px;
   box-sizing: border-box;
 }
 
@@ -40,13 +40,28 @@ ion-content {
 }
 
 .active-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
 }
 
 .history {
-  font-size: 16px;
-  opacity: .9;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  padding: 5px 12px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.96);
+  }
 }
 
 /* MAIN CARD */
@@ -79,7 +94,7 @@ ion-content {
 
 .side-text {
   position: absolute;
-  top: 70px;
+  top: 10px;
   color: #d7d7d7;
   font-size: 9px;
   font-weight: 500;
@@ -281,8 +296,8 @@ ion-content {
 }
 
 .bus-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 11px;
   background-color: #FEECA6;
   display: flex;
@@ -305,7 +320,7 @@ ion-content {
 
 .bus-number {
   font-family: var(--font-inter);
-  font-size: 20px;
+  font-size: 21px;
   padding-right: 5px;
   font-weight: 700 !important;
   font-style: normal !important;
@@ -318,7 +333,6 @@ ion-content {
 
   font-size: 17px;
   transform: scaleX(1);
-
   color: #7c7c7c;
 
 }
@@ -326,6 +340,7 @@ ion-content {
 /* Delux */
 
 .bus-type {
+  padding-left: 3px;
   font-family: var(--font-departure-mono);
   font-size: 18px;
   color: #666;
@@ -354,7 +369,7 @@ ion-content {
 
   color: #525252;
 
-  margin-top: 3px;
+  margin-top: 4px;
 
 }
 
@@ -383,7 +398,7 @@ ion-content {
   width:110px;
   height:200px;
   right:-23px;
-  margin-top:-37px;
+  margin-top:-40px;
   transform: scaleX(-1); /* Mirror image flip horizontally */
 }
 
@@ -398,17 +413,15 @@ ion-content {
 .activated-ticket-card {
   position: relative;
   background-color: #0b5ed7;
-  border-radius: 20px;
-  padding: 20px 24px;
+  border-radius: 19px;
+  padding: 19px 23px;
   overflow: hidden;
-  margin-top: -45px;
-  // margin-bottom: -19px; /* sits flush at the bottom */
-  margin-left: -5px;   /* sits flush on the left */
-  // margin-right: -19px;  /* sits flush on the right */
+  margin-top: -53px;
+  margin-left: -3px;
   
-  width: calc(100% + 10px);
+  width: calc(100% + 6px);
   color: white;
-  min-height: 38px;
+  min-height: 33px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -419,13 +432,13 @@ ion-content {
 .activated-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   z-index: 2;
 }
 
 .checkmark-circle {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   background-color: white;
   border-radius: 37%;
   display: flex;
@@ -434,17 +447,17 @@ ion-content {
 }
 
 .activated-label {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.2px;
   font-family: var(--font-areanormal);
 }
 
 .activated-code {
-  font-size: 45px;
+  font-size: 44px;
   font-weight: 800;
-  letter-spacing: 8px;
-  margin-top: 14px;
+  letter-spacing: 7px;
+  margin-top: 13px;
   z-index: 2;
   font-family: var(--font-geist-mono), monospace !important;
   font-variant-numeric: tabular-nums;
@@ -507,7 +520,7 @@ ion-content {
   align-items: center;
   gap: 0px;
   font-family: var(--font-areanormal-bold);
-  font-size: 17px;
+  font-size: 16px;
   color: #898989;
   font-weight: 650;
 }
@@ -518,7 +531,7 @@ ion-content {
 
 .route-value {
   margin-top: 8px;
-  font-size: 18px;
+  font-size: 17px;
   font-family: var(--font-areanormal-bold);
   font-weight: 900;
   color: #464646;
@@ -615,8 +628,8 @@ ion-content {
 }
 
 .qr-section img {
-  width: 220px;
-  height: 220px;
+  width: 190px;
+  height: 190px;
   object-fit: contain;
 }
 
@@ -711,6 +724,11 @@ ion-content {
 
 }
 
+.bottom-page-spacer {
+  width: 100%;
+  height: 130px;
+}
+
 /* BUS TICKET OVERLAY STYLES */
 
 .bus-ticket-overlay {
@@ -736,7 +754,7 @@ ion-content {
 .bus-ticket-overlay .ticket-screen {
   display: block;
   flex: 1;
-  background: #0c6cff; /* Vibrant blue as in screenshot */
+  background: #2f82ff; /* Lighter vibrant blue */
   padding: 30px 20px 60px;
   text-align: center;
   box-sizing: border-box;
@@ -958,4 +976,62 @@ ion-content {
   height: 100%;
   object-fit: contain;
   border-radius: 50%;
+}
+
+/* ================= FIXED BOTTOM NAV OVERLAY ================= */
+.custom-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  padding-bottom: calc(4px + env(safe-area-inset-bottom, 4px));
+  padding-bottom: env(safe-area-inset-bottom, 10px);
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  height: 100%;
+  color: #8e8e93;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  .nav-svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    margin-bottom: 2px;
+    transition: transform 0.15s ease;
+  }
+  
+  .nav-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: inherit;
+  }
+  
+  &.active {
+    color: #8e8e93;
+    
+    .nav-label {
+      color: #000000;
+      font-weight: 800;
+    }
+    
+    .nav-svg {
+      color: #ff3b30;
+      transform: scale(1.05);
+    }
+  }
 }

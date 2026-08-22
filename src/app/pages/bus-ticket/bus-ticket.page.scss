@@ -160,7 +160,7 @@ ion-content {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #0c6cff; /* Vibrant blue */
+  background: #2f82ff; /* Lighter vibrant blue */
   padding: 24px 20px 40px;
   text-align: center;
   animation: slideUp .5s ease;
@@ -336,7 +336,7 @@ ion-content {
 }
 
 .source, .destination {
-  font-family: var(--font-areanormal);
+  font-family: var(--font-areanormal-bold);
   font-size: min(19px, 4.4vw);
   font-weight: 700;
   color: #1a1a1a;
@@ -345,7 +345,7 @@ ion-content {
 }
 
 .destination {
-  margin-top: 3px;
+  margin-top: 8px;
 }
 
 /* FARE */

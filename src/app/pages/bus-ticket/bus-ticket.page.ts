@@ -1,8 +1,9 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, AfterViewInit, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 import { NgTemplateOutlet } from '@angular/common';
 import confetti from 'canvas-confetti';
+import { BackNavigationService } from '../../services/back-navigation.service';
 
 @Component({
   selector: 'app-bus-ticket',
@@ -11,7 +12,7 @@ import confetti from 'canvas-confetti';
   standalone: true,
   imports: [IonContent, NgTemplateOutlet]
 })
-export class BusTicketPage implements OnInit, AfterViewInit {
+export class BusTicketPage implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() isOverlay = false;
   @Input() bus = '';
@@ -36,7 +37,27 @@ export class BusTicketPage implements OnInit, AfterViewInit {
     return num.toFixed(2);
   }
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private backNavService: BackNavigationService
+  ) {}
+
+  ionViewWillEnter() {
+    if (!this.isOverlay) {
+      this.backNavService.registerHandler('bus-ticket-page', () => {
+        this.goBack();
+        return true;
+      }, 20);
+    }
+  }
+
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('bus-ticket-page');
+  }
+
+  ngOnDestroy() {
+    this.backNavService.unregisterHandler('bus-ticket-page');
+  }
 
   ngOnInit() {
     if (!this.isOverlay) {
@@ -134,6 +155,7 @@ export class BusTicketPage implements OnInit, AfterViewInit {
     } else {
       const state = history.state;
       this.router.navigate(['/home'], {
+        replaceUrl: true,
         state: {
           activeTab: state.referrerTab || 'home'
         }

@@ -13,9 +13,8 @@ import {
   FormsModule
 } from '@angular/forms';
 
-import {
-  Router
-} from '@angular/router';
+import { Router } from '@angular/router';
+import { BackNavigationService } from '../../services/back-navigation.service';
 
 @Component({
 
@@ -121,7 +120,8 @@ export class BookingPage implements OnInit {
   ];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private backNavService: BackNavigationService
   ) {
 
     const state = history.state;
@@ -160,14 +160,51 @@ export class BookingPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home'], { replaceUrl: true });
   }
 
   async ngOnInit() {
     // Logic moved to ionViewWillEnter to handle Ionic page caching
   }
 
+  ionViewWillLeave() {
+    this.backNavService.unregisterHandler('booking-page');
+  }
+
+  ngOnDestroy() {
+    this.backNavService.unregisterHandler('booking-page');
+  }
+
   async ionViewWillEnter() {
+    this.backNavService.registerHandler('booking-page', () => {
+      if (this.showUpiPinModal) {
+        this.showUpiPinModal = false;
+        return true;
+      }
+      if (this.showPaymentProcessing) {
+        // Prevent back-nav while payment is processing
+        return true;
+      }
+      if (this.showToPaySheet) {
+        this.closeToPaySheet();
+        return true;
+      }
+      if (this.showPriceEdit) {
+        this.cancelPriceEdit();
+        return true;
+      }
+      if (this.showSourceSelect) {
+        this.showSourceSelect = false;
+        return true;
+      }
+      if (this.showDestSelect) {
+        this.showDestSelect = false;
+        return true;
+      }
+      this.router.navigate(['/home'], { replaceUrl: true });
+      return true;
+    }, 20);
+
     this.userHasChangedDestination = false;
     this.showSourceSelect = false;
     this.showDestSelect = true; // Destination dropdown open by default
@@ -1233,6 +1270,7 @@ export class BookingPage implements OnInit {
         '/ticket-generation'
       ],
       {
+        replaceUrl: true,
         state: {
           bus:
             routeNoToPass, // Passes Route Number (e.g. 102PCT, M70 R) instead of bus reg no
@@ -1251,7 +1289,8 @@ export class BookingPage implements OnInit {
           persons:
             this.persons,
           ticket:
-            this.ticketCode
+            this.ticketCode,
+          referrer: '/home'
         }
       }
     );

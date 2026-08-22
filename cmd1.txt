@@ -1,0 +1,10 @@
+echo %JAVA_HOME%
+npx @ionic/cli cap run android -l --external
+winget install EclipseAdoptium.Temurin.21.JDK
+npm run build
+cmd.exe /c "npm run build && npx cap sync"
+gradlew.bat assembleDebug inside the android/
+
+
+VtnbMQdYHi99x94MVi8+M/YxznVtaHOeTQ4dtEwCzI5dI8WR7uZ9rFJitWGtqWT10nFkRimANR8m0QE1HOCHAw==,274840577,9eefab7722,d97f8fa522,1,0,S,23,4548,#1B5E20,25-06-2026 14:58:31,,,
+VtnbMQdYHi99x94MVi8+M/YxznVtaHOeTQ4dtEwCzI5dI8WR7uZ9rFJitWGtqWT10nFkRimANR8m0QE1HOCHAw==,274840577,9eefab7722,d97f8fa522,1,0,S,23,4548,#1B5E20,25-06-2026 14:58:31,,,

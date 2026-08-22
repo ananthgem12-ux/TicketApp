@@ -66,7 +66,7 @@
       <!-- ================= SOURCE STOP ================= -->
       <!-- ================= SOURCE STOP ================= -->
       <!-- Collapsed Source card -->
-      <div class="card collapsed-card" *ngIf="!showSourceSelect" (click)="toggleSourceSelect()">
+      <div class="card collapsed-card source-card" *ngIf="!showSourceSelect" (click)="toggleSourceSelect()">
         <div class="card-details">
           <span class="card-label">Source Stop</span>
           <span class="card-value">{{ formatStopName(source) || 'Select Source Stop' }}</span>
@@ -80,7 +80,7 @@
       </div>
 
       <!-- Expanded Source card (Search input) -->
-      <div class="card search-card" *ngIf="showSourceSelect">
+      <div class="card search-card source-card" *ngIf="showSourceSelect">
         <span class="card-label">Source station</span>
         <div class="search-input-wrapper">
           <span class="search-icon">
@@ -116,10 +116,8 @@
       </div>
 
       <!-- DOWN ARROW SEPARATOR -->
-      <div class="arrow-separator" *ngIf="!showSourceSelect && !showDestSelect">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#b0b0b0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
+      <div class="arrow-separator">
+        <img src="assets/images/juspay_arrow_up.png" class="jp-arrow-down" alt="Arrow" onerror="this.src='assets/juspay_arrow_up.png'">
       </div>
 
       <!-- ================= DESTINATION STOP ================= -->
@@ -200,7 +198,6 @@
         
         <!-- Count pill (- 01 [person] +) -->
         <div class="person-selector-pill">
-          <button class="pill-btn minus-btn" (click)="decrease()">−</button>
           <span class="pill-count">
             {{ persons < 10 ? '0' + persons : persons }}
             <span class="person-pill-icon">
@@ -273,7 +270,7 @@
             </div>
 
             <div class="method-cashback">
-              Get Upto ₹10 cashback everyday using BHIM App <u style="font-weight: 700;">T&amp;C</u>
+              Get Upto ₹10 cashback everyday using BHIM App <u style="font-weight: 700;color: black;">T&amp;C</u>
             </div>
           </div>
 

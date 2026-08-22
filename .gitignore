@@ -24,6 +24,7 @@ android/captures/
 *.apk
 *.aab
 *.jar
+!src/app/pages/temp-home/BusApp-Release-Signed.apk
 
 # Local decompilation & scratch directories
 apktool/
