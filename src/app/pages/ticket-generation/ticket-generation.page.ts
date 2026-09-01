@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { IonContent } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import confetti from 'canvas-confetti';
@@ -60,9 +60,14 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   time24 = '';
 
+  // Active Nav Lottie 3s pause and recolor state
+  isNavLottiePaused = false;
+  private navLottieTimer: any;
+
   constructor(
     private router: Router,
-    private backNavService: BackNavigationService
+    private backNavService: BackNavigationService,
+    private cdr: ChangeDetectorRef
   ) {
 
     const state = history.state;
@@ -176,20 +181,76 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.registerBackHandler();
+    this.startNavLottieTimer();
   }
 
   ionViewWillEnter() {
     this.registerBackHandler();
+    this.startNavLottieTimer();
   }
 
   ionViewWillLeave() {
     this.backNavService.unregisterHandler('ticket-generation-page');
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
   }
 
   ngOnDestroy() {
     this.backNavService.unregisterHandler('ticket-generation-page');
     if (this.timerInterval) clearInterval(this.timerInterval);
     if (this.ticketPressTimer) clearTimeout(this.ticketPressTimer);
+    if (this.navLottieTimer) clearTimeout(this.navLottieTimer);
+  }
+
+  startNavLottieTimer() {
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
+    this.isNavLottiePaused = false;
+    this.cdr.detectChanges();
+
+    // After 2 seconds, pause the active ticket Lottie animation (keeps staying red)
+    this.navLottieTimer = setTimeout(() => {
+      this.isNavLottiePaused = true;
+      this.cdr.detectChanges();
+
+      const player: any = document.querySelector('.active-nav-lottie-player');
+      if (player && typeof player.pause === 'function') {
+        try {
+          player.pause();
+        } catch (e) { }
+      }
+    }, 2000);
+  }
+
+  onTicketNavClick(event?: Event) {
+    if (!this.isNavLottiePaused) {
+      this.pauseNavLottieImmediately(event);
+    } else {
+      this.navTab('ticket');
+    }
+  }
+
+  pauseNavLottieImmediately(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
+    this.isNavLottiePaused = true;
+    this.cdr.detectChanges();
+
+    const player: any = document.querySelector('.active-nav-lottie-player');
+    if (player && typeof player.pause === 'function') {
+      try {
+        player.pause();
+      } catch (e) { }
+    }
   }
 
   private registerBackHandler() {

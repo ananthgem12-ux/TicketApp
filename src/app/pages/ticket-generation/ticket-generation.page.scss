@@ -403,9 +403,9 @@ ion-content {
 
 .bus-image{
   position: absolute;
-  width:110px;
+  width:120px;
   height:200px;
-  right:-23px;
+  right:-24px;
   margin-top:-40px;
   transform: scaleX(-1); /* Mirror image flip horizontally */
 }
@@ -654,6 +654,18 @@ ion-content {
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  .btn-ticket-lottie {
+    width: 26px;
+    height: 26px;
+    filter: brightness(0) invert(1) !important; /* Pure white color */
+    pointer-events: none;
+    
+  }
 }
 
 .show-ticket:active {
@@ -1038,6 +1050,10 @@ ion-content {
     .nav-svg {
       color: #ff3b30;
       transform: scale(1.05);
+    }
+
+    .active-nav-lottie-player:not(.no-red) {
+      filter: brightness(0) saturate(100%) invert(36%) sepia(93%) saturate(4422%) hue-rotate(346deg) brightness(101%) contrast(106%) !important;
     }
   }
 }

@@ -251,69 +251,127 @@
     <div class="tab-content live-tab" [hidden]="currentTab !== 'live'">
       <div class="live-layout-container">
         
-        <!-- 3D Moving Transit Stage (Ant-line continuous motion on both lanes) -->
+        <!-- 3D Moving Transit Stage -->
         <div class="live-transit-stage">
           <div class="transit-viewport">
             
-            <!-- LANE 1 (Upper Track): Continuous Line of Metro Trains (TRAIN -> TRAIN -> TRAIN -> TRAIN -> TRAIN -> TRAIN...) -->
+            <!-- LANE 1 THREAD (Upper Track): Continuous Chain of Metro Trains -->
             <div class="transit-track rail-track">
-              <div class="vehicle vehicle-metro train-1">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 1" />
-              </div>
-              <div class="vehicle vehicle-metro train-2">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 2" />
-              </div>
-              <div class="vehicle vehicle-metro train-3">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 3" />
-              </div>
-              <div class="vehicle vehicle-metro train-4">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 4" />
-              </div>
-              <div class="vehicle vehicle-metro train-5">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 5" />
-              </div>
-              <div class="vehicle vehicle-metro train-6">
-                <img src="assets/images/transit_metro.webp" class="vehicle-img" alt="Train 6" />
+              <div class="thread-belt rail-belt">
+                <!-- Segment A -->
+                <div class="thread-segment">
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                </div>
+                <!-- Segment B (Seamless Duplicate) -->
+                <div class="thread-segment">
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                  <div class="vehicle vehicle-metro">
+                    <img src="assets/images/transit_metro.png" class="vehicle-img" alt="Metro Train" />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- LANE 2 (Lower Road): Continuous Line of AUTO -> BUS -> AUTO -> BUS -> AUTO -> BUS... -->
+            <!-- LANE 2 THREAD (Lower Road): Continuous Chain of Auto & Bus -->
             <div class="transit-track road-lane">
-              <div class="vehicle vehicle-auto road-auto-1">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 1" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-1">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 1" />
-              </div>
-              <div class="vehicle vehicle-auto road-auto-2">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 2" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-2">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 2" />
-              </div>
-              <div class="vehicle vehicle-auto road-auto-3">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 3" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-3">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 3" />
-              </div>
-              <div class="vehicle vehicle-auto road-auto-4">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 4" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-4">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 4" />
-              </div>
-              <div class="vehicle vehicle-auto road-auto-5">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 5" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-5">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 5" />
-              </div>
-              <div class="vehicle vehicle-auto road-auto-6">
-                <img src="assets/images/transit_auto.webp" class="vehicle-img" alt="Auto 6" />
-              </div>
-              <div class="vehicle vehicle-bus road-bus-6">
-                <img src="assets/images/transit_bus.webp" class="vehicle-img" alt="Bus 6" />
+              <div class="thread-belt road-belt">
+                <!-- Segment A -->
+                <div class="thread-segment">
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                </div>
+                <!-- Segment B (Seamless Duplicate) -->
+                <div class="thread-segment">
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                  <div class="vehicle vehicle-auto">
+                    <img src="assets/images/transit_auto.png" class="vehicle-img" alt="Auto" />
+                  </div>
+                  <div class="vehicle vehicle-bus">
+                    <img src="assets/images/transit_bus.png" class="vehicle-img" alt="Bus" />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -550,7 +608,14 @@
     <!-- ================= FIXED BOTTOM NAV OVERLAY ================= -->
     <div class="custom-bottom-nav">
       <div class="nav-item" [class.active]="currentTab === 'home'" (click)="setTab('home')">
-        <dotlottie-player *ngIf="currentTab === 'home'" src="assets/lottie/home_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <dotlottie-player 
+          *ngIf="currentTab === 'home'" 
+          src="assets/lottie/home_animation.lottie" 
+          autoplay 
+          class="active-nav-lottie-player"
+          (click)="onActiveLottieClick($event)"
+          style="width: 36px; height: 36px; display: block;">
+        </dotlottie-player>
         <svg *ngIf="currentTab !== 'home'" class="nav-svg" viewBox="0 0 24 24">
           <rect x="11.5" y="4" width="2" height="15" fill="currentColor" />
           <path d="M 6.5,5 H 16 L 19.5,7.5 L 16,10 H 6.5 C 6,10 5.5,9.5 5.5,9 V 6 C 5.5,5.5 6,5 6.5,5 Z" fill="currentColor" />
@@ -559,7 +624,14 @@
         <span class="nav-label">Home</span>
       </div>
       <div class="nav-item" [class.active]="currentTab === 'passes'" (click)="setTab('passes')">
-        <dotlottie-player *ngIf="currentTab === 'passes'" src="assets/lottie/tab-pass-animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <dotlottie-player 
+          *ngIf="currentTab === 'passes'" 
+          src="assets/lottie/tab-pass-animation.lottie" 
+          autoplay 
+          class="active-nav-lottie-player no-red"
+          (click)="onActiveLottieClick($event)"
+          style="width: 36px; height: 36px; display: block;">
+        </dotlottie-player>
         <svg *ngIf="currentTab !== 'passes'" class="nav-svg" viewBox="0 0 24 24">
           <rect x="1.5" y="5" width="21" height="15" rx="3.5" fill="currentColor" />
           <path d="M 0.5,14.5 C 7,7.5 17,7.5 23.5,14.5 L 23.5,17.5 C 17,10.5 7,10.5 0.5,17.5 Z" fill="#ffffff" />
@@ -568,21 +640,42 @@
         <span class="nav-label">Passes</span>
       </div>
       <div class="nav-item" [class.active]="currentTab === 'live'" (click)="setTab('live')">
-        <dotlottie-player *ngIf="currentTab === 'live'" src="assets/lottie/live_action_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <dotlottie-player 
+          *ngIf="currentTab === 'live'" 
+          src="assets/lottie/live_action_animation.lottie" 
+          autoplay 
+          class="active-nav-lottie-player"
+          (click)="onActiveLottieClick($event)"
+          style="width: 36px; height: 36px; display: block;">
+        </dotlottie-player>
         <svg *ngIf="currentTab !== 'live'" class="nav-svg" viewBox="0 0 24 24">
           <circle cx="12" cy="11.5" r="7.5" stroke="currentColor" stroke-width="5" fill="none" />
         </svg>
         <span class="nav-label">Live</span>
       </div>
       <div class="nav-item" [class.active]="currentTab === 'ticket'" (click)="setTab('ticket')">
-        <dotlottie-player *ngIf="currentTab === 'ticket'" src="assets/lottie/ticket_animation_icon.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <dotlottie-player 
+          *ngIf="currentTab === 'ticket'" 
+          src="assets/lottie/ticket_animation_icon.lottie" 
+          autoplay 
+          class="active-nav-lottie-player"
+          (click)="onActiveLottieClick($event)"
+          style="width: 36px; height: 36px; display: block;">
+        </dotlottie-player>
         <svg *ngIf="currentTab !== 'ticket'" class="nav-svg" viewBox="0 0 24 24">
           <path d="M 6.5,3 L 9.5,3 C 9.5,4.5 10.5,5.5 12,5.5 C 13.5,5.5 14.5,4.5 14.5,3 L 17.5,3 C 18,3 18.5,3.5 18.5,4 L 18.5,19 C 18.5,19.5 18,20 17.5,20 L 14.5,20 C 14.5,18.5 13.5,17.5 12,17.5 C 10.5,17.5 9.5,18.5 9.5,20 L 6.5,20 C 6,20 5.5,19.5 5.5,19 L 5.5,4 C 5.5,3.5 6,3 6.5,3 Z" fill="currentColor" />
         </svg>
         <span class="nav-label">Ticket</span>
       </div>
       <div class="nav-item" [class.active]="currentTab === 'profile'" (click)="setTab('profile')">
-        <dotlottie-player *ngIf="currentTab === 'profile'" src="assets/lottie/profile_icon_animation.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+        <dotlottie-player 
+          *ngIf="currentTab === 'profile'" 
+          src="assets/lottie/profile_icon_animation.lottie" 
+          autoplay 
+          class="active-nav-lottie-player"
+          (click)="onActiveLottieClick($event)"
+          style="width: 36px; height: 36px; display: block;">
+        </dotlottie-player>
         <svg *ngIf="currentTab !== 'profile'" class="nav-svg" viewBox="0 0 24 24">
           <circle cx="12" cy="7.5" r="4" fill="currentColor" />
           <path d="M 5,20 L 5,18 C 5,14 8,12 12,12 C 16,12 19,14 19,18 L 19,20 C 19,20.5 18.5,21 18,21 L 6,21 C 5.5,21 5,20.5 5,20 Z" fill="currentColor" />

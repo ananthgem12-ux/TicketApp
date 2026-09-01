@@ -358,9 +358,12 @@
       <!-- BUTTON -->
 
       <button class="show-ticket" (click)="showTicket()">
-
-        Show Bus Ticket
-
+        <dotlottie-player 
+          src="assets/lottie/ticket_animation_icon.lottie" 
+          class="btn-ticket-lottie"
+          style="width: 26px; height: 26px; display: inline-block;">
+        </dotlottie-player>
+        <span>Show Bus Ticket</span>
       </button>
       <div class="last">
 
@@ -411,8 +414,14 @@
       </svg>
       <span class="nav-label">Live</span>
     </div>
-    <div class="nav-item active" (click)="navTab('ticket')">
-      <dotlottie-player src="assets/lottie/ticket_animation_icon.lottie" autoplay loop style="width: 36px; height: 36px; display: block;"></dotlottie-player>
+    <div class="nav-item active" (click)="onTicketNavClick($event)">
+      <dotlottie-player 
+        src="assets/lottie/ticket_animation_icon.lottie" 
+        autoplay 
+        class="active-nav-lottie-player"
+        (click)="pauseNavLottieImmediately($event)"
+        style="width: 36px; height: 36px; display: block;">
+      </dotlottie-player>
       <span class="nav-label">Ticket</span>
     </div>
     <div class="nav-item" (click)="navTab('profile')">

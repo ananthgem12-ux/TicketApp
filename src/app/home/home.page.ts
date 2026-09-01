@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,10 @@ import { BackNavigationService } from '../services/back-navigation.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   currentTab: 'home' | 'passes' | 'live' | 'ticket' | 'profile' = 'home';
+
+  // Active Nav Lottie 3s pause and recolor state
+  isNavLottiePaused = false;
+  private navLottieTimer: any;
 
   // Profile phone number state
   userPhone = '9724153346';
@@ -267,7 +271,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private sanitizer: DomSanitizer,
-    private backNavService: BackNavigationService
+    private backNavService: BackNavigationService,
+    private cdr: ChangeDetectorRef
   ) {
     const state = history.state;
     if (state && state.activeTab) {
@@ -277,10 +282,15 @@ export class HomePage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.registerBackHandler();
+    this.startNavLottieTimer();
   }
 
   ionViewWillLeave() {
     this.backNavService.unregisterHandler('home-page');
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
   }
 
   private registerBackHandler() {
@@ -309,6 +319,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.startCountdownTimer();
     this.startBannerSlider();
     this.startSearchSuggestionSlider();
+    this.startNavLottieTimer();
 
     const hasChecked = sessionStorage.getItem('has_checked_active_ticket_on_boot');
     if (!hasChecked) {
@@ -331,6 +342,7 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.bannerTimer) clearInterval(this.bannerTimer);
     if (this.suggestionTimer) clearInterval(this.suggestionTimer);
     if (this.liveBusInterval) clearInterval(this.liveBusInterval);
+    if (this.navLottieTimer) clearTimeout(this.navLottieTimer);
     this.clearBusMarkers();
     this.clearRouteGraphics();
     if (this.mapInstance) {
@@ -339,6 +351,30 @@ export class HomePage implements OnInit, OnDestroy {
       } catch (e) { }
       this.mapInstance = null;
     }
+  }
+
+  startNavLottieTimer() {
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
+    this.isNavLottiePaused = false;
+    this.cdr.detectChanges();
+
+    // After 2 seconds, pause the active nav Lottie animation (keeps staying red)
+    this.navLottieTimer = setTimeout(() => {
+      this.isNavLottiePaused = true;
+      this.cdr.detectChanges();
+
+      const players = document.querySelectorAll('.active-nav-lottie-player');
+      players.forEach((player: any) => {
+        if (typeof player.pause === 'function') {
+          try {
+            player.pause();
+          } catch (e) { }
+        }
+      });
+    }, 2000);
   }
 
   openBusOtp() {
@@ -374,11 +410,46 @@ export class HomePage implements OnInit, OnDestroy {
 
 
 
+  pauseNavLottieImmediately(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    if (this.navLottieTimer) {
+      clearTimeout(this.navLottieTimer);
+      this.navLottieTimer = null;
+    }
+    this.isNavLottiePaused = true;
+    this.cdr.detectChanges();
+
+    const players = document.querySelectorAll('.active-nav-lottie-player');
+    players.forEach((player: any) => {
+      if (typeof player.pause === 'function') {
+        try {
+          player.pause();
+        } catch (e) { }
+      }
+    });
+  }
+
+  onActiveLottieClick(event?: Event) {
+    this.pauseNavLottieImmediately(event);
+  }
+
   private intervalId: any;
   private pressTimer: any;
 
   setTab(tab: 'home' | 'passes' | 'live' | 'ticket' | 'profile') {
+    // If clicking on the active tab while lottie is in play, pause immediately
+    if (this.currentTab === tab) {
+      if (!this.isNavLottiePaused) {
+        this.pauseNavLottieImmediately();
+        return;
+      }
+    }
+
     this.currentTab = tab;
+    this.startNavLottieTimer();
+
     if (tab === 'ticket') {
       this.loadActiveTickets();
     }
