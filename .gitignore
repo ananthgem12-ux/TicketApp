@@ -40,7 +40,6 @@ unused_assets/
 .env
 .env.*
 *.keystore
-!android/app/release.keystore
 *.jks
 *.pem
 

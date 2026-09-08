@@ -18,10 +18,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("release.keystore")
-            storePassword "busapp123"
-            keyAlias "busapp"
-            keyPassword "busapp123"
+            storeFile file(System.getenv("KEYSTORE_FILE") ?: "release.keystore")
+            storePassword(System.getenv("KEYSTORE_PASSWORD") ?: "busapp123")
+            keyAlias(System.getenv("KEY_ALIAS") ?: "busapp")
+            keyPassword(System.getenv("KEY_PASSWORD") ?: "busapp123")
         }
     }
     buildTypes {
