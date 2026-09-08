@@ -25,6 +25,7 @@ android/captures/
 *.aab
 *.jar
 !BusApp-Release-Signed.apk
+!gradle-wrapper.jar
 
 # Local decompilation & scratch directories
 apktool/
