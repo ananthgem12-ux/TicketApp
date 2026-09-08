@@ -1,0 +1,98 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build Signed Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Node Dependencies
+        run: |
+          npm ci --legacy-peer-deps || npm install
+
+      - name: Build Web Application
+        run: |
+          npx ng build
+
+      - name: Sync Capacitor Android
+        run: |
+          npx cap sync android
+
+      - name: Ensure Signing Keystore Exists
+        run: |
+          if [ ! -f android/app/release.keystore ]; then
+            echo "Keystore not found. Generating fallback release keystore..."
+            keytool -genkey -v -keystore android/app/release.keystore \
+              -alias busapp -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass busapp123 -keypass busapp123 \
+              -dname "CN=TicketApp, OU=Mobile, O=MTC, L=Chennai, S=TamilNadu, C=IN"
+          else
+            echo "Using existing release.keystore."
+          fi
+
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build Signed Release APK with Gradle
+        run: |
+          cd android
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Prepare APK Output
+        run: |
+          mkdir -p dist-apk
+          cp android/app/build/outputs/apk/release/app-release.apk dist-apk/BusApp-Release-Signed.apk
+          ls -lh dist-apk/BusApp-Release-Signed.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BusApp-Release-Signed
+          path: dist-apk/BusApp-Release-Signed.apk
+          retention-days: 30
+
+      - name: Publish or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "TicketApp - Latest Release APK"
+          body: |
+            ### 🚀 Automated Build Release
+            - **Commit**: `${{ github.sha }}`
+            - **Branch**: `${{ github.ref_name }}`
+            - **Status**: Signed Release APK ready for installation.
+            
+            Download the attached `BusApp-Release-Signed.apk` directly to your Android device.
+          draft: false
+          prerelease: false
+          files: dist-apk/BusApp-Release-Signed.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
