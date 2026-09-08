@@ -88,49 +88,40 @@ export class HomePage implements OnInit, OnDestroy {
 
   mockPastTickets = [
     {
-      source: 'CHENNAI ONE IT SEZ',
-      destination: 'NAVALUR',
-      amount: 23,
-      dateStr: '14 Jul 2026 • 12:30 pm',
+      source: 'NAVALUR',
+      destination: 'PERUNGUDI I G P',
+      amount: 25,
+      dateStr: '2 Sept 2026 • 9:42 am',
       isExpired: true,
       bus: '102P',
-      type: 'Delux'
-    },
-    {
-      source: 'SHOLINGANALLUR KUMARAN NAGAR',
-      destination: 'CHENNAI ONE IT SEZ',
-      amount: 19,
-      dateStr: '14 Jul 2026 • 11:35 am',
-      isExpired: true,
-      bus: '570S',
       type: 'Ordinary'
     },
     {
-      source: 'CHENNAI ONE IT SEZ',
+      source: 'SHOLINGANALLUR KUMARAN NAGAR',
       destination: 'NAVALUR',
-      amount: 23,
-      dateStr: '13 Jul 2026 • 12:57 pm',
+      amount: 13,
+      dateStr: '23 Aug 2026 • 4:59 pm',
       isExpired: true,
-      bus: '102P',
-      type: 'Delux'
+      bus: '102',
+      type: 'Ordinary'
     },
     {
       source: 'NAVALUR',
-      destination: 'CHENNAI ONE IT SEZ',
-      amount: 23,
-      dateStr: '13 Jul 2026 • 11:56 am',
-      isExpired: true,
-      bus: '102',
-      type: 'Delux'
-    },
-    {
-      source: 'CHENNAI ONE IT SEZ',
-      destination: 'NAVALUR',
-      amount: 30,
-      dateStr: '13 Jul 2026 • 09:15 am',
+      destination: 'THIRUVANMIYUR',
+      amount: 13,
+      dateStr: '21 Aug 2026 • 9:33 am',
       isExpired: true,
       bus: '102P',
-      type: 'AC'
+      type: 'Ordinary'
+    },
+    {
+      source: 'P U OFFICE SHOLINGANALLUR',
+      destination: 'VANDALUR ZOO',
+      amount: 31,
+      dateStr: '16 Aug 2026 • 11:14 am',
+      isExpired: true,
+      bus: '570V',
+      type: 'Delux'
     }
   ];
 
@@ -825,8 +816,60 @@ export class HomePage implements OnInit, OnDestroy {
     this.showQrModal = false;
   }
 
+  // Format ticket date/time into "2 Sept 2026 • 9:42 am" matching past tickets
+  formatTicketDateStr(t: any): string {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    let datePart = '';
+    let timePart = '';
+
+    if (t.date && typeof t.date === 'string') {
+      const trimmed = t.date.trim().replace(',', '');
+      if (/[a-zA-Z]/.test(trimmed)) {
+        datePart = trimmed;
+      } else {
+        const parts = trimmed.split(/[\/\-\.]/);
+        if (parts.length === 3) {
+          let day = parseInt(parts[0], 10);
+          let month = parseInt(parts[1], 10);
+          let year = parseInt(parts[2], 10);
+          if (parts[0].length === 4) {
+            year = parseInt(parts[0], 10);
+            month = parseInt(parts[1], 10);
+            day = parseInt(parts[2], 10);
+          }
+          const mName = months[month - 1] || 'Sept';
+          datePart = `${day} ${mName} ${year}`;
+        }
+      }
+    }
+
+    if (!datePart) {
+      const dObj = t.expiryTime ? new Date(t.expiryTime - 10800000) : new Date();
+      datePart = `${dObj.getDate()} ${months[dObj.getMonth()]} ${dObj.getFullYear()}`;
+    }
+
+    if (t.arrivalTime && typeof t.arrivalTime === 'string') {
+      let tp = t.arrivalTime.trim().toLowerCase();
+      tp = tp.replace(/(\d{1,2}:\d{2}):\d{2}/, '$1');
+      tp = tp.replace(/^0(\d:\d{2})/, '$1');
+      timePart = tp;
+    }
+
+    if (!timePart) {
+      const dObj = t.expiryTime ? new Date(t.expiryTime - 10800000) : new Date();
+      let hours = dObj.getHours();
+      const minutes = String(dObj.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12 || 12;
+      timePart = `${hours}:${minutes} ${ampm}`;
+    }
+
+    return `${datePart} • ${timePart}`;
+  }
+
   // Active tickets methods
   loadActiveTickets() {
+    const now = Date.now();
     const stored = localStorage.getItem('active_tickets');
     let list: any[] = [];
     if (stored) {
@@ -837,23 +880,15 @@ export class HomePage implements OnInit, OnDestroy {
       }
     }
 
-    const now = Date.now();
     // Sort all tickets by expiryTime descending (newest first)
     list.sort((a: any, b: any) => b.expiryTime - a.expiryTime);
 
     this.activeTickets = list.filter((t: any) => t.expiryTime > now);
     this.updateCountdownStrings();
 
-    // 1. Format Active Tickets (Grayscale / not dull B/W style)
+    // 1. Format Active Tickets
     this.formattedActiveTickets = this.activeTickets.map((t: any) => {
-      let dateStr = '';
-      if (t.date) {
-        const cleanDate = t.date.replace(',', '');
-        const cleanTime = (t.arrivalTime || '').toLowerCase();
-        dateStr = `${cleanDate} • ${cleanTime}`;
-      } else {
-        dateStr = '14 Jul 2026 • 12:30 pm';
-      }
+      const dateStr = this.formatTicketDateStr(t);
 
       // Format countdown string
       const diff = t.expiryTime - now;
@@ -887,14 +922,7 @@ export class HomePage implements OnInit, OnDestroy {
     // 2. Format Expired (Past) Tickets
     const expiredRealTickets = list.filter((t: any) => t.expiryTime <= now);
     const formattedExpired = expiredRealTickets.map((t: any) => {
-      let dateStr = '';
-      if (t.date) {
-        const cleanDate = t.date.replace(',', '');
-        const cleanTime = (t.arrivalTime || '').toLowerCase();
-        dateStr = `${cleanDate} • ${cleanTime}`;
-      } else {
-        dateStr = '14 Jul 2026 • 12:30 pm';
-      }
+      const dateStr = this.formatTicketDateStr(t);
 
       return {
         id: t.id,
@@ -947,24 +975,23 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   viewTicketDetails(ticket: any) {
-    if (!ticket.id) return; // Prevent navigation for mock/placeholder tickets
     this.router.navigate(['/ticket-generation'], {
       state: {
-        id: ticket.id,
-        bus: ticket.bus,
-        type: ticket.type,
-        vehicle: ticket.vehicle,
+        id: ticket.id || 'mock_' + (ticket.amount || 25),
+        bus: ticket.bus || '102P',
+        type: ticket.type || 'Ordinary',
+        vehicle: ticket.vehicle || 'TN01N9999',
         amount: ticket.amount,
-        persons: ticket.persons,
-        ticket: ticket.ticketCode,
+        persons: ticket.persons || 1,
+        ticket: ticket.ticketCode || 'TCKT' + ticket.amount,
         source: ticket.source,
         destination: ticket.destination,
-        date: ticket.date,
-        arrivalTime: ticket.arrivalTime,
-        validityTime: ticket.validityTime,
-        expiryTime: ticket.expiryTime,
-        ticketNo: ticket.ticketNo,
-        time24: ticket.time24,
+        date: ticket.date || '02/09/2026',
+        arrivalTime: ticket.arrivalTime || '09:42 am',
+        validityTime: ticket.validityTime || '11:42 am',
+        expiryTime: ticket.expiryTime || Date.now() - 3600000,
+        ticketNo: ticket.ticketNo || 'T987654321',
+        time24: ticket.time24 || '09:42',
         referrerTab: 'ticket',
         referrer: '/home'
       }
@@ -1075,6 +1102,7 @@ export class HomePage implements OnInit, OnDestroy {
         global_custom_stops: JSON.parse(localStorage.getItem('global_custom_stops') || '[]'),
         global_custom_rates: JSON.parse(localStorage.getItem('global_custom_rates') || '{}'),
         mtc_routes: JSON.parse(localStorage.getItem('mtc_routes') || '{}'),
+        frequently_visited_destinations: JSON.parse(localStorage.getItem('frequently_visited_destinations') || '{}'),
         last_used_bus: localStorage.getItem('last_used_bus') || '570S',
         user_phone: localStorage.getItem('user_phone') || this.userPhone
       };
@@ -1165,6 +1193,9 @@ export class HomePage implements OnInit, OnDestroy {
         }
         if (data.mtc_routes && typeof data.mtc_routes === 'object') {
           localStorage.setItem('mtc_routes', JSON.stringify(data.mtc_routes));
+        }
+        if (data.frequently_visited_destinations && typeof data.frequently_visited_destinations === 'object') {
+          localStorage.setItem('frequently_visited_destinations', JSON.stringify(data.frequently_visited_destinations));
         }
         if (data.last_used_bus) {
           localStorage.setItem('last_used_bus', data.last_used_bus);

@@ -55,18 +55,15 @@ if %errorlevel% neq 0 (
 cd /d "%PROJECT_DIR%"
 if exist "%APK_SOURCE%" (
     copy /Y "%APK_SOURCE%" "%PROJECT_DIR%BusApp-Release-Signed.apk" >NUL
-    copy /Y "%APK_SOURCE%" "%PROJECT_DIR%BusApp.apk" >NUL
-    copy /Y "%APK_SOURCE%" "%PROJECT_DIR%TicketApp-Release.apk" >NUL
     
     echo.
     echo  ================================================================
     echo    BUILD SUCCESSFUL!
     echo  ================================================================
     echo.
-    for %%F in ("%PROJECT_DIR%TicketApp-Release.apk") do (
+    for %%F in ("%PROJECT_DIR%BusApp-Release-Signed.apk") do (
         set /a SIZE_MB=%%~zF / 1048576
         echo   Generated Signed Release APK:
-        echo   - TicketApp-Release.apk (!SIZE_MB! MB^)
         echo   - BusApp-Release-Signed.apk (!SIZE_MB! MB^)
     )
     echo.

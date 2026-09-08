@@ -1403,22 +1403,33 @@ ion-content {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
-  padding: calc(var(--ion-safe-area-top, 20px) + 24px) 16px 100px 16px;
+  padding: calc(var(--ion-safe-area-top, 20px) + 16px) 16px 100px 16px;
   box-sizing: border-box;
 }
 
 .ticket-header-title {
   font-size: 18px;
-  font-weight: 800;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: #909096; /* Muted dull grey matching screenshot */
   text-align: center;
-  margin-bottom: 24px;
+  margin-top: 6px;
+  margin-bottom: 20px;
   letter-spacing: -0.2px;
+
+  &.active-header {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  &.past-header {
+    color: #909096; /* Muted dull grey */
+    font-weight: 600;
+  }
 }
 
-/* Active Section styling (non-dulled active cards) */
+/* Active Section styling (if present) */
 .active-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .active-section-label {
@@ -1440,59 +1451,72 @@ ion-content {
   }
 }
 
+.active-tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
 
 /* Past tickets scrollable list styling matching the screenshot */
 .past-tickets-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .past-ticket-card {
   background-color: #ffffff;
-  border-radius: 32px;
-  padding: 16px 20px;
+  border-radius: 18px;
+  padding: 16px 18px 14px 14px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.015);
-  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.025);
+  border: 1px solid rgba(0, 0, 0, 0.035);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.985);
   }
 
   &.expired-card {
-    /* Expired tickets are dull/faded */
-    opacity: 0.65;
+    opacity: 0.5; /* 50% dull UI look as requested */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
     
     .past-bus-icon {
-      opacity: 0.75;
-      filter: grayscale(100%) opacity(80%);
+      opacity: 0.88;
+      filter: saturate(0.85);
+    }
+    .past-bus-badge {
+      opacity: 0.88;
     }
     .past-source-stop {
-      color: #9b9ba3;
+      color: #98989e;
     }
     .past-dest-stop {
-      color: #7c7c82;
+      color: #55555a;
     }
     .past-price {
-      color: #7c7c82;
+      color: #55555a;
     }
     .past-datetime {
-      color: #9b9ba3;
+      color: #9e9ea4;
     }
     .status-badge {
-      background-color: #f4f4f7;
-      color: #a8a8b2;
+      background-color: #f7f7f8;
+      border: 1px solid #ebebee;
+      color: #a3a3a8;
+      text-transform: capitalize;
+      font-size: 11.5px;
+      font-weight: 600;
     }
   }
 
   &.active-card {
-    /* Active tickets are high contrast B/W, not dull */
     opacity: 1;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     border: 1px solid #e5e5ea;
 
     .past-bus-icon {
@@ -1509,11 +1533,15 @@ ion-content {
       color: #1c1c1e;
     }
     .past-datetime {
-      color: #333;
+      color: #333333;
     }
     .status-badge {
-      background-color: #1c1c1e; /* Solid black badge */
-      color: #ffffff;            /* Solid white text */
+      background-color: #1c1c1e;
+      color: #ffffff;
+      border: 1px solid #1c1c1e;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      font-weight: 700;
     }
   }
 }
@@ -1528,81 +1556,138 @@ ion-content {
 .past-card-left {
   display: flex;
   align-items: center;
-  margin-right: 12px;
+  justify-content: center;
+  margin-right: 14px;
+  flex-shrink: 0;
 }
 
 .past-bus-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  width: 66px;
 }
 
 .past-bus-icon {
-  width: 65px;
+  width: 66px;
   height: auto;
   object-fit: contain;
-  transform: scaleX(-1); /* Mirror image flip horizontally */
-  transition: opacity 0.2s ease, filter 0.2s ease;
+  transform: none; /* Facing right naturally matching the reference screenshot */
+  display: block;
 }
 
 .past-card-center {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-start;
+  min-width: 0;
+  justify-content: center;
+}
+
+/* Yellow BUS Badge matching the reference screenshot */
+.past-bus-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+
+  .past-bus-badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7b033;
+    width: 17px;
+    height: 17px;
+    border-radius: 4px;
+
+    svg {
+      display: block;
+      width: 11px;
+      height: 11px;
+      fill: #ffffff;
+    }
+  }
+
+  .past-bus-badge-text {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f7b033;
+    letter-spacing: 0.6px;
+    line-height: 1;
+  }
 }
 
 .past-source-stop {
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
   text-transform: uppercase;
+  color: #8e8e93;
+  line-height: 1.25;
+  margin-bottom: 3px;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .past-dest-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
+  gap: 5px;
+  white-space: normal;
+  word-break: break-word;
+  width: 100%;
 
-.past-arrow {
-  color: #8e8e93;
-  font-size: 12px;
-  font-weight: 700;
-}
+  .past-arrow {
+    color: #6b6b70;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    flex-shrink: 0;
+  }
 
-.past-dest-stop {
-  font-size: 14.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.1px;
+  .past-dest-stop {
+    font-size: 14.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    color: #444448;
+    line-height: 1.25;
+  }
 }
 
 .past-card-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-left: 12px;
+  margin-left: 10px;
+  flex-shrink: 0;
 }
 
 .past-price {
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 700;
   display: flex;
-  align-items: center;
-  letter-spacing: -0.5px;
-  
+  align-items: flex-start;
+  color: #4a4a4e;
+  line-height: 1;
+
   .rupee-symbol {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
+    margin-top: 2px;
     margin-right: 2px;
+  }
+
+  .price-val {
+    font-size: 27px;
+    font-weight: 700;
   }
 }
 
 .past-card-divider {
-  border-top: 1.5px dashed #eaeaea;
-  margin: 12px 0;
+  border-top: 1px dashed #ebebeb;
+  margin: 13px 0 9px 0;
   width: 100%;
 }
 
@@ -1614,17 +1699,36 @@ ion-content {
 }
 
 .past-datetime {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
+  color: #9e9ea2;
 }
 
 .status-badge {
-  font-size: 10px;
-  padding: 4px 10px;
+  font-size: 11.5px;
+  padding: 3px 12px;
   border-radius: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &.expired-badge {
+    background-color: #f7f7f8;
+    border: 1px solid #ebebee;
+    color: #a3a3a8;
+    text-transform: capitalize;
+  }
+
+  &.active-badge {
+    background-color: #1c1c1e;
+    color: #ffffff;
+    border: 1px solid #1c1c1e;
+    text-transform: uppercase;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
 }
 
 /* ================= PROFILE TAB LAYOUT ================= */

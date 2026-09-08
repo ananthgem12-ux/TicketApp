@@ -570,6 +570,8 @@ ion-content {
 .frequent-stop-wrapper {
   width: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   justify-content: center;
   margin-bottom: 36px;
 }
@@ -1529,7 +1531,7 @@ ion-content {
   height: 100vh;
   padding: 20px;
   text-align: center;
-  background-color: #00a859; /* Green page background */
+  background-color: #008f4c; /* Green page background */
 
   .success-tick-circle {
     width: 80px;

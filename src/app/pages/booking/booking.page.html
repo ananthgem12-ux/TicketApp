@@ -29,9 +29,11 @@
               type="text"
               class="bus-edit-input"
               [(ngModel)]="editingBusInput"
+              (focus)="editingBusInput = ''"
               (keyup.enter)="confirmBusNoChange()"
-              placeholder="Enter Bus No"
+              [placeholder]="displayRouteNo || 'Enter Bus No'"
               style="text-transform: uppercase;"
+              autofocus
             />
             <button class="bus-edit-done-btn" (click)="confirmBusNoChange()">Done</button>
           </div>
@@ -92,6 +94,7 @@
           <input 
             type="text" 
             [(ngModel)]="sourceSearchQuery" 
+            (focus)="sourceSearchQuery = ''"
             placeholder="Search or Enter Source Stop"
           />
         </div>
@@ -148,6 +151,7 @@
           <input 
             type="text" 
             [(ngModel)]="destSearchQuery" 
+            (focus)="destSearchQuery = ''"
             placeholder="Search or Enter Destination Stop"
           />
         </div>
@@ -158,15 +162,16 @@
         <div class="container-title">Select Destination Stop</div>
         
         <!-- Frequently Visited Destinations Section (Shown ONLY if present in DB/localStorage) -->
-        <ng-container *ngIf="frequentlyVisitedStop && !destSearchQuery">
+        <ng-container *ngIf="frequentlyVisitedStops && frequentlyVisitedStops.length > 0 && !destSearchQuery">
           <div class="section-sub-label">Frequently Visited Destinations</div>
           <div class="frequent-stop-wrapper">
             <button 
+              *ngFor="let fStop of frequentlyVisitedStops"
               class="stop-btn"
-              [class.selected]="frequentlyVisitedStop === destination"
-              (click)="selectDestStop(frequentlyVisitedStop)"
+              [class.selected]="fStop === destination"
+              (click)="selectDestStop(fStop)"
             >
-              {{ formatStopName(frequentlyVisitedStop) }}
+              {{ formatStopName(fStop) }}
             </button>
           </div>
         </ng-container>
@@ -232,8 +237,10 @@
         <p>Enter the base ticket price (₹):</p>
         <input type="number" 
                [(ngModel)]="editingPrice" 
-               placeholder="13" 
-               class="price-edit-input" />
+               (focus)="editingPrice = ''"
+               [placeholder]="ticketPrice.toString()" 
+               class="price-edit-input" 
+               autofocus />
         <div class="dialog-actions">
           <button class="dialog-btn cancel" (click)="cancelPriceEdit()">Cancel</button>
           <button class="dialog-btn save" (click)="savePrice()">Save</button>

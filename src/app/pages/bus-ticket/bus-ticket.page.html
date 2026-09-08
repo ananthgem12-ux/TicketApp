@@ -1,50 +1,22 @@
 @if (!isOverlay) {
   <ion-content fullscreen>
-    
-    <!-- MOCK UNDERLAY / HEADER -->
-    <div class="underlay-container">
-      <div class="side-text left-side">BUS.TICKET BUS.TICKET</div>
-      <div class="side-text right-side">BUS.TICKET BUS.TICKET</div>
-      
-      <div class="activated-ticket-card-mock">
-        <div class="activated-header">
-          <span class="checkmark-circle">
-            <svg viewBox="0 0 24 24" width="8" height="8" fill="none" stroke="#0B5ED7" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </span>
-          <span class="activated-label">Activated Ticket</span>
-        </div>
-        <div class="activated-watermark">
-          <span class="yellow-circle"></span>
-          <span class="blue-circle"></span>
-          <span class="watermark-number">1</span>
-        </div>
-      </div>
-      
-      <div class="underlay-overlay"></div>
-    </div>
-
     <div class="ticket-screen">
       <ng-container *ngTemplateOutlet="ticketContent"></ng-container>
     </div>
-
   </ion-content>
 } @else {
   <ng-container *ngTemplateOutlet="ticketContent"></ng-container>
 }
 
 <ng-template #ticketContent>
-  @if (!isOverlay) {
-    <!-- TITLE -->
-    <div class="title">
-      Your bus ticket for {{bus}} bus is ready!
-    </div>
+  <!-- TITLE -->
+  <div class="title">
+    Your bus ticket for {{bus}} bus is ready!
+  </div>
 
-    <div class="sub-title">
-      You can view your ticket details below.
-    </div>
-  }
+  <div class="sub-title">
+    You can view your ticket details below.
+  </div>
 
   <!-- PAPER TICKET -->
   <div class="paper-container">

@@ -276,8 +276,7 @@ export class BookingPage implements OnInit {
         try {
           const webData = await this.fetchRouteFromWeb(baseRoute);
           if (webData) {
-            this.routesCache[baseRoute] = webData;
-            localStorage.setItem('mtc_routes', JSON.stringify(this.routesCache));
+            this.saveLearnedRoute(baseRoute, webData);
             this.updateStopsForBus();
           }
         } catch (e) {
@@ -406,20 +405,25 @@ export class BookingPage implements OnInit {
       const data = await lookupBusDetails(busNo);
       this.busLiveData = data;
 
-      // Update internal bus number (fuzzy match)
-      if (data.bus_no) {
-        this.busNo = data.bus_no;
-        try {
-          const m = localStorage.getItem('otp_bus_map');
-          const map = m ? JSON.parse(m) : {};
-          map[busNo] = data.bus_no;
-          localStorage.setItem('otp_bus_map', JSON.stringify(map));
-        } catch (e) {}
-      }
-
       // Update displayed route number (cleaned before space)
       if (data.route_no) {
         this.liveRouteNo = data.route_no.trim().split(' ')[0];
+      }
+
+      // Update internal bus number (fuzzy match)
+      if (data.bus_no) {
+        this.busNo = data.bus_no;
+      }
+
+      // Map OTP code to clean route number (or bus number)
+      const mappedRouteNo = this.liveRouteNo || (data.bus_no || '').trim().toUpperCase();
+      if (mappedRouteNo) {
+        try {
+          const m = localStorage.getItem('otp_bus_map');
+          const map = m ? JSON.parse(m) : {};
+          map[busNo.trim().toUpperCase()] = mappedRouteNo;
+          localStorage.setItem('otp_bus_map', JSON.stringify(map));
+        } catch (e) {}
       }
 
       // Map bus type consistently
@@ -508,8 +512,6 @@ export class BookingPage implements OnInit {
         this.routesCache = cachedData;
       }
 
-      localStorage.setItem('mtc_routes', JSON.stringify(this.routesCache));
-
       let usedBuses: string[] = [];
       try {
         const stored = localStorage.getItem('active_tickets');
@@ -557,8 +559,7 @@ export class BookingPage implements OnInit {
         try {
           const data = await this.fetchRouteFromWeb(route);
           if (data) {
-            this.routesCache[route] = data;
-            localStorage.setItem('mtc_routes', JSON.stringify(this.routesCache));
+            this.saveLearnedRoute(route, data);
             if (!this.busList.includes(route)) {
               this.busList.push(route);
             }
@@ -611,6 +612,7 @@ export class BookingPage implements OnInit {
       this.showDestSelect = true;
       this.showSourceSelect = false;
     }
+    this.loadFrequentlyVisitedStop();
   }
 
   async fetchRouteFromWeb(routeNo: string): Promise<any> {
@@ -853,7 +855,11 @@ export class BookingPage implements OnInit {
       .join(' ');
   }
 
-  frequentlyVisitedStop: string | null = null;
+  frequentlyVisitedStops: string[] = [];
+
+  get frequentlyVisitedStop(): string | null {
+    return this.frequentlyVisitedStops.length > 0 ? this.frequentlyVisitedStops[0] : null;
+  }
 
   loadFrequentlyVisitedStop() {
     try {
@@ -861,35 +867,64 @@ export class BookingPage implements OnInit {
       if (stored) {
         const parsed = JSON.parse(stored);
         const routeKey = this.displayRouteNo.trim().toUpperCase();
-        if (parsed[routeKey]) {
-          this.frequentlyVisitedStop = parsed[routeKey];
-        } else if (parsed['last_visited']) {
-          this.frequentlyVisitedStop = parsed['last_visited'];
-        } else {
-          this.frequentlyVisitedStop = null;
+        let list: string[] = [];
+
+        if (Array.isArray(parsed[routeKey])) {
+          list = parsed[routeKey];
+        } else if (typeof parsed[routeKey] === 'string') {
+          list = [parsed[routeKey]];
+        } else if (Array.isArray(parsed['last_visited'])) {
+          list = parsed['last_visited'];
+        } else if (typeof parsed['last_visited'] === 'string') {
+          list = [parsed['last_visited']];
         }
+
+        this.frequentlyVisitedStops = list.filter(Boolean);
       } else {
-        this.frequentlyVisitedStop = null;
+        this.frequentlyVisitedStops = [];
       }
     } catch (e) {
-      this.frequentlyVisitedStop = null;
+      this.frequentlyVisitedStops = [];
     }
   }
 
   saveFrequentlyVisitedStop(stop: string) {
+    if (!stop || !stop.trim()) return;
     try {
-      let stored: Record<string, string> = {};
+      let stored: Record<string, any> = {};
       const raw = localStorage.getItem('frequently_visited_destinations');
       if (raw) {
         stored = JSON.parse(raw);
       }
       const routeKey = this.displayRouteNo.trim().toUpperCase();
-      stored[routeKey] = stop;
+      let list: string[] = [];
+      if (Array.isArray(stored[routeKey])) {
+        list = stored[routeKey];
+      } else if (typeof stored[routeKey] === 'string') {
+        list = [stored[routeKey]];
+      }
+
+      // Add stop to front, deduplicate, keep top 5
+      list = [stop, ...list.filter(s => s.toUpperCase() !== stop.toUpperCase())].slice(0, 5);
+      stored[routeKey] = list;
       stored['last_visited'] = stop;
       localStorage.setItem('frequently_visited_destinations', JSON.stringify(stored));
-      this.frequentlyVisitedStop = stop;
+      this.frequentlyVisitedStops = list;
     } catch (e) {
       console.warn('Failed to save frequently visited stop:', e);
+    }
+  }
+
+  saveLearnedRoute(routeKey: string, routeData: any) {
+    if (!routeKey || !routeData) return;
+    try {
+      this.routesCache[routeKey] = routeData;
+      const raw = localStorage.getItem('mtc_routes');
+      const localRoutes = raw ? JSON.parse(raw) : {};
+      localRoutes[routeKey] = routeData;
+      localStorage.setItem('mtc_routes', JSON.stringify(localRoutes));
+    } catch (e) {
+      console.warn('Failed to save learned route:', e);
     }
   }
 
@@ -912,11 +947,15 @@ export class BookingPage implements OnInit {
 
   toggleSourceSelect() {
     this.showSourceSelect = !this.showSourceSelect;
+    if (this.showSourceSelect) {
+      this.sourceSearchQuery = '';
+    }
   }
 
   toggleDestSelect() {
     this.showDestSelect = !this.showDestSelect;
     if (this.showDestSelect) {
+      this.destSearchQuery = '';
       this.loadFrequentlyVisitedStop();
     }
   }
@@ -931,7 +970,8 @@ export class BookingPage implements OnInit {
   toggleEditingBus() {
     this.isEditingBus = !this.isEditingBus;
     if (this.isEditingBus) {
-      this.editingBusInput = this.busNo;
+      this.previousBusNo = this.busNo;
+      this.editingBusInput = '';
     } else {
       if (!this.editingBusInput || !this.editingBusInput.trim()) {
         this.editingBusInput = this.previousBusNo;
@@ -961,8 +1001,7 @@ export class BookingPage implements OnInit {
         try {
           const data = await this.fetchRouteFromWeb(cleanRoute);
           if (data) {
-            this.routesCache[cleanRoute] = data;
-            localStorage.setItem('mtc_routes', JSON.stringify(this.routesCache));
+            this.saveLearnedRoute(cleanRoute, data);
             if (!this.busList.includes(cleanRoute)) {
               this.busList.push(cleanRoute);
             }
@@ -1041,7 +1080,7 @@ export class BookingPage implements OnInit {
   /* BOOK */
 
   showPriceEdit = false;
-  editingPrice = 13;
+  editingPrice: number | string = '';
 
   /* BOOK WITH LONG PRESS TO EDIT PRICE */
   private bookPressTimer: any;
@@ -1165,12 +1204,12 @@ export class BookingPage implements OnInit {
         }
       } catch (e) {}
 
-      // Increased payment success display duration by +2 seconds (3200ms)
+      // Success screen display duration: 0.5s (500ms)
       setTimeout(() => {
         this.showPaymentProcessing = false;
         this.isPaymentSuccess = false;
         this.bookFinalTicket();
-      }, 2200);
+      }, 500);
     }, 3800);
   }
 
@@ -1203,14 +1242,17 @@ export class BookingPage implements OnInit {
   }
 
   changeTicketPrice() {
-    this.editingPrice = this.ticketPrice;
+    this.editingPrice = '';
     this.showPriceEdit = true;
   }
 
   savePrice() {
-    const price = parseFloat(this.editingPrice.toString());
-    if (!isNaN(price) && price >= 0) {
-      this.userOverridePrice = price;
+    const strVal = (this.editingPrice !== null && this.editingPrice !== undefined) ? this.editingPrice.toString().trim() : '';
+    if (strVal !== '') {
+      const price = parseFloat(strVal);
+      if (!isNaN(price) && price >= 0) {
+        this.userOverridePrice = price;
+      }
     }
     this.showPriceEdit = false;
   }
@@ -1220,20 +1262,46 @@ export class BookingPage implements OnInit {
   }
 
   book() {
+    const routeNoToPass = (this.displayRouteNo || this.busNo).trim().toUpperCase();
+    const cleanRoute = routeNoToPass.split(' ')[0];
 
-    const route = this.busNo.trim().toUpperCase();
-    localStorage.setItem('last_used_bus', route);
+    // 1. Update and store last used bus
+    localStorage.setItem('last_used_bus', cleanRoute);
 
+    // 2. Map OTP to the booked Route Number
     const otp = this.ticketCode.trim().toUpperCase();
     if (otp) {
       try {
         const otpMapStr = localStorage.getItem('otp_bus_map');
         const otpMap = otpMapStr ? JSON.parse(otpMapStr) : {};
-        otpMap[otp] = route;
+        otpMap[otp] = cleanRoute;
         localStorage.setItem('otp_bus_map', JSON.stringify(otpMap));
       } catch(e) {}
     }
 
+    // 3. Save destination to Frequently Visited Destinations
+    if (this.destination) {
+      this.saveFrequentlyVisitedStop(this.destination);
+    }
+
+    // 4. If this route is not yet in routesCache, add it to our local cache so it's always present in the app
+    if (!this.routesCache[cleanRoute]) {
+      const newRouteData = {
+        route_no: cleanRoute,
+        origin: this.source,
+        destination: this.destination,
+        stages: [
+          { stage_name: this.source, stage_no: 1 },
+          { stage_name: this.destination, stage_no: 2 }
+        ]
+      };
+      this.saveLearnedRoute(cleanRoute, newRouteData);
+      if (!this.busList.includes(cleanRoute)) {
+        this.busList.push(cleanRoute);
+      }
+    }
+
+    const route = cleanRoute;
     let customData = this.customBusData[route] || { customStops: [], customRates: {} };
     customData.lastSource = this.source;
     customData.lastDestination = this.destination;
@@ -1262,8 +1330,6 @@ export class BookingPage implements OnInit {
 
     this.customBusData[route] = customData;
     this.saveCustomBusData();
-
-    const routeNoToPass = this.displayRouteNo || this.busNo;
 
     this.router.navigate(
       [
