@@ -3,7 +3,7 @@ name: Build & Release Android APK
 on:
   push:
     branches:
-      - main
+      # - main
       - master
     paths-ignore:
       - '**.md'
