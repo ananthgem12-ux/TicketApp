@@ -1,0 +1,125 @@
+<ion-content fullscreen>
+  <div class="ticket-page-container">
+    <div class="ticket-layout-container">
+      
+      <!-- Active Tickets section (if any active ticket exists) -->
+      <div class="active-section" *ngIf="formattedActiveTickets.length > 0">
+        <div class="ticket-header-title active-header">
+          Active Tickets
+        </div>
+        
+        <div class="active-tickets-list">
+          <div 
+            *ngFor="let t of formattedActiveTickets" 
+            class="past-ticket-card active-card" 
+            (click)="viewTicketDetails(t)"
+          >
+            <!-- Card Main Row -->
+            <div class="past-card-main-row">
+              <div class="past-card-left">
+                <div class="past-bus-icon-container">
+                  <img src="assets/bus_history.png" alt="Bus" class="past-bus-icon" />
+                </div>
+              </div>
+              <div class="past-card-center">
+                <!-- Yellow BUS Badge -->
+                <div class="past-bus-badge">
+                  <span class="past-bus-badge-icon">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="#ffffff">
+                      <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6.5c0-.83.67-1.5 1.5-1.5h9c.83 0 1.5.67 1.5 1.5V11z"/>
+                    </svg>
+                  </span>
+                  <span class="past-bus-badge-text">BUS</span>
+                </div>
+
+                <span class="past-source-stop">{{ t.source }}</span>
+                <div class="past-dest-row">
+                  <span class="past-arrow">↘</span>
+                  <span class="past-dest-stop">{{ t.destination }}</span>
+                </div>
+              </div>
+              <div class="past-card-right">
+                <div class="past-price">
+                  <span class="rupee-symbol">₹</span>
+                  <span class="price-val">{{ t.amount }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perforated Divider -->
+            <div class="past-card-divider"></div>
+
+            <!-- Card Footer Row -->
+            <div class="past-card-footer-row">
+              <div class="past-datetime">{{ t.dateStr }}</div>
+              <div class="status-badge active-badge">
+                Active
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Past Tickets section header (Centered, dull grey) -->
+      <div class="ticket-header-title past-header" [style.margin-top]="formattedActiveTickets.length > 0 ? '28px' : '6px'">
+        Past Tickets
+      </div>
+
+      <!-- Scrollable list of past tickets styled exactly like the screenshot -->
+      <div class="past-tickets-list">
+        
+        <!-- Dynamic unified list (Expired - Non-clickable) -->
+        <div 
+          *ngFor="let t of allTickets" 
+          class="past-ticket-card expired-card"
+        >
+          <!-- Card Main Row -->
+          <div class="past-card-main-row">
+            <div class="past-card-left">
+              <div class="past-bus-icon-container">
+                <img src="assets/bus_history.png" alt="Bus" class="past-bus-icon" />
+              </div>
+            </div>
+            <div class="past-card-center">
+              <!-- Yellow BUS Badge -->
+              <div class="past-bus-badge">
+                <span class="past-bus-badge-icon">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="#ffffff">
+                    <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6.5c0-.83.67-1.5 1.5-1.5h9c.83 0 1.5.67 1.5 1.5V11z"/>
+                  </svg>
+                </span>
+                <span class="past-bus-badge-text">BUS</span>
+              </div>
+
+              <span class="past-source-stop">{{ t.source }}</span>
+              <div class="past-dest-row">
+                <span class="past-arrow">↘</span>
+                <span class="past-dest-stop">{{ t.destination }}</span>
+              </div>
+            </div>
+            <div class="past-card-right">
+              <div class="past-price">
+                <span class="rupee-symbol">₹</span>
+                <span class="price-val">{{ t.amount }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Perforated Divider -->
+          <div class="past-card-divider"></div>
+
+          <!-- Card Footer Row -->
+          <div class="past-card-footer-row">
+            <div class="past-datetime">{{ t.dateStr }}</div>
+            <div class="status-badge expired-badge">
+              Expired
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <app-bottom-nav activeTab="ticket"></app-bottom-nav>
+</ion-content>

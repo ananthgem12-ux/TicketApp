@@ -1,4 +1,3 @@
-
 :host {
   --font-areanormal: 'Areanormal-Regular', 'Areanormal', system-ui, -apple-system, sans-serif;
   --font-areanormal-bold: 'Areanormal-Bold', 'Areanormal', system-ui, -apple-system, sans-serif;
@@ -11,18 +10,48 @@
   --font-pixel-operator-mono: 'PixelOperatorMono', monospace;
   --font-vt323: 'VT323-Regular', 'VT323', monospace;
   --font-linedown-bold: 'pixelgridtrial-linedownboldm', sans-serif;
+  --font-aleo: 'Aleo', 'aleo', serif;
+  --font-allerta: 'Allerta', 'Allerta-Regular', sans-serif;
 }
 
-.font-areanormal { font-family: var(--font-areanormal) !important; }
-.font-areanormal-bold { font-family: var(--font-areanormal-bold) !important; }
-.font-inter { font-family: var(--font-inter) !important; }
-.font-anek-tamil { font-family: var(--font-anek-tamil) !important; }
-.font-departure-mono { font-family: var(--font-departure-mono) !important; }
-.font-geist-mono { font-family: var(--font-geist-mono) !important; }
-.font-pixel-operator { font-family: var(--font-pixel-operator) !important; }
+.font-areanormal {
+  font-family: var(--font-areanormal) !important;
+}
+
+.font-areanormal-bold {
+  font-family: var(--font-areanormal-bold) !important;
+}
+
+.font-inter {
+  font-family: var(--font-inter) !important;
+}
+
+.font-anek-tamil {
+  font-family: var(--font-anek-tamil) !important;
+}
+
+.font-departure-mono {
+  font-family: var(--font-departure-mono) !important;
+}
+
+.font-geist-mono {
+  font-family: var(--font-geist-mono) !important;
+}
+
+.font-pixel-operator {
+  font-family: var(--font-pixel-operator) !important;
+}
+
+.font-aleo {
+  font-family: var(--font-aleo) !important;
+}
+
+.font-allerta {
+  font-family: var(--font-allerta) !important;
+}
 
 ion-content {
-  --background: #0e0d0d;
+  --background: #292828;
 }
 
 .page {
@@ -34,13 +63,15 @@ ion-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  padding-top: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;
 }
 
 .active-title {
   font-size: 18px;
+  padding-left: 10px;
+  font-family: var(--font-areanormal-bold);
   font-weight: 500;
 }
 
@@ -69,7 +100,7 @@ ion-content {
 .ticket-card {
   background: white;
   border-radius: 34px;
-  margin-top: 20px;
+  margin-top: 30px;
   padding: 22px 22px 26px 22px;
   position: relative;
   overflow: hidden;
@@ -85,7 +116,7 @@ ion-content {
   transform: translateX(-50%);
   width: 65px;
   height: 18px;
-  background-color: #000000;
+  background-color: #292828;
   -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 110 28" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 C28,0 32,28 55,28 C78,28 82,0 110,0 Z" fill="black"/></svg>');
   -webkit-mask-size: 100% 100%;
   mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 110 28" xmlns="http://www.w3.org/2000/svg"><path d="M0,0 C28,0 32,28 55,28 C78,28 82,0 110,0 Z" fill="black"/></svg>');
@@ -128,21 +159,23 @@ ion-content {
 .mtc {
   text-align: center;
   margin-top: 10px;
+  position: relative;
+  z-index: 4;
 }
 
 .mtc-title {
   font-family: var(--font-departure-mono);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 400;
   color: #5a5959;
 }
 
 .mtc-tamil {
   font-family: var(--font-anek-tamil);
-  font-size: 16px;
+  font-size: 15px;
   margin-top: 6px;
-  font-weight: 500;
-  color: #787878;
+  font-weight: 600;
+  color: #8c8585;
 }
 
 .watermark {
@@ -157,12 +190,23 @@ ion-content {
   pointer-events: none;
 }
 
+.stamp-top-cut {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background-color: #ffffff;
+  z-index: 3;
+  pointer-events: none;
+}
+
 .watermark-stamp-container {
   position: absolute;
-  top: -25px;
-  right: -30px;
-  width: 170px;
-  height: 170px;
+  top: 13px;
+  right: -5px;
+  width: 140px;
+  height: 140px;
   z-index: 1;
   pointer-events: none;
   display: flex;
@@ -176,7 +220,8 @@ ion-content {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    opacity: 0.25; /* 50% visible opacity as requested */
+    opacity: 0.25;
+    /* 50% visible opacity as requested */
     z-index: 2;
   }
 }
@@ -191,9 +236,9 @@ ion-content {
 
   align-items: center;
 
-  gap: 18px;
+  gap: 15px;
 
-  margin-top: 20px;
+  margin-top: 10px;
 
   font-size: 13px;
 
@@ -201,26 +246,33 @@ ion-content {
 
 }
 
-.info-text{
+.info-text {
   font-size: 14px;
-  margin-top: 6px;
   font-weight: 800;
   color: #747474;
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
-.info-text-date{
+
+.info-text-date {
   font-size: 14px;
-  margin-top: 6px;
   font-weight: 600;
   color: #919191;
 }
-.info-text-sepa{
-  font-size: 16px;
-  margin-top: 6px;
-  font-weight: 900;
-  color: #979696;
+
+.info-text-person {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5c5a5a;
+  display: inline-flex;
+  align-items: center;
+}
+
+.info-text-sepa {
+  font-size: 11px;
+  font-weight: 500;
+  color: #d1cbcb;
 }
 
 /* TIMER */
@@ -235,7 +287,7 @@ ion-content {
 }
 
 .timer-box {
-  margin-top: 25px;
+  margin-top: 23px;
   margin-left: 10px;
   margin-right: 10px;
   background: #96f07a;
@@ -257,7 +309,7 @@ ion-content {
   font-family: var(--font-departure-mono);
   font-size: 38px;
   color: #007c00;
-  margin-top: 15px;
+  margin-top: 18px;
   transform: scaleY(1);
 }
 
@@ -279,7 +331,8 @@ ion-content {
 .bus-details-section {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Aligns the text and the image vertically */
+  align-items: center;
+  /* Aligns the text and the image vertically */
   margin-top: 20px;
   margin-left: 3px;
   position: relative;
@@ -314,7 +367,7 @@ ion-content {
 }
 
 .bus-info {
- margin-left: 10px;
+  margin-left: 10px;
   display: flex;
 
   align-items: center;
@@ -382,12 +435,12 @@ ion-content {
 
 .price {
 
-  font-size: 33px;
-  font-family: var(---font-inter);
+  font-size: 35px;
+  font-family: var(--font-areanormal-bold);
 
-  font-weight: 700;
+  font-weight: 1000;
 
-  color: #111;
+  color: #393939;
 
   line-height: 1;
   letter-spacing: 0.1px;
@@ -402,13 +455,14 @@ ion-content {
 
 }
 
-.bus-image{
+.bus-image {
   position: absolute;
-  width:115px;
-  height:180px;
-  right:-24px;
-  margin-top:-35px;
-  transform: scaleX(-1); /* Mirror image flip horizontally */
+  width: 120px;
+  height: 185px;
+  right: -24px;
+  margin-top: -35px;
+  transform: scaleX(-1);
+  /* Mirror image flip horizontally */
 }
 
 .bus-right {
@@ -423,14 +477,14 @@ ion-content {
   position: relative;
   background-color: #0b5ed7;
   border-radius: 18px;
-  padding: 15px 22px;
+  padding: 16px 22px;
   overflow: hidden;
   margin-top: -59px;
   margin-left: -3px;
-  
+
   width: calc(100% + 6px);
   color: white;
-  min-height: 33px;
+  min-height: 34px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -446,8 +500,8 @@ ion-content {
 }
 
 .checkmark-circle {
-  width: 19px;
-  height: 19px;
+  width: 16px;
+  height: 16px;
   background-color: white;
   border-radius: 37%;
   display: flex;
@@ -456,17 +510,17 @@ ion-content {
 }
 
 .activated-label {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.2px;
-  font-family: var(--font-areanormal);
+  font-family: var(--font-areanormal-bold);
 }
 
 .activated-code {
-  font-size: 40px;
+  font-size: 39px;
   font-weight: 800;
   letter-spacing: 5px;
-  margin-top: 8px;
+  margin-top: 14px;
   z-index: 2;
   font-family: var(--font-geist-mono), monospace !important;
   font-variant-numeric: tabular-nums;
@@ -476,10 +530,10 @@ ion-content {
 /* Yellow Watermark Circular "1" */
 .activated-watermark {
   position: absolute;
-  right: -96px;
-  top: -24px;
-  width: 180px;
-  height: 160px;
+  right: -58px;
+  top: -22px;
+  width: 145px;
+  height: 145px;
   pointer-events: none;
   z-index: 1;
   user-select: none;
@@ -489,9 +543,9 @@ ion-content {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #ffd43e;
-  border-radius: 50%;
-  margin-left: 5px;
+  background-color: #f4cd52;
+  border-radius: 100%;
+  margin-left: 3px;
 }
 
 .blue-circle {
@@ -501,19 +555,18 @@ ion-content {
   right: 16px;
   bottom: 18px;
   background-color: #0b5ed7;
-  border-radius: 50%;
+  border-radius: 100%;
 }
 
-.watermark-number {
+.watermark-svg {
   position: absolute;
-  left: 43%;
-  top: 60%;
+  left: 51%;
+  top: 62%;
   transform: translate(-50%, -50%);
-  font-size: 160px;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-  font-weight: 900 !important;
-  color: #ffd43e;
-  line-height: 1;
+  height: 96px;
+  width: auto;
+  z-index: 2;
+  display: block;
 }
 
 
@@ -541,11 +594,12 @@ ion-content {
 
 .route-value {
   margin-top: 8px;
-  font-size: 17px;
-  font-family: var(--font-areanormal-bold);
-  font-weight: 900;
+  font-size: 18px;
+  font-family: var(--font-inter);
+  font-weight: 600;
   color: #464646;
   text-transform: uppercase;
+  -webkit-text-stroke: -0.2px #464646;
 }
 
 .route-card-line {
@@ -554,12 +608,12 @@ ion-content {
 }
 
 .route-divider {
-  height: 1.5px;
+  height: 1.2px;
   background: repeating-linear-gradient(to right,
-    #dbdbdb 0px,
-    #dbdbdb 8px,
-    transparent 8px,
-    transparent 18px);
+      #dbdbdb 0px,
+      #ececec 6px,
+      transparent 6px,
+      transparent 14px);
   margin-top: 16px;
   margin-bottom: 16px;
 }
@@ -568,7 +622,7 @@ ion-content {
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
   font-weight: 660;
-  color: #747474;
+  color: #8e8d8d;
 }
 
 .uppercase-source {
@@ -583,16 +637,17 @@ ion-content {
   margin-top: 15px;
 }
 
-.arrival-row > div:last-child {
+.arrival-row>div:last-child {
   text-align: right;
 }
 
 .arrival-label {
   font-family: var(--font-departure-mono);
-  font-weight: 200;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 11px;
   margin-top: 10px;
-  color: #545454;
+  -webkit-text-stroke: 0.1px #8b8888;
+  color: #757373;
   letter-spacing: 0.5px;
   transform: scale(1.05);
 }
@@ -600,7 +655,7 @@ ion-content {
 .arrival-value {
   margin-top: 8px;
   font-family: 'Roboto', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #2b2b2b;
 }
@@ -618,14 +673,14 @@ ion-content {
 .adult-label {
   font-size: 16px;
   font-weight: 600;
-  padding-left:10px;
+  padding-left: 10px;
   color: #111;
 }
 
 .adult-count {
   font-size: 16px;
   font-weight: 700;
-  padding-right:10px;
+  padding-right: 10px;
   color: #111;
 }
 
@@ -634,12 +689,14 @@ ion-content {
 .qr-section {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  // margin-top: 24px;
+  margin: 40px;
 }
 
 .qr-section img {
   width: 185px;
   height: 185px;
+  padding: 5px;
   object-fit: contain;
 }
 
@@ -664,9 +721,10 @@ ion-content {
   .btn-ticket-lottie {
     width: 26px;
     height: 26px;
-    filter: brightness(0) invert(1) !important; /* Pure white color */
+    filter: brightness(0) invert(1) !important;
+    /* Pure white color */
     pointer-events: none;
-    
+
   }
 }
 
@@ -685,7 +743,7 @@ ion-content {
   }
 
   100% {
-    background: #baf6a7;
+    background: #a2fd86;
   }
 
 }
@@ -769,7 +827,8 @@ ion-content {
 .bus-ticket-overlay .ticket-screen {
   display: block;
   flex: 1;
-  background: #2f82ff; /* Lighter vibrant blue */
+  background: #2f82ff;
+  /* Lighter vibrant blue */
   padding: calc(var(--ion-safe-area-top, 20px) + 16px) 20px calc(var(--ion-safe-area-bottom, 20px) + 30px);
   text-align: center;
   box-sizing: border-box;
@@ -955,7 +1014,7 @@ ion-content {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: transform 0.15s ease, background-color 0.15s ease;
   outline: none;
-  
+
   &:active {
     transform: scale(0.97);
     background-color: #f2f2f7;
@@ -1022,7 +1081,7 @@ ion-content {
   color: #8e8e93;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   .nav-svg {
     width: 28px;
     height: 28px;
@@ -1030,21 +1089,21 @@ ion-content {
     margin-bottom: 2px;
     transition: transform 0.15s ease;
   }
-  
+
   .nav-label {
     font-size: 12px;
     font-weight: 700;
     color: inherit;
   }
-  
+
   &.active {
     color: #8e8e93;
-    
+
     .nav-label {
       color: #000000;
       font-weight: 800;
     }
-    
+
     .nav-svg {
       color: #ff3b30;
       transform: scale(1.05);

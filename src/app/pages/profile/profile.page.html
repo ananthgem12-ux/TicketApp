@@ -1,0 +1,297 @@
+<ion-content fullscreen>
+  <div class="profile-tab">
+    <div class="profile-layout-container">
+      
+      <!-- Header Bar -->
+      <div class="profile-header-bar">
+        <button class="profile-back-btn" (click)="goToHome()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Avatar & Details section -->
+      <div class="profile-avatar-row">
+        <div class="profile-avatar-circle"></div>
+        <div class="profile-details-wrapper" 
+             (mousedown)="onPressStart($event)" 
+             (mouseup)="onPressEnd()" 
+             (mouseleave)="onPressEnd()"
+             (touchstart)="onPressStart($event)" 
+             (touchend)="onPressEnd()">
+          <div class="profile-phone-number">{{ userPhone }}</div>
+          <div class="profile-view-link">View Profile</div>
+        </div>
+      </div>
+
+      <!-- Settings Groups List -->
+      <div class="profile-groups-container">
+        
+        <!-- Group 1 -->
+        <div class="profile-settings-group">
+          <div class="profile-settings-item">
+            <span class="item-icon">❤️</span>
+            <span class="item-label">Favourites</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item" (click)="openPreferencesModal()" style="cursor: pointer;">
+            <span class="item-icon">⚙️</span>
+            <span class="item-label">Preferences</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">🚌</span>
+            <span class="item-label">Transit Preferences</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">💳</span>
+            <span class="item-label">Payment Management</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item" (click)="openEiModal()" style="cursor: pointer; background: rgba(0, 90, 230, 0.05);">
+            <span class="item-icon">💾</span>
+            <span class="item-label" style="font-weight: 700; color: #005ae6;">Export & Import Data (E/I)</span>
+            <span class="item-chevron">➔</span>
+          </div>
+        </div>
+
+        <!-- Group 2 -->
+        <div class="profile-settings-group">
+          <div class="profile-settings-item">
+            <span class="item-icon">👥</span>
+            <span class="item-label">Share with Friends</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item" (click)="openEiModal()" style="cursor: pointer;">
+            <span class="item-icon">🗺️</span>
+            <span class="item-label">My Rides (E/I Data)</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">🎧</span>
+            <span class="item-label">Help and Support</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">🛡️</span>
+            <span class="item-label">Safety</span>
+            <span class="item-chevron">➔</span>
+          </div>
+        </div>
+
+        <!-- Group 3 -->
+        <div class="profile-settings-group">
+          <div class="profile-settings-item">
+            <span class="item-icon">ℹ️</span>
+            <span class="item-label">About Us</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">🌐</span>
+            <span class="item-label">App Language</span>
+            <span class="item-chevron">➔</span>
+          </div>
+          <div class="profile-settings-item">
+            <span class="item-icon">🚪</span>
+            <span class="item-label">Logout</span>
+            <span class="item-chevron">➔</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Shared Bottom Navigation -->
+  <app-bottom-nav activeTab="profile"></app-bottom-nav>
+
+  <!-- ================= PHONE NUMBER EDIT DIALOG ================= -->
+  <div class="phone-edit-backdrop" *ngIf="showPhoneEdit">
+    <div class="phone-edit-card">
+      <h3>Edit Phone Number</h3>
+      <p>Enter a new mobile number for your Chennai One profile:</p>
+      <input type="tel" 
+             [(ngModel)]="editingPhone" 
+             placeholder="9724153346" 
+             class="phone-edit-input" 
+             maxlength="15" />
+      <div class="dialog-actions">
+        <button class="dialog-btn cancel" (click)="cancelPhoneEdit()">Cancel</button>
+        <button class="dialog-btn save" (click)="savePhone()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PREFERENCES POPUP MODAL (FLAG_SECURE) ================= -->
+  <div class="pref-modal-backdrop" *ngIf="showPreferencesModal" (click)="closePreferencesModal()">
+    <div class="pref-modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- Header -->
+      <div class="pref-header">
+        <div class="pref-header-title">
+          <span class="pref-badge">⚙️</span>
+          Preferences
+        </div>
+        <button class="pref-close-btn" (click)="closePreferencesModal()">✕</button>
+      </div>
+
+      <!-- Body Content -->
+      <div class="pref-body">
+        <div class="pref-section-title">SECURITY & PRIVACY</div>
+
+        <!-- Screenshot Protection Card -->
+        <div class="pref-setting-card">
+          <div class="pref-card-icon-col">
+            <div class="pref-shield-icon" [class.shield-active]="isScreenshotProtectionEnabled">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4" *ngIf="isScreenshotProtectionEnabled" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="pref-card-info-col">
+            <div class="pref-title-row">
+              <span class="pref-item-title">Screenshot Protection</span>
+              <span class="pref-status-pill" [class.active-pill]="isScreenshotProtectionEnabled">
+                {{ isScreenshotProtectionEnabled ? 'ENABLED' : 'DISABLED' }}
+              </span>
+            </div>
+            <p class="pref-item-desc">
+              Enforce Android FLAG_SECURE on the ticket generation screen to prevent screenshots and screen recordings.
+            </p>
+          </div>
+
+          <div class="pref-card-toggle-col">
+            <label class="pref-switch">
+              <input 
+                type="checkbox" 
+                [checked]="isScreenshotProtectionEnabled" 
+                (change)="toggleScreenshotProtection($event)"
+              />
+              <span class="pref-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Explanatory Tip Box -->
+        <div class="pref-tip-box">
+          <div class="pref-tip-icon">ℹ️</div>
+          <div class="pref-tip-text">
+            <strong>Enabled by default</strong> for ticketing security. When enabled, screenshots of your active ticket page are blocked, and the ticket is obscured in recent app switcher.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= E/I EXPORT & IMPORT POPUP MODAL ================= -->
+  <div class="ei-modal-backdrop" *ngIf="showEiModal" (click)="closeEiModal()">
+    <div class="ei-modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="ei-header">
+        <div class="ei-header-title">
+          <span class="ei-badge">E / I</span>
+          Export & Import Data
+        </div>
+        <button class="ei-close-btn" (click)="closeEiModal()">✕</button>
+      </div>
+
+      <!-- Action Buttons (Export & Import) -->
+      <div class="ei-action-buttons-row">
+        <button class="ei-btn export-btn" (click)="exportDataJson()">
+          <span class="btn-icon">📤</span>
+          <div class="btn-text">
+            <span class="btn-label">Export JSON (E)</span>
+            <span class="btn-sub">Save history & mappings</span>
+          </div>
+        </button>
+
+        <button class="ei-btn import-btn" (click)="triggerImportFile()">
+          <span class="btn-icon">📥</span>
+          <div class="btn-text">
+            <span class="btn-label">Import JSON (I)</span>
+            <span class="btn-sub">Restore history & mappings</span>
+          </div>
+        </button>
+        <input type="file" id="ei-file-input" accept=".json" style="display: none;" (change)="onEiFileSelected($event)" />
+      </div>
+
+      <!-- Status Message Banner -->
+      <div class="ei-status-banner" *ngIf="importStatusMessage" 
+           [class.success]="importStatusMessage.startsWith('✓')" 
+           [class.error]="importStatusMessage.startsWith('❌') || importStatusMessage.startsWith('⚠️')">
+        {{ importStatusMessage }}
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="ei-tabs-row">
+        <button class="ei-tab-btn" [class.active]="eiActiveTab === 'otps'" (click)="eiActiveTab = 'otps'">
+          Bus OTPs ({{ mappedOtpsList.length }})
+        </button>
+        <button class="ei-tab-btn" [class.active]="eiActiveTab === 'places'" (click)="eiActiveTab = 'places'">
+          Buses & Places ({{ mappedBusesList.length }})
+        </button>
+        <button class="ei-tab-btn" [class.active]="eiActiveTab === 'history'" (click)="eiActiveTab = 'history'">
+          Ticket History ({{ totalHistoryCount }})
+        </button>
+      </div>
+
+      <!-- Tab 1: Mapped Bus OTPs -->
+      <div class="ei-tab-content" *ngIf="eiActiveTab === 'otps'">
+        <div class="ei-list-empty" *ngIf="mappedOtpsList.length === 0">
+          <span>🎟️ No OTPs mapped to bus numbers yet. Scan or enter an OTP to map it!</span>
+        </div>
+        <div class="ei-card-item" *ngFor="let item of mappedOtpsList">
+          <div class="ei-card-left">
+            <span class="ei-otp-badge font-geist-mono">{{ item.otp }}</span>
+          </div>
+          <div class="ei-card-arrow">➔</div>
+          <div class="ei-card-right">
+            <span class="ei-bus-label font-geist-mono">Bus {{ item.busNo }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Buses & Added Places -->
+      <div class="ei-tab-content" *ngIf="eiActiveTab === 'places'">
+        <div class="ei-list-empty" *ngIf="mappedBusesList.length === 0">
+          <span>🚌 No custom buses or added places configured yet.</span>
+        </div>
+        <div class="ei-bus-detail-card" *ngFor="let bus of mappedBusesList">
+          <div class="ei-bus-header-row">
+            <span class="ei-bus-no font-geist-mono">Bus {{ bus.busNo }}</span>
+            <span class="ei-bus-route-text">{{ bus.lastSource }} ⇄ {{ bus.lastDestination }}</span>
+          </div>
+          <div class="ei-bus-stops-tags" *ngIf="bus.stopsList.length > 0">
+            <span class="ei-stop-tag" *ngFor="let stop of bus.stopsList">📍 {{ stop }}</span>
+          </div>
+          <div class="ei-no-stops" *ngIf="bus.stopsList.length === 0">
+            Standard route stops configured
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: History Summary -->
+      <div class="ei-tab-content" *ngIf="eiActiveTab === 'history'">
+        <div class="ei-history-summary">
+          <div class="ei-summary-box active-box">
+            <div class="summary-val">{{ activeTicketsCount }}</div>
+            <div class="summary-lbl">Active Tickets</div>
+          </div>
+          <div class="ei-summary-box expired-box">
+            <div class="summary-val">{{ pastTicketsCount }}</div>
+            <div class="summary-lbl">Past / Expired Tickets</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>

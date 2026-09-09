@@ -1,0 +1,22 @@
+.passes-page-container {
+  min-height: 100%;
+  padding-bottom: 80px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding-top: var(--ion-safe-area-top, 20px);
+}
+
+.bg-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -24,6 +24,7 @@ android/captures/
 *.apk
 *.aab
 *.jar
+*.zip
 !BusApp-Release-Signed.apk
 !gradle-wrapper.jar
 

@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { BackNavigationService } from '../services/back-navigation.service';
+import { SecureScreenService } from '../services/secure-screen.service';
+import { BottomNavComponent } from '../components/bottom-nav/bottom-nav.component';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +17,8 @@ import { BackNavigationService } from '../services/back-navigation.service';
   imports: [
     IonContent,
     CommonModule,
-    FormsModule
+    FormsModule,
+    BottomNavComponent
   ]
 })
 export class HomePage implements OnInit, OnDestroy {
@@ -34,6 +37,10 @@ export class HomePage implements OnInit, OnDestroy {
   showEiModal = false;
   eiActiveTab: 'otps' | 'places' | 'history' = 'otps';
   importStatusMessage = '';
+
+  // Preferences Modal state
+  showPreferencesModal = false;
+  isScreenshotProtectionEnabled = true;
 
   // QR code modal state
   showQrModal = false;
@@ -263,15 +270,22 @@ export class HomePage implements OnInit, OnDestroy {
     private router: Router,
     private sanitizer: DomSanitizer,
     private backNavService: BackNavigationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private secureScreenService: SecureScreenService
   ) {
     const state = history.state;
-    if (state && state.activeTab) {
-      this.currentTab = state.activeTab;
+    if (state && state.activeTab && state.activeTab !== 'home') {
+      this.router.navigate(['/' + state.activeTab], { replaceUrl: true });
     }
+    this.isScreenshotProtectionEnabled = this.secureScreenService.isSecureEnabled();
   }
 
   ionViewWillEnter() {
+    const state = history.state;
+    if (state && state.activeTab && state.activeTab !== 'home') {
+      this.router.navigate(['/' + state.activeTab], { replaceUrl: true });
+      return;
+    }
     this.registerBackHandler();
     this.startNavLottieTimer();
   }
@@ -286,6 +300,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   private registerBackHandler() {
     this.backNavService.registerHandler('home-page', () => {
+      if (this.showPreferencesModal) {
+        this.showPreferencesModal = false;
+        return true;
+      }
       if (this.showEiModal) {
         this.showEiModal = false;
         return true;
@@ -975,6 +993,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   viewTicketDetails(ticket: any) {
+    if (!ticket || ticket.isExpired || (ticket.expiryTime && Number(ticket.expiryTime) <= Date.now())) {
+      return;
+    }
     this.router.navigate(['/ticket-generation'], {
       state: {
         id: ticket.id || 'mock_' + (ticket.amount || 25),
@@ -1333,5 +1354,24 @@ export class HomePage implements OnInit, OnDestroy {
     const maxPan = (this.mapZoomScale - 1) * 160;
     this.mapPanX = Math.max(-maxPan, Math.min(maxPan, this.mapPanX));
     this.mapPanY = Math.max(-maxPan, Math.min(maxPan, this.mapPanY));
+  }
+
+  openPreferencesModal() {
+    this.isScreenshotProtectionEnabled = this.secureScreenService.isSecureEnabled();
+    this.showPreferencesModal = true;
+  }
+
+  closePreferencesModal() {
+    this.showPreferencesModal = false;
+  }
+
+  async toggleScreenshotProtection(event?: Event) {
+    if (event) {
+      const target = event.target as HTMLInputElement;
+      this.isScreenshotProtectionEnabled = target ? target.checked : !this.isScreenshotProtectionEnabled;
+    } else {
+      this.isScreenshotProtectionEnabled = !this.isScreenshotProtectionEnabled;
+    }
+    await this.secureScreenService.setSecureEnabled(this.isScreenshotProtectionEnabled);
   }
 }
