@@ -1,0 +1,81 @@
+<div class="custom-bottom-nav">
+  <div class="nav-item" [class.active]="activeTab === 'home'" (click)="navTo('home')">
+    <dotlottie-player 
+      *ngIf="activeTab === 'home'" 
+      src="assets/lottie/home_animation.lottie" 
+      autoplay 
+      class="active-nav-lottie-player"
+      (click)="onActiveLottieClick($event)"
+      style="width: 36px; height: 36px; display: block;">
+    </dotlottie-player>
+    <svg *ngIf="activeTab !== 'home'" class="nav-svg" viewBox="0 0 24 24">
+      <rect x="11.5" y="4" width="2" height="15" fill="currentColor" />
+      <path d="M 6.5,5 H 16 L 19.5,7.5 L 16,10 H 6.5 C 6,10 5.5,9.5 5.5,9 V 6 C 5.5,5.5 6,5 6.5,5 Z" fill="currentColor" />
+      <path d="M 17.5,11 H 8 L 4.5,13.5 L 8,16 H 17.5 C 18,16 18.5,15.5 18.5,15 V 12 C 18.5,11.5 18,11 17.5,11 Z" fill="currentColor" />
+    </svg>
+    <span class="nav-label">Home</span>
+  </div>
+
+  <div class="nav-item" [class.active]="activeTab === 'passes'" (click)="navTo('passes')">
+    <dotlottie-player 
+      *ngIf="activeTab === 'passes'" 
+      src="assets/lottie/tab-pass-animation.lottie" 
+      autoplay 
+      class="active-nav-lottie-player no-red"
+      (click)="onActiveLottieClick($event)"
+      style="width: 36px; height: 36px; display: block;">
+    </dotlottie-player>
+    <svg *ngIf="activeTab !== 'passes'" class="nav-svg" viewBox="0 0 24 24">
+      <rect x="1.5" y="5" width="21" height="15" rx="3.5" fill="currentColor" />
+      <path d="M 0.5,14.5 C 7,7.5 17,7.5 23.5,14.5 L 23.5,17.5 C 17,10.5 7,10.5 0.5,17.5 Z" fill="#ffffff" />
+      <path d="M 11,21 L 11,17 L 8,18.5 L 7.5,17 L 12,13.5 L 15.5,13.5 L 15.5,21 Z" fill="#ffffff" />
+    </svg>
+    <span class="nav-label">Passes</span>
+  </div>
+
+  <div class="nav-item" [class.active]="activeTab === 'live'" (click)="navTo('live')">
+    <dotlottie-player 
+      *ngIf="activeTab === 'live'" 
+      src="assets/lottie/live_action_animation.lottie" 
+      autoplay 
+      class="active-nav-lottie-player"
+      (click)="onActiveLottieClick($event)"
+      style="width: 36px; height: 36px; display: block;">
+    </dotlottie-player>
+    <svg *ngIf="activeTab !== 'live'" class="nav-svg" viewBox="0 0 24 24">
+      <circle cx="12" cy="11.5" r="7.5" stroke="currentColor" stroke-width="5" fill="none" />
+    </svg>
+    <span class="nav-label">Live</span>
+  </div>
+
+  <div class="nav-item" [class.active]="activeTab === 'ticket'" (click)="navTo('ticket')">
+    <dotlottie-player 
+      *ngIf="activeTab === 'ticket'" 
+      src="assets/lottie/ticket_animation_icon.lottie" 
+      autoplay 
+      class="active-nav-lottie-player"
+      (click)="onActiveLottieClick($event)"
+      style="width: 36px; height: 36px; display: block;">
+    </dotlottie-player>
+    <svg *ngIf="activeTab !== 'ticket'" class="nav-svg" viewBox="0 0 24 24">
+      <path d="M 6.5,3 L 9.5,3 C 9.5,4.5 10.5,5.5 12,5.5 C 13.5,5.5 14.5,4.5 14.5,3 L 17.5,3 C 18,3 18.5,3.5 18.5,4 L 18.5,19 C 18.5,19.5 18,20 17.5,20 L 14.5,20 C 14.5,18.5 13.5,17.5 12,17.5 C 10.5,17.5 9.5,18.5 9.5,20 L 6.5,20 C 6,20 5.5,19.5 5.5,19 L 5.5,4 C 5.5,3.5 6,3 6.5,3 Z" fill="currentColor" />
+    </svg>
+    <span class="nav-label">Ticket</span>
+  </div>
+
+  <div class="nav-item" [class.active]="activeTab === 'profile'" (click)="navTo('profile')">
+    <dotlottie-player 
+      *ngIf="activeTab === 'profile'" 
+      src="assets/lottie/profile_icon_animation.lottie" 
+      autoplay 
+      class="active-nav-lottie-player"
+      (click)="onActiveLottieClick($event)"
+      style="width: 36px; height: 36px; display: block;">
+    </dotlottie-player>
+    <svg *ngIf="activeTab !== 'profile'" class="nav-svg" viewBox="0 0 24 24">
+      <circle cx="12" cy="7.5" r="4" fill="currentColor" />
+      <path d="M 5,20 L 5,18 C 5,14 8,12 12,12 C 16,12 19,14 19,18 L 19,20 C 19,20.5 18.5,21 18,21 L 6,21 C 5.5,21 5,20.5 5,20 Z" fill="currentColor" />
+    </svg>
+    <span class="nav-label">Profile</span>
+  </div>
+</div>

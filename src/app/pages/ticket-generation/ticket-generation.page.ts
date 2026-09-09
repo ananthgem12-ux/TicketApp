@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 import { BusTicketPage } from '../bus-ticket/bus-ticket.page';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { BackNavigationService } from '../../services/back-navigation.service';
+import { SecureScreenService } from '../../services/secure-screen.service';
 
 @Component({
   selector: 'app-ticket-generation',
@@ -52,6 +53,8 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   seconds = 10800;
 
+  expiryTime = 0;
+
   referrer = '/home';
 
   showBusTicket = false;
@@ -67,17 +70,25 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private backNavService: BackNavigationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private secureScreenService: SecureScreenService
   ) {
 
-    const state = history.state;
+    const state = history.state || {};
 
     console.log('State:', state);
+
+    // Guard: Do not open expired tickets on ticket generation page
+    if (state.isExpired || (state.expiryTime && Number(state.expiryTime) <= Date.now())) {
+      console.warn('Expired tickets cannot be opened on ticket generation page.');
+      this.router.navigate(['/ticket'], { replaceUrl: true });
+      return;
+    }
 
     this.rawQrData = state.rawQrData || '';
     this.referrer = state.referrer || '/home';
 
-    const rawBus = (state.bus || state.routeNo || 'Ordinary').trim();
+    const rawBus = String(state.bus || state.routeNo || 'Ordinary').trim();
     this.bus = rawBus.split(' ')[0];
 
     this.type =
@@ -153,8 +164,8 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
         }
       );
 
-    const expiry = state.expiryTime || (now.getTime() + 10800000);
-    this.seconds = Math.max(0, Math.floor((expiry - now.getTime()) / 1000));
+    this.expiryTime = state.expiryTime || (now.getTime() + 10800000);
+    this.seconds = Math.max(0, Math.floor((this.expiryTime - now.getTime()) / 1000));
 
     this.ticketNo = state.ticketNo || String(
       Math.floor(
@@ -171,7 +182,6 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
       }
     );
 
-    this.startTimer();
     if (state.oldId) {
       this.updateTicketInLocalDb(state.oldId);
     } else if (!state.id) {
@@ -180,17 +190,32 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.expiryTime > 0 && this.expiryTime <= Date.now()) {
+      this.router.navigate(['/ticket'], { replaceUrl: true });
+      return;
+    }
     this.registerBackHandler();
     this.startNavLottieTimer();
+    this.startTimer();
+    this.secureScreenService.enableSecure();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    window.addEventListener('focus', this.onVisibilityChange);
   }
 
   ionViewWillEnter() {
+    if (this.expiryTime > 0 && this.expiryTime <= Date.now()) {
+      this.router.navigate(['/ticket'], { replaceUrl: true });
+      return;
+    }
     this.registerBackHandler();
     this.startNavLottieTimer();
+    this.updateTimer();
+    this.secureScreenService.enableSecure();
   }
 
   ionViewWillLeave() {
     this.backNavService.unregisterHandler('ticket-generation-page');
+    this.secureScreenService.disableSecure();
     if (this.navLottieTimer) {
       clearTimeout(this.navLottieTimer);
       this.navLottieTimer = null;
@@ -199,9 +224,12 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.backNavService.unregisterHandler('ticket-generation-page');
+    this.secureScreenService.disableSecure();
     if (this.timerInterval) clearInterval(this.timerInterval);
     if (this.ticketPressTimer) clearTimeout(this.ticketPressTimer);
     if (this.navLottieTimer) clearTimeout(this.navLottieTimer);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    window.removeEventListener('focus', this.onVisibilityChange);
   }
 
   startNavLottieTimer() {
@@ -266,6 +294,10 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   private timerInterval: any;
   private ticketPressTimer: any;
+
+  private onVisibilityChange = () => {
+    this.updateTimer();
+  };
 
   onTicketPressStart(event: Event) {
     if (this.ticketPressTimer) clearTimeout(this.ticketPressTimer);
@@ -353,39 +385,35 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
     }
   }
 
-  startTimer() {
-
+  updateTimer() {
+    if (this.expiryTime > 0) {
+      this.seconds = Math.max(0, Math.floor((this.expiryTime - Date.now()) / 1000));
+    }
     const h = Math.floor(this.seconds / 3600);
     const m = Math.floor((this.seconds % 3600) / 60);
     const s = this.seconds % 60;
-
     this.time =
       `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    try {
+      this.cdr.detectChanges();
+    } catch (e) {}
+
+    if (this.seconds <= 0 && this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.time = '00:00:00';
+    }
+  }
+
+  startTimer() {
+    if (!this.expiryTime) {
+      this.expiryTime = Date.now() + (this.seconds * 1000);
+    }
+    this.updateTimer();
 
     if (this.timerInterval) clearInterval(this.timerInterval);
     this.timerInterval = setInterval(() => {
-
-      if (this.seconds > 0) {
-
-        this.seconds--;
-
-        const h = Math.floor(this.seconds / 3600);
-        const m = Math.floor((this.seconds % 3600) / 60);
-        const s = this.seconds % 60;
-
-        this.time =
-          `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-
-      } else {
-
-        clearInterval(this.timerInterval);
-
-        this.time = '00:00:00';
-
-      }
-
+      this.updateTimer();
     }, 1000);
-
   }
 
   showTicket() {
@@ -443,12 +471,11 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
 
   goBackFromPage() {
     const state = history.state;
-    this.router.navigate([this.referrer], {
-      state: {
-        activeTab: state.referrerTab || 'home'
-      },
-      replaceUrl: true
-    });
+    if (state && state.referrerTab) {
+      this.router.navigate(['/' + state.referrerTab], { replaceUrl: true });
+    } else {
+      this.router.navigate([this.referrer || '/home'], { replaceUrl: true });
+    }
   }
 
   goBackToReferrer() {
@@ -456,19 +483,13 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   }
 
   goToHistory() {
-    this.router.navigate(['/home'], {
-      state: {
-        activeTab: 'ticket'
-      },
+    this.router.navigate(['/ticket'], {
       replaceUrl: true
     });
   }
 
   navTab(tab: 'home' | 'passes' | 'live' | 'ticket' | 'profile') {
-    this.router.navigate(['/home'], {
-      state: {
-        activeTab: tab
-      },
+    this.router.navigate(['/' + tab], {
       replaceUrl: true
     });
   }

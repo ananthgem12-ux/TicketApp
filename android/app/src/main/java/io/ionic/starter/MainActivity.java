@@ -23,6 +23,7 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        registerPlugin(SecureScreenPlugin.class);
         super.onCreate(savedInstanceState);
         
         // Request CAMERA permission at runtime for Android 6.0+ (API 23+)
@@ -47,6 +48,16 @@ public class MainActivity extends BridgeActivity {
         if (bridge != null && bridge.getWebView() != null) {
             WebSettings settings = bridge.getWebView().getSettings();
             settings.setTextZoom(100);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        
+        // Keep timers and CSS animations running when activity is in floating window, split screen, or background
+        if (bridge != null && bridge.getWebView() != null) {
+            bridge.getWebView().resumeTimers();
         }
     }
 }
