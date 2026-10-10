@@ -33,7 +33,7 @@ export class BusTicketPage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get totalAmount(): string {
-    const num = (Number(this.amount) || 0) * (Number(this.persons) || 1);
+    const num = (Number(this.amount) || 0) * ( 1 || 1);
     return num.toFixed(2);
   }
 
