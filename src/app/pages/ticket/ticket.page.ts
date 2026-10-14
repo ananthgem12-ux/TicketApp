@@ -179,16 +179,42 @@ export class TicketPage implements OnInit, OnDestroy {
     }
   }
 
-  formatTicketDateStr(ticket: any): string {
-    if (ticket.dateStr) return ticket.dateStr;
-    const d = ticket.date ? new Date(ticket.date) : new Date();
-    const day = d.getDate();
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-    const time = ticket.arrivalTime || '9:42 am';
-    return `${day} ${month} ${year} • ${time}`;
+  FormatTicketDateStr(ticket: any): string {
+  if (ticket.dateStr) return ticket.dateStr;
+
+  let d: Date;
+
+  if (ticket.date instanceof Date) {
+    d = ticket.date;
+  } else if (typeof ticket.date === 'string') {
+    // Check for DD/MM/YYYY format
+    const match = ticket.date.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (match) {
+      const [, day, month, year] = match.map(Number);
+      d = new Date(year, month - 1, day); // month is 0-indexed
+    } else {
+      d = new Date(ticket.date);
+    }
+  } else if (ticket.date) {
+    d = new Date(ticket.date);
+  } else {
+    d = new Date();
   }
+
+  // Fallback if the date is still invalid
+  if (isNaN(d.getTime())) {
+    d = new Date();
+  }
+
+  const day = d.getDate();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+  const time = ticket.arrivalTime || '9:42 am';
+
+  return `${day} ${month} ${year} • ${time}`;
+}
+
 
   startCountdownTimer() {
     if (this.intervalId) clearInterval(this.intervalId);
