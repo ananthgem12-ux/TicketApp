@@ -394,19 +394,45 @@ ion-content {
   margin: 0 auto 16px auto;
 }
 
-/* GRADIENT SEARCH BAR */
+/* Map Location Hint Overlay */
+.map-location-overlay {
+  position: absolute;
+  top: 95px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  cursor: pointer;
+  user-select: none;
+
+  .map-location-link {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #111111;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    letter-spacing: -0.2px;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* GRADIENT PILL SEARCH BAR */
 .gradient-search-container {
   width: 100%;
-  height: 64px; /* increased search bar height */
-  background: linear-gradient(90deg, #f3252f, #f71a1af5);
-  border-radius: 16px; /* rounded corner border */
-  padding: 0 18px;
+  height: 58px;
+  background: linear-gradient(90deg, #d30095 0%, #ee145b 45%, #ff3b00 100%);
+  border-radius: 36px;
+  padding: 0 22px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(245, 30, 41, 0.15);
+  box-shadow: 0 5px 18px rgba(230, 20, 70, 0.28);
   margin-bottom: 20px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease, opacity 0.15s ease;
   
   &:active {
@@ -418,620 +444,207 @@ ion-content {
 .search-inner-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #ffffff;
+  justify-content: space-between;
   width: 100%;
-  hei
   
+  .search-placeholder-text {
+    font-size: 17.5px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
   .search-magnifier-svg {
     opacity: 0.95;
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-  }
-  
-  .search-placeholder-text {
-    font-size: 18px; /* increased placeholder font size */
-    font-weight: 700;
-    letter-spacing: -0.2px;
-    opacity: 0.95;
+    width: 22px;
+    height: 22px;
   }
 }
 
-/* SERVICES WHITE CARD & GRID */
-.services-white-card {
-  background-color: #ffffff;
-  border-radius: 32px;
-  padding: 12px 14px; /* compact padding */
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-}
-
-.services-icons-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+/* HORIZONTAL TRANSPORT MODES SELECTOR */
+.modes-scroll-container {
+  display: flex;
   gap: 12px;
-  margin-bottom: 0px;
-}
+  overflow-x: auto;
+  padding: 2px 2px 18px 2px;
+  margin-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 
-.service-item-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  
-  &:active .service-icon-circle {
-    transform: scale(0.92);
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-.service-icon-circle {
-  width: 48px; /* compact circles */
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease;
-  color: #2c2c2e;
-  
-  &.bus { background-color: #fde282; }
-  &.train { background-color: #d1edd0; }
-  &.metro { background-color: #bfe4f9; }
-  &.auto { background-color: #eddffa; }
-}
-
-.service-label {
-  font-size: 16px;
-  font-weight: 700;
-  color: #6e6e73;
-  letter-spacing: -0.1px;
-}
-
-/* PREMIUM BUS (New Layout) */
-.premium-bus-white-card {
+.mode-card-btn {
+  flex-shrink: 0;
+  width: 84px;
+  height: 104px;
   background-color: #ffffff;
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f0f0f0;
+  border-radius: 22px;
+  border: 1px solid #f0f0f2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.premium-bus-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.premium-bus-title {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  color: #333333;
-}
-
-.premium-bus-subtitle {
-  margin: 0;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #6e6e73;
-}
-
-.premium-bus-body {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-}
-
-.premium-bus-image-wrapper {
-  flex-shrink: 0;
-  width: 100px;
-}
-
-.premium-bus-img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.premium-bus-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.premium-bus-btn {
-  background-color: #ffffff;
-  border: 1.5px solid #e5e5ea;
-  border-radius: 20px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333333;
+  padding: 12px 6px 10px 6px;
+  box-sizing: border-box;
   cursor: pointer;
-  transition: background-color 0.1s ease;
-  
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
   &:active {
-    background-color: #f2f2f7;
+    transform: scale(0.94);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .mode-img-box {
+    width: 64px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .mode-vehicle-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
+    }
+  }
+
+  .mode-title-text {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1c1c1e;
+    text-align: center;
+    letter-spacing: -0.15px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
 
-.premium-btn-text {
-  margin-top: 1px;
-}
-
-/* CAROUSEL BANNER SLIDER */
+/* BANNER CAROUSEL */
 .banner-carousel-container {
   width: 100%;
-  height: 186px; /* restored to match real app layout */
-  border-radius: 18px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 0;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .carousel-inner-slides {
   display: flex;
   width: 100%;
-  height: 100%;
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .carousel-slide-item {
   width: 100%;
-  height: 100%;
   flex-shrink: 0;
   box-sizing: border-box;
-  padding: 0px;
-  position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-}
 
-.banner-slide-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill; /* exact fit for standard banners */
-  border-radius: 18px;
-  display: block;
-  z-index: 2; /* covers fallback text when loaded successfully */
-}
-
-/* Fallback text overlays for missing images */
-.banner-fallback-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 16px 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  color: #ffffff;
-  z-index: 1; /* behind image overlay */
-  text-align: left;
-  border-radius: 18px;
-  
-  .fallback-tag {
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    background-color: rgba(255,255,255,0.22);
-    padding: 3px 8px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-  
-  .fallback-title {
-    font-size: 16px; /* restored to normal size */
-    font-weight: 900;
-    margin: 0 0 10px 0;
-    line-height: 1.35;
-    max-width: 85%;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  }
-  
-  .fallback-desc {
-    font-size: 11.5px;
-    opacity: 0.9;
-    line-height: 1.4;
-    max-width: 85%;
-  }
-  
-  .fallback-btn {
-    background-color: #ffffff;
-    color: #7b1fa2;
-    border: none;
-    border-radius: 14px;
-    padding: 6px 14px;
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    
-    &.dark {
-      background-color: #1c1c1e;
-      color: #ffffff;
-    }
-  }
-  
-  &.dark-text {
-    color: #1c1c1e;
-    
-    .fallback-tag {
-      background-color: rgba(0,0,0,0.08);
-    }
-    
-    .fallback-btn {
-      background-color: #1c1c1e;
-      color: #ffffff;
-    }
+  .banner-slide-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
   }
 }
 
-/* Fallback Slide Background gradients */
-.purple-slide {
-  background-color: #7b1fa2;
-}
-
-.yellow-slide {
-  background-color: #fcd964;
-}
-
-.blue-slide {
-  background: linear-gradient(135deg, #1fa2ff, #005ae6);
-}
-
-.teal-slide {
-  background: linear-gradient(135deg, #12d8fa, #009688);
-}
-
-.carousel-text-content {
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 85%;
-  
-  .slide-tag-line {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.85;
-  }
-  
-  .slide-title {
-    font-size: 15px;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.35;
-  }
-  
-  .slide-desc-text {
-    font-size: 11px;
-    opacity: 0.9;
-    line-height: 1.4;
-  }
-}
-
-/* Carousel dots */
 .carousel-dots-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-  margin-bottom: 20px;
+  gap: 7px;
+  margin-top: 10px;
 }
 
 .carousel-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background-color: #d1d1d6;
   cursor: pointer;
-  transition: width 0.2s ease, background-color 0.2s ease;
-  
+  transition: all 0.25s ease;
+
   &.active {
-    background-color: #1c1c1e;
+    background-color: #111111;
+    width: 16px;
+    border-radius: 4px;
   }
 }
 
-/* yellow slide indicator overrides color when yellow is selected */
-.banner-carousel-container:has(.yellow-slide) {
-  /* customizable selectors */
-}
-
-/* FAVORITES SECTION */
-.favorites-section-container {
+/* TRACK YOUR BUSES SECTION */
+.track-buses-section {
   margin-bottom: 20px;
-}
+  padding: 4px 2px;
 
-.section-header-title {
-  font-size: 15px; /* restored to normal size */
-  font-weight: 800;
-  color: #8e8e93;
-  margin: 0 0 10px 0;
-  letter-spacing: -0.1px;
-}
-
-.favorites-scroll-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.favorite-pill-btn {
-  height: 34px; /* restored to match real app layout */
-  border-radius: 17px;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 15.5px; /* restored font size */
-  font-weight: 700;
-  flex-shrink: 0;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  
-  &:active {
-    transform: scale(0.95);
-  }
-  
-  &.home-pill {
-    background-color: #f2f2f7;
-    color: #1c1c1e;
-    border-color: #f2f2f7;
-  }
-  
-  &.add-btn {
-    background-color: #ffffff;
-    color: #3a3a3c;
-    border-color: #eaeaea;
-  }
-  
-  .fav-icon {
-    font-size: 14px;
-  }
-  
-  .plus-circle-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px; /* restored plus icon outline size */
-    height: 14px;
-    border: 1.5px solid #ff3b30; /* red border */
-    border-radius: 50%;
-    color: #ff3b30; /* red plus symbol */
-    font-size: 10px;
-    font-weight: 900;
-    line-height: 1;
-  }
-}
-
-/* EXPLORE SECTION */
-.explore-section-container {
-  margin-bottom: 20px;
-}
-
-.explore-categories-scroll-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.category-filter-pill {
-  height: 32px; /* restored from 36px */
-  border-radius: 32px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12.5px; /* restored from 13.5px */
-  font-weight: 700;
-  color: #8e8e93;
-  border: 1px solid #eaeaea; /* border for inactive */
-  background-color: #ffffff; /* white bg when inactive */
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-  
-  &:active {
-    transform: scale(0.96);
-  }
-  
-  &.active {
-    background-color: #4f5d75; /* dark grey-blue active filter */
-    color: #ffffff;
-    border-color: #4f5d75;
-  }
-  
-  .cat-icon {
-    font-size: 12px;
-  }
-}
-
-.explore-landmarks-slider {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.landmark-card-item {
-  width: 240px; /* restored card width to match real app layout */
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-  
-  &:active .landmark-img {
-    transform: scale(1.03);
-  }
-}
-
-.landmark-image-container {
-  width: 100%;
-  height: 160px; /* restored image height to match real app layout */
-  border-radius: 14px;
-  overflow: hidden;
-  background-color: #eaeaea;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-}
-
-.landmark-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.2s ease;
-}
-
-.landmark-card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-left: 2px;
-  
-  .landmark-name {
-    font-size: 13.5px; /* restored title size from 14.5px */
+  .track-buses-title {
+    font-size: 20px;
     font-weight: 800;
-    color: #2c2c2e;
-    margin: 0;
-    line-height: 1.35;
-    letter-spacing: -0.1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #1c1c1e;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.3px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
-  
-  .landmark-category-tag {
-    font-size: 10px; /* restored from 11.5px */
-    font-weight: 700;
-    color: #8e8e93;
+
+  .nearby-stop-row {
+    font-size: 15px;
+    margin-bottom: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    .nearby-stop-label {
+      color: #3a3a3c;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .select-stop-action {
+      color: #1c1c1e;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+      user-select: none;
+    }
   }
-}
 
-.bottom-sheet-footer-spacing {
-  height: 0px;
-  display: none;
-}
+  .enable-location-card {
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    user-select: none;
 
-/* Home Tab overlays */
-.dhoni-qr-btn {
-  position: absolute;
-  bottom: 84px; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 58px;
-  height: 58px;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  outline: none;
-  z-index: 10;
-  transition: transform 0.15s ease;
-  
-  &:active {
-    transform: translateX(-50%) scale(0.9);
-    background: rgba(0, 0, 0, 0.05);
-  }
-}
-
-/* ================= DYNAMIC BLUE BUS OTP BUTTON ================= */
-.bus-otp-btn {
-  position: fixed;
-  bottom: 80px; /* fixed overlay above bottom nav bar */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px; /* ORIGINAL button width kept unchanged */
-  height: 72px; /* ORIGINAL button height kept unchanged */
-  background-color: #005ae6; /* bright royal blue */
-  border-radius: 26px; /* Squircle appearance */
-  border: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 16px rgba(0, 90, 230, 0.25);
-  cursor: pointer;
-  z-index: 1050;
-  box-sizing: border-box;
-  overflow: hidden;
-  transition: transform 0.1s ease, background-color 0.1s ease;
-  
-  &:active {
-    transform: translateX(-50%) scale(0.94);
-    background-color: #004fc4;
+    .enable-location-link {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #111111;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      letter-spacing: -0.2px;
+    }
   }
 }
 
-.bus-otp-icon-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ADVERTISEMENT BANNER CARD */
+.home-ad-banner-card {
   width: 100%;
-  height: 100%;
-  
-  dotlottie-player {
-    width: 80px;  /* 2x larger Lottie graphics */
-    height: 69px;
-    transform: scale(2.30); /* 2x scale on internal Lottie animation content */
-    transform-origin: center center;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 28px;
+
+  .home-ad-img {
+    width: 100%;
+    height: auto;
     display: block;
+    object-fit: cover;
   }
-}
-
-.bus-otp-svg {
-  display: block;
-}
-
-.bus-otp-label {
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  margin-top: 4px;
 }
 
 /* ================= MANUAL OTP KEYPAD VIEW WITH CAMERA SIMULATION ================= */

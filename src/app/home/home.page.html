@@ -1,13 +1,6 @@
 <ion-content fullscreen>
   <div class="app-container">
     
-    <!-- Royal Blue dynamic BUS OTP button (sticky at bottom) -->
-    <div class="bus-otp-btn" *ngIf="currentTab === 'home'" (click)="openBusOtp()">
-      <div class="bus-otp-icon-container">
-        <dotlottie-player src="assets/lottie/scan.lottie" autoplay loop style="width: 100%; height: 100%; display: inline-block;"></dotlottie-player>
-      </div>
-    </div>
-
     <!-- ================= HOME TAB ================= -->
     <div class="tab-content" [hidden]="currentTab !== 'home'">
       
@@ -30,6 +23,11 @@
                  alt="Bus Map" 
                  class="map-display-img" 
                  (dblclick)="resetMapZoom()" />
+          </div>
+
+          <!-- Centered Location Prompt over map -->
+          <div class="map-location-overlay" (click)="requestLocation()">
+            <span class="map-location-link">Enable Location to track nearby buses</span>
           </div>
 
           <!-- TOGGLE CONTROL OVERLAY (Matches exact bus toggle in screenshot) -->
@@ -68,169 +66,88 @@
           <!-- Sheet handle indicator -->
           <div class="sheet-drag-handle"></div>
 
-          <!-- 1. GRADIENT RED-TO-ORANGE SEARCH BAR -->
+          <!-- 1. GRADIENT RED-TO-ORANGE PILL SEARCH BAR -->
           <div class="gradient-search-container" (click)="openSearch()">
             <div class="search-inner-wrapper">
-              <svg class="search-magnifier-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="3">
+              <span class="search-placeholder-text">{{ searchQuerySuggestion === 'Where are you going?' ? searchQuerySuggestion : 'Search "' + searchQuerySuggestion + '"' }}</span>
+              <svg class="search-magnifier-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" stroke-width="2.8">
                 <circle cx="11" cy="11" r="7" />
                 <line x1="21" y1="21" x2="16" y2="16" stroke-linecap="round" />
               </svg>
-              <span class="search-placeholder-text">{{ searchQuerySuggestion === 'Where are you going?' ? searchQuerySuggestion : 'Search "' + searchQuerySuggestion + '"' }}</span>
             </div>
           </div>
 
-          <!-- 2. SERVICE SELECTION ICONS (Grid of 4) IN WHITE CARD -->
-          <div class="services-white-card">
-            <div class="services-icons-grid">
-              <div class="service-item-btn" (click)="openBusOtp()">
-                <div class="service-icon-circle bus">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
-                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
-                  </svg>
-                </div>
-                <span class="service-label">Bus</span>
+          <!-- 2. TRANSPORT MODES HORIZONTAL CARDS -->
+          <div class="modes-scroll-container">
+            <div class="mode-card-btn" (click)="openBusOtp()">
+              <div class="mode-img-box">
+                <img src="assets/images/transit_bus.png" alt="Bus" class="mode-vehicle-img" />
               </div>
+              <span class="mode-title-text">Bus</span>
+            </div>
 
-              <div class="service-item-btn">
-                <div class="service-icon-circle train">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
-                    <path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm4.5-5H6V6h6v6zm6 3.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm0-3.5h-6V6h6v6z"/>
-                  </svg>
-                </div>
-                <span class="service-label">Train</span>
+            <div class="mode-card-btn" (click)="openSearch()">
+              <div class="mode-img-box">
+                <img src="assets/images/transit_metro.png" alt="Metro" class="mode-vehicle-img" />
               </div>
+              <span class="mode-title-text">Metro</span>
+            </div>
 
-              <div class="service-item-btn">
-                <div class="service-icon-circle metro">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
-                    <path d="M17.75 22h.75v-2h-13v2h.75L8 20h8l1.75 2zM12 2C6.48 2 2 4.48 2 10v6c0 1.66 1.34 3 3 3h14c1.66 0 3-1.34 3-3v-6c0-5.52-4.48-10-10-10zm-4 13c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm8 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm2-5H6V5h12v5z"/>
-                  </svg>
-                </div>
-                <span class="service-label">Metro</span>
+            <div class="mode-card-btn" (click)="openSearch()">
+              <div class="mode-img-box">
+                <img src="assets/images/transit_metro1.png" alt="Train" class="mode-vehicle-img" />
               </div>
+              <span class="mode-title-text">Train</span>
+            </div>
 
-              <div class="service-item-btn">
-                <div class="service-icon-circle auto">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="#1c1c1e">
-                    <path d="M19 13.5c0-.83-.67-1.5-1.5-1.5h-11c-.83 0-1.5.67-1.5 1.5V17c0 .55.45 1 1 1h13c.55 0 1-.45 1-1v-3.5zM12 2C8 2 4.5 4 3.5 7.5L5 9.5c.8-.5 1.7-.8 2.7-.8H16.3c1 0 1.9.3 2.7.8l1.5-2C19.5 4 16 2 12 2zm-4.5 9c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm9 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1z" />
-                  </svg>
-                </div>
-                <span class="service-label">Auto/Cab</span>
+            <div class="mode-card-btn" (click)="openSearch()">
+              <div class="mode-img-box">
+                <img src="assets/images/transit_auto.png" alt="Auto" class="mode-vehicle-img" />
               </div>
+              <span class="mode-title-text">Auto</span>
+            </div>
+
+            <div class="mode-card-btn" (click)="openBusOtp()">
+              <div class="mode-img-box">
+                <img src="assets/images/transit_bus1.png" alt="Premium" class="mode-vehicle-img" />
+              </div>
+              <span class="mode-title-text">Premium</span>
             </div>
           </div>
 
-          <!-- 3. BANNER CAROUSEL WITH 4 IMAGES -->
+          <!-- 3. BANNER CAROUSEL (5 Slides) -->
           <div class="banner-carousel-container" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
             <div class="carousel-inner-slides" [style.transform]="'translateX(' + (-activeBannerIndex * 100) + '%)'">
-              
-              <!-- Slide 1 -->
-              <div class="carousel-slide-item">
-                <img src="assets/images/banner_1.jpg" alt="Banner 1" class="banner-slide-img" />
+              <div class="carousel-slide-item" *ngFor="let banner of banners; let idx = index">
+                <img [src]="banner" [alt]="'Banner ' + (idx + 1)" class="banner-slide-img" />
               </div>
-
-              <!-- Slide 2 -->
-              <div class="carousel-slide-item">
-                <img src="assets/images/banner_2.jpg" alt="Banner 2" class="banner-slide-img" />
-              </div>
-
-              <!-- Slide 3 -->
-              <div class="carousel-slide-item">
-                <img src="assets/images/banner_3.jpg" alt="Banner 3" class="banner-slide-img" />
-              </div>
-
-              <!-- Slide 4 -->
-              <div class="carousel-slide-item">
-                <img src="assets/images/banner_4.jpg" alt="Banner 4" class="banner-slide-img" />
-              </div>
-
             </div>
 
-            <!-- Indicator dots for 4 slides -->
+            <!-- Indicator dots for 5 slides -->
             <div class="carousel-dots-row">
               <span class="carousel-dot" 
-                    *ngFor="let dot of [0, 1, 2, 3]; let i = index" 
+                    *ngFor="let banner of banners; let i = index" 
                     [class.active]="activeBannerIndex === i"
                     (click)="setBannerIndex(i)">
               </span>
             </div>
           </div>
 
-          <!-- 4. PREMIUM BUS (New Layout) -->
-          <div class="premium-bus-white-card">
-            <div class="premium-bus-header">
-              <h3 class="premium-bus-title">Premium Bus</h3>
-              <p class="premium-bus-subtitle">Comfortable seats, No standing, Book & Go.</p>
+          <!-- 4. TRACK YOUR BUSES SECTION -->
+          <div class="track-buses-section">
+            <h3 class="track-buses-title">Track your buses</h3>
+            <div class="nearby-stop-row">
+              <span class="nearby-stop-label">Nearby Stop:</span>
+              <span class="select-stop-action" (click)="openSearch()">Select bus stop</span>
             </div>
-            <div class="premium-bus-body">
-              <div class="premium-bus-image-wrapper">
-                <img src="assets/home_truck.jpg" alt="Premium Bus" class="premium-bus-img" />
-              </div>
-              <div class="premium-bus-buttons">
-                <button class="premium-bus-btn">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
-                  </svg>
-                  <span class="premium-btn-text">P91</span>
-                </button>
-                <button class="premium-bus-btn">
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                    <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
-                  </svg>
-                  <span class="premium-btn-text">P570S</span>
-                </button>
-              </div>
+            <div class="enable-location-card" (click)="requestLocation()">
+              <span class="enable-location-link">Enable Location to track nearby buses</span>
             </div>
           </div>
 
-          <!-- 5. FAVORITES ROW SECTION -->
-          <div class="favorites-section-container">
-            <h4 class="section-header-title">Favorites</h4>
-            <div class="favorites-scroll-row">
-              <button class="favorite-pill-btn add-btn" (click)="userPhone = '9724153346'">
-                <span class="plus-circle-icon">+</span>
-                <span class="fav-label">Add Home</span>
-              </button>
-
-              <button class="favorite-pill-btn add-btn">
-                <span class="plus-circle-icon">+</span>
-                <span class="fav-label">Add Work</span>
-              </button>
-
-              <button class="favorite-pill-btn add-btn">
-                <span class="plus-circle-icon">+</span>
-                <span class="fav-label">Add Favourites</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 6. EXPLORE SECTION -->
-          <div class="explore-section-container">
-            <h4 class="section-header-title">Explore</h4>
-            
-            <!-- Filter Categories Row -->
-            <div class="explore-categories-scroll-row">
-              <button class="category-filter-pill" 
-                      *ngFor="let cat of exploreCategories" 
-                      [class.active]="selectedExploreCategory === cat.id"
-                      (click)="selectExploreCategory(cat.id)">
-                <span class="cat-icon" *ngIf="cat.id !== selectedExploreCategory">{{ cat.icon }}</span>
-                <span class="cat-label">{{ cat.label }}</span>
-              </button>
-            </div>
-
-            <!-- Card list with left-to-right slider layout -->
-            <div class="explore-landmarks-slider">
-              <div class="landmark-card-item" *ngFor="let item of filteredExploreItems">
-                <div class="landmark-image-container">
-                  <img [src]="item.image" [alt]="item.name" class="landmark-img" />
-                </div>
-                <div class="landmark-card-details">
-                  <h5 class="landmark-name">{{ item.name }}</h5>
-                  <span class="landmark-category-tag">{{ item.type }}</span>
-                </div>
-              </div>
-            </div>
+          <!-- 5. AD BANNER -->
+          <div class="home-ad-banner-card">
+            <img src="assets/images/ad_banner_giva.jpg" alt="Special Offer" class="home-ad-img" />
           </div>
 
         </div>

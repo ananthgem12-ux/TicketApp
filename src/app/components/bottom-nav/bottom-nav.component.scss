@@ -3,16 +3,15 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 70px;
-  padding-bottom: calc(4px + env(safe-area-inset-bottom, 4px));
-  padding-bottom: env(safe-area-inset-bottom, 10px);
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom, 6px);
   background-color: #ffffff;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #f0f0f2;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  z-index: 999;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+  z-index: 9999;
+  box-shadow: 0 -3px 14px rgba(0, 0, 0, 0.05);
 }
 
 .nav-item {
@@ -20,43 +19,127 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-grow: 1;
+  flex: 1;
   height: 100%;
   color: #8e8e93;
   cursor: pointer;
-  transition: all 0.2s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  
-  .nav-svg {
+  transition: color 0.15s ease;
+
+  .nav-icon-box {
     width: 28px;
-    height: 28px;
-    fill: currentColor;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 2px;
-    transition: transform 0.15s ease;
   }
-  
+
+  .nav-svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+
   .nav-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: inherit;
-  }
-  
-  &.active {
+    font-size: 11.5px;
+    font-weight: 600;
     color: #8e8e93;
-    
+    letter-spacing: -0.15px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  &.active {
     .nav-label {
-      color: #000000;
-      font-weight: 800;
-    }
-    
-    .nav-svg {
-      color: #ff3b30;
-      transform: scale(1.05);
+      color: #1c1c1e;
+      font-weight: 700;
     }
 
-    .active-nav-lottie-player:not(.no-red) {
-      filter: brightness(0) saturate(100%) invert(36%) sepia(93%) saturate(4422%) hue-rotate(346deg) brightness(101%) contrast(106%) !important;
+    .home-svg {
+      color: #ff3b30;
+      transform: scale(1.04);
     }
+
+    &:not(:first-child) {
+      .nav-svg {
+        color: #ff3b30;
+        transform: scale(1.04);
+      }
+    }
+  }
+
+  &:active {
+    opacity: 0.75;
+  }
+}
+
+/* Center Floating BUS OTP / BUS QR Button */
+.center-btn-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.center-floating-btn {
+  position: absolute;
+  top: -20px;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #2858fe 0%, #3a3bf8 50%, #462cf8 100%);
+  box-shadow: 0 6px 18px rgba(44, 85, 255, 0.46);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+
+  &:active {
+    transform: scale(0.92);
+    box-shadow: 0 3px 10px rgba(44, 85, 255, 0.35);
+  }
+
+  .center-icon-container {
+    width: 32px;
+    height: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: centerIconFade 0.22s ease-out;
+
+    .center-btn-svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .center-label {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    margin-top: 1px;
+    line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+@keyframes centerIconFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
