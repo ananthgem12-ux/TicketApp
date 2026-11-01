@@ -40,6 +40,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   // Preferences Modal state
   showPreferencesModal = false;
+  adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
+  showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
   isScreenshotProtectionEnabled = true;
 
   // QR code modal state
@@ -159,10 +161,18 @@ export class HomePage implements OnInit, OnDestroy {
     'passes': true
   };
 
+  banners = [
+    'assets/images/banner_metro_discount.jpg',
+    'assets/images/banner_1.jpg',
+    'assets/images/banner_2.jpg',
+    'assets/images/banner_3.jpg',
+    'assets/images/banner_4.jpg'
+  ];
+
   private bannerTimer: any;
   private suggestionTimer: any;
   private suggestionIndex = 0;
-  private suggestions = ['Where are you going?', 'Bus Route', 'Suburban', 'Velachery', 'Thiruvanmiyur'];
+  private suggestions = ['Metro Stations', 'Train Stations', 'Bus Stops', 'Where are you going?'];
 
   // Map reference
   mapInstance: any = null;
@@ -281,6 +291,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
     const state = history.state;
     if (state && state.activeTab && state.activeTab !== 'home') {
       this.router.navigate(['/' + state.activeTab], { replaceUrl: true });
@@ -409,9 +421,9 @@ export class HomePage implements OnInit, OnDestroy {
 
       if (Math.abs(diff) > 40) {
         if (diff > 0) {
-          this.setBannerIndex((this.activeBannerIndex + 1) % 2);
+          this.setBannerIndex((this.activeBannerIndex + 1) % this.banners.length);
         } else {
-          this.setBannerIndex((this.activeBannerIndex - 1 + 2) % 2);
+          this.setBannerIndex((this.activeBannerIndex - 1 + this.banners.length) % this.banners.length);
         }
       }
     }
@@ -488,8 +500,13 @@ export class HomePage implements OnInit, OnDestroy {
   // Automatic Banner slider timers
   startBannerSlider() {
     this.bannerTimer = setInterval(() => {
-      this.activeBannerIndex = (this.activeBannerIndex + 1) % 2;
-    }, 5000);
+      this.activeBannerIndex = (this.activeBannerIndex + 1) % this.banners.length;
+    }, 4500);
+  }
+
+  requestLocation() {
+    this.mapTrackingActive = true;
+    this.recenterMap();
   }
 
   setBannerIndex(index: number) {

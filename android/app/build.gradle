@@ -18,18 +18,27 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE_FILE") ?: "release.keystore")
-            storePassword(System.getenv("KEYSTORE_PASSWORD") ?: "busapp123")
-            keyAlias(System.getenv("KEY_ALIAS") ?: "busapp")
-            keyPassword(System.getenv("KEY_PASSWORD") ?: "busapp123")
+            def ks = file(System.getenv("KEYSTORE_FILE") ?: "release.keystore")
+            if (ks.exists()) {
+                storeFile ks
+                storePassword(System.getenv("KEYSTORE_PASSWORD") ?: "busapp123")
+                keyAlias(System.getenv("KEY_ALIAS") ?: "busapp")
+                keyPassword(System.getenv("KEY_PASSWORD") ?: "busapp123")
+            }
         }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            def ks = file(System.getenv("KEYSTORE_FILE") ?: "release.keystore")
+            if (ks.exists()) {
+                signingConfig signingConfigs.release
+            }
         }
         release {
-            signingConfig signingConfigs.release
+            def ks = file(System.getenv("KEYSTORE_FILE") ?: "release.keystore")
+            if (ks.exists()) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

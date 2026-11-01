@@ -57,3 +57,5 @@ unused_assets/
 # System files
 .DS_Store
 Thumbs.db
+
+apk_org

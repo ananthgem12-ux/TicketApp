@@ -21,9 +21,16 @@ export class ProfilePage implements OnInit, OnDestroy {
   editingPhone = '';
   private pressTimer: any;
 
-  // Preferences Modal state (Screenshot Protection FLAG_SECURE)
+  // Preferences Modal state (Screenshot Protection FLAG_SECURE & Diwali Ad Banner)
   showPreferencesModal = false;
   isScreenshotProtectionEnabled = true;
+  showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+  customAdImage: string | null = localStorage.getItem('custom_ad_image');
+  defaultAdImage = 'assets/images/ad_banner_giva.jpg';
+
+  get adImagePreview(): string {
+    return this.customAdImage || this.defaultAdImage;
+  }
 
   // E/I Export Import Modal state
   showEiModal = false;
@@ -40,12 +47,16 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.registerBackHandler();
     this.loadUserPhone();
     this.isScreenshotProtectionEnabled = this.secureScreenService.isSecureEnabled();
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+    this.customAdImage = localStorage.getItem('custom_ad_image');
   }
 
   ionViewWillEnter() {
     this.registerBackHandler();
     this.loadUserPhone();
     this.isScreenshotProtectionEnabled = this.secureScreenService.isSecureEnabled();
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+    this.customAdImage = localStorage.getItem('custom_ad_image');
   }
 
   ionViewWillLeave() {
@@ -126,9 +137,11 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  // ================= PREFERENCES (FLAG_SECURE) METHODS =================
+  // ================= PREFERENCES (FLAG_SECURE & AD BANNER) METHODS =================
   openPreferencesModal() {
     this.isScreenshotProtectionEnabled = this.secureScreenService.isSecureEnabled();
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+    this.customAdImage = localStorage.getItem('custom_ad_image');
     this.showPreferencesModal = true;
   }
 
@@ -145,6 +158,67 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
     await this.secureScreenService.setSecureEnabled(this.isScreenshotProtectionEnabled);
   }
+
+  toggleDiwaliAd(event?: Event) {
+    if (event) {
+      const target = event.target as HTMLInputElement;
+      this.showDiwaliAd = target ? target.checked : !this.showDiwaliAd;
+    } else {
+      this.showDiwaliAd = !this.showDiwaliAd;
+    }
+    localStorage.setItem('pref_show_diwali_ad', String(this.showDiwaliAd));
+  }
+  onAdImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxWidth = 800;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          this.customAdImage = dataUrl;
+          try {
+            localStorage.setItem('custom_ad_image', dataUrl);
+          } catch (err) {
+            console.error('Storage quota exceeded:', err);
+          }
+        } else {
+          this.customAdImage = e.target?.result as string;
+          try {
+            localStorage.setItem('custom_ad_image', this.customAdImage);
+          } catch (err) {}
+        }
+        input.value = '';
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  deleteAdImage(input?: HTMLInputElement) {
+    this.customAdImage = null;
+    localStorage.removeItem('custom_ad_image');
+    if (input) {
+      input.value = '';
+    }
+  }
+
 
   // ================= E/I EXPORT & IMPORT METHODS =================
   openEiModal() {

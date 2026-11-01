@@ -43,6 +43,22 @@
   margin-bottom: 20px;
 }
 
+.ticket-ad-banner {
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-top: 10px;
+  margin-bottom: 24px;
+
+  .ticket-ad-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+}
+
 .past-tickets-list {
   display: flex;
   flex-direction: column;

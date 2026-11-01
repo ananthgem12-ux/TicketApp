@@ -13,8 +13,8 @@ import { CommonModule } from '@angular/common';
 export class BottomNavComponent implements OnInit, OnDestroy {
   @Input() activeTab: 'home' | 'passes' | 'live' | 'ticket' | 'profile' = 'home';
 
-  isNavLottiePaused = false;
-  private navLottieTimer: any;
+  centerMode: 'otp' | 'qr' = 'otp';
+  private centerModeTimer: any;
 
   constructor(
     private router: Router,
@@ -22,58 +22,35 @@ export class BottomNavComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.startNavLottieTimer();
+    this.startCenterModeTimer();
   }
 
   ngOnDestroy() {
-    if (this.navLottieTimer) {
-      clearTimeout(this.navLottieTimer);
-      this.navLottieTimer = null;
+    if (this.centerModeTimer) {
+      clearInterval(this.centerModeTimer);
+      this.centerModeTimer = null;
     }
   }
 
-  startNavLottieTimer() {
-    if (this.navLottieTimer) {
-      clearTimeout(this.navLottieTimer);
-      this.navLottieTimer = null;
+  startCenterModeTimer() {
+    if (this.centerModeTimer) {
+      clearInterval(this.centerModeTimer);
+      this.centerModeTimer = null;
     }
-    this.isNavLottiePaused = false;
-
-    // After 2 seconds, pause the active Lottie animation
-    this.navLottieTimer = setTimeout(() => {
-      this.isNavLottiePaused = true;
+    this.centerModeTimer = setInterval(() => {
+      this.centerMode = this.centerMode === 'otp' ? 'qr' : 'otp';
       try {
         this.cdr.detectChanges();
       } catch (e) {}
-
-      const player: any = document.querySelector('.active-nav-lottie-player');
-      if (player && typeof player.pause === 'function') {
-        try {
-          player.pause();
-        } catch (e) {}
-      }
-    }, 2000);
+    }, 3500);
   }
 
-  onActiveLottieClick(event?: Event) {
-    if (event) {
-      event.stopPropagation();
-    }
-    if (this.navLottieTimer) {
-      clearTimeout(this.navLottieTimer);
-      this.navLottieTimer = null;
-    }
-    this.isNavLottiePaused = true;
-    const player: any = document.querySelector('.active-nav-lottie-player');
-    if (player && typeof player.pause === 'function') {
-      try {
-        player.pause();
-      } catch (e) {}
-    }
+  openBusOtp() {
+    this.router.navigate(['/bus-otp']);
   }
 
   navTo(tab: 'home' | 'passes' | 'live' | 'ticket' | 'profile') {
-    if (this.activeTab === tab) {
+    if (this.activeTab === tab && this.router.url === `/${tab}`) {
       return;
     }
     this.router.navigate([`/${tab}`]);

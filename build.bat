@@ -42,6 +42,15 @@ if %errorlevel% neq 0 (
 :: ── Step 3: Gradle Build Release APK with Keystore ─────────────
 echo.
 echo  [3/3] Compiling Signed Release APK with Gradle...
+
+:: Auto-detect JAVA_HOME if not set
+if not defined JAVA_HOME (
+    if exist "D:\Data\jdk-21" set "JAVA_HOME=D:\Data\jdk-21"
+    if exist "C:\AndroidDev\jdk-21" set "JAVA_HOME=C:\AndroidDev\jdk-21"
+    if exist "%USERPROFILE%\AndroidDev\jdk-21" set "JAVA_HOME=%USERPROFILE%\AndroidDev\jdk-21"
+)
+if defined JAVA_HOME set "PATH=%JAVA_HOME%\bin;%PATH%"
+
 cd /d "%ANDROID_DIR%"
 call gradlew.bat assembleRelease
 if %errorlevel% neq 0 (

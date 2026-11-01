@@ -6,6 +6,8 @@ import { BusTicketPage } from '../bus-ticket/bus-ticket.page';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { BackNavigationService } from '../../services/back-navigation.service';
 import { SecureScreenService } from '../../services/secure-screen.service';
+import { CommonModule } from '@angular/common';
+import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.component';
 
 @Component({
   selector: 'app-ticket-generation',
@@ -13,9 +15,12 @@ import { SecureScreenService } from '../../services/secure-screen.service';
   styleUrls: ['./ticket-generation.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonContent, BusTicketPage, QRCodeComponent]
+  imports: [IonContent, CommonModule, BusTicketPage, QRCodeComponent, BottomNavComponent]
 })
 export class TicketGenerationPage implements OnInit, OnDestroy {
+
+  showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+  adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
 
   rawQrData = '';
 
@@ -40,6 +45,10 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   destination = '';
 
   ticketId = '';
+
+  get isFromHome(): boolean {
+    return !this.referrer || this.referrer === '/home' || this.referrer === 'home';
+  }
 
   get displayTicketId(): string {
     return this.ticketId ? this.ticketId.slice(0, 5) : '';
@@ -190,6 +199,10 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+    this.adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
+    const state = history.state || {};
+    if (state.referrer) { this.referrer = state.referrer; }
     if (this.expiryTime > 0 && this.expiryTime <= Date.now()) {
       this.router.navigate(['/ticket'], { replaceUrl: true });
       return;
@@ -203,6 +216,8 @@ export class TicketGenerationPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
+    this.adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
     if (this.expiryTime > 0 && this.expiryTime <= Date.now()) {
       this.router.navigate(['/ticket'], { replaceUrl: true });
       return;
