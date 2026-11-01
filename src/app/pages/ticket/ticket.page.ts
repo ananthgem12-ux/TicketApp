@@ -14,6 +14,7 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.compo
   imports: [IonContent, CommonModule, BottomNavComponent]
 })
 export class TicketPage implements OnInit, OnDestroy {
+  showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
   activeTickets: any[] = [];
   allTickets: any[] = [];
   formattedActiveTickets: any[] = [];
@@ -70,6 +71,7 @@ export class TicketPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
     this.registerBackHandler();
     this.loadActiveTickets();
   }
@@ -179,7 +181,7 @@ export class TicketPage implements OnInit, OnDestroy {
     }
   }
 
-  FormatTicketDateStr(ticket: any): string {
+  formatTicketDateStr(ticket: any): string {
   if (ticket.dateStr) return ticket.dateStr;
 
   let d: Date;

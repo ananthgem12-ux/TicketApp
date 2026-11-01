@@ -8,7 +8,13 @@ title ChennaiOne / TicketApp - Automated Environment Setup
 :: ============================================================================
 
 set "PROJECT_DIR=%~dp0"
-set "DATA_DIR=D:\Data"
+
+:: Auto-detect Data directory (prefer D:\Data if drive D exists, otherwise C:\AndroidDev)
+if exist "D:\" (
+    set "DATA_DIR=D:\Data"
+) else (
+    set "DATA_DIR=C:\AndroidDev"
+)
 set "NODE_DIR=%DATA_DIR%\nodejs"
 set "JDK_DIR=%DATA_DIR%\jdk-21"
 set "SDK_DIR=%DATA_DIR%\Android\Sdk"
@@ -33,6 +39,11 @@ if not exist "%DATA_DIR%" (
 :: ----------------------------------------------------------------------------
 echo.
 echo  [1/6] Checking Node.js LTS...
+where node >NUL 2>&1
+if %errorlevel% equ 0 (
+    echo      [OK] Node.js is already installed in your system PATH.
+    goto :CHECK_JDK
+)
 if exist "%NODE_DIR%\node.exe" (
     echo      [OK] Node.js is already installed at: %NODE_DIR%
     goto :CHECK_JDK
@@ -134,7 +145,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
 echo      [OK] Windows User environment variables configured.
 
 if exist "%PROJECT_DIR%android" (
-    echo sdk.dir=D\:\\Data\\Android\\Sdk> "%PROJECT_DIR%android\local.properties"
+    powershell -NoProfile -Command "$esc = '%SDK_DIR%'.Replace('\', '\\').Replace(':', '\:'); Set-Content -Path '%PROJECT_DIR%android\local.properties' -Value ('sdk.dir=' + $esc)"
     echo      [OK] Updated android\local.properties
 )
 

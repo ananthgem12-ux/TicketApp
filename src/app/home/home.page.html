@@ -146,8 +146,8 @@
           </div>
 
           <!-- 5. AD BANNER -->
-          <div class="home-ad-banner-card">
-            <img src="assets/images/ad_banner_giva.jpg" alt="Special Offer" class="home-ad-img" />
+          <div class="home-ad-banner-card" *ngIf="showDiwaliAd">
+            <img [src]="adBannerImage" alt="Special Offer" class="home-ad-img" />
           </div>
 
         </div>

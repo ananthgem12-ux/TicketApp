@@ -50,7 +50,7 @@ export class BottomNavComponent implements OnInit, OnDestroy {
   }
 
   navTo(tab: 'home' | 'passes' | 'live' | 'ticket' | 'profile') {
-    if (this.activeTab === tab) {
+    if (this.activeTab === tab && this.router.url === `/${tab}`) {
       return;
     }
     this.router.navigate([`/${tab}`]);

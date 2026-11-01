@@ -40,6 +40,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   // Preferences Modal state
   showPreferencesModal = false;
+  adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
+  showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
   isScreenshotProtectionEnabled = true;
 
   // QR code modal state
@@ -289,6 +291,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.adBannerImage = localStorage.getItem('custom_ad_image') || 'assets/images/ad_banner_giva.jpg';
+    this.showDiwaliAd = localStorage.getItem('pref_show_diwali_ad') !== 'false';
     const state = history.state;
     if (state && state.activeTab && state.activeTab !== 'home') {
       this.router.navigate(['/' + state.activeTab], { replaceUrl: true });
