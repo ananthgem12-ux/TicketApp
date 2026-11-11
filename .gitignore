@@ -37,6 +37,7 @@ react_native/
 mtc_database/
 Chennai One/
 unused_assets/
+dummy/
 
 # Environment files and secrets
 .env

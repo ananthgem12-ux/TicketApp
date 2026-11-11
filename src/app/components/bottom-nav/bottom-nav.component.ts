@@ -1,4 +1,4 @@
-import { Component, Input, CUSTOM_ELEMENTS_SCHEMA, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -10,40 +10,12 @@ import { CommonModule } from '@angular/common';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule]
 })
-export class BottomNavComponent implements OnInit, OnDestroy {
+export class BottomNavComponent {
   @Input() activeTab: 'home' | 'passes' | 'live' | 'ticket' | 'profile' = 'home';
 
-  centerMode: 'otp' | 'qr' = 'otp';
-  private centerModeTimer: any;
-
   constructor(
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {}
-
-  ngOnInit() {
-    this.startCenterModeTimer();
-  }
-
-  ngOnDestroy() {
-    if (this.centerModeTimer) {
-      clearInterval(this.centerModeTimer);
-      this.centerModeTimer = null;
-    }
-  }
-
-  startCenterModeTimer() {
-    if (this.centerModeTimer) {
-      clearInterval(this.centerModeTimer);
-      this.centerModeTimer = null;
-    }
-    this.centerModeTimer = setInterval(() => {
-      this.centerMode = this.centerMode === 'otp' ? 'qr' : 'otp';
-      try {
-        this.cdr.detectChanges();
-      } catch (e) {}
-    }, 3500);
-  }
 
   openBusOtp() {
     this.router.navigate(['/bus-otp']);

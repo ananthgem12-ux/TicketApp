@@ -153,7 +153,7 @@ export class HomePage implements OnInit, OnDestroy {
   private initialTouchDistance = 0;
   private initialTouchScale = 1.0;
 
-  searchQuerySuggestion = 'Where are you going?';
+  searchQuerySuggestion = 'Bus Stops';
   imageErrors: { [key: string]: boolean } = {
     'refer_friend': true,
     'safety': true,
@@ -165,14 +165,13 @@ export class HomePage implements OnInit, OnDestroy {
     'assets/images/banner_metro_discount.jpg',
     'assets/images/banner_1.jpg',
     'assets/images/banner_2.jpg',
-    'assets/images/banner_3.jpg',
-    'assets/images/banner_4.jpg'
+    'assets/images/banner_3.jpg'
   ];
 
   private bannerTimer: any;
   private suggestionTimer: any;
   private suggestionIndex = 0;
-  private suggestions = ['Metro Stations', 'Train Stations', 'Bus Stops', 'Where are you going?'];
+  private suggestions = ['Bus Stops', 'Metro Stations', 'Train Stations', 'Where are you going?'];
 
   // Map reference
   mapInstance: any = null;

@@ -6,7 +6,7 @@
       
       <div class="home-tab-wrapper">
         
-        <!-- MAP SECTION ON TOP -->
+        <!-- MAP SECTION ON TOP WITH CUMTA HERO BANNER -->
         <div class="map-viewport-container" 
              (touchstart)="onMapTouchStart($event)" 
              (touchmove)="onMapTouchMove($event)" 
@@ -25,46 +25,21 @@
                  (dblclick)="resetMapZoom()" />
           </div>
 
-          <!-- Centered Location Prompt over map -->
+          <!-- Hero Illustration Banner overlaying map (fading from transparent sky to green landscape) -->
+          <div class="hero-banner-overlay">
+            <img src="assets/images/srcv2_assets_cumta_hero_banner.webp" 
+                 alt="Cumta Hero Banner" 
+                 class="hero-banner-img" />
+          </div>
+
+          <!-- Centered Location Prompt over map / sky -->
           <div class="map-location-overlay" (click)="requestLocation()">
             <span class="map-location-link">Enable Location to track nearby buses</span>
           </div>
-
-          <!-- TOGGLE CONTROL OVERLAY (Matches exact bus toggle in screenshot) -->
-          <div class="map-toggle-switch-card" [class.active]="mapTrackingActive" (click)="toggleMapTracking()">
-            <div class="toggle-bus-wrapper">
-              <!-- Solid white front-facing bus icon -->
-              <svg class="toggle-bus-icon" viewBox="0 0 24 24" width="22" height="22" fill="white">
-                <path d="M18.8 4H5.2C4 4 3 5 3 6.2v10.6c0 1.2 1 2.2 2.2 2.2l-.8 1v1c0 .5.4 1 1 1h13.2c.6 0 1-.5 1-1v-1l-.8-1c1.2 0 2.2-1 2.2-2.2V6.2c0-1.2-1-2.2-2.2-2.2zM9 16c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm4-5H5V7h14v4z"/>
-              </svg>
-              <span class="active-indicator-dot"></span>
-            </div>
-            <div class="toggle-pill-slider">
-              <span class="toggle-knob" [class.slid]="mapTrackingActive"></span>
-            </div>
-          </div>
-
-          <!-- Zoom & GPS Controls -->
-          <div class="map-zoom-controls-stack">
-            <button class="map-ctrl-btn" (click)="zoomInMap()" aria-label="Zoom In">+</button>
-            <button class="map-ctrl-btn" (click)="zoomOutMap()" aria-label="Zoom Out">−</button>
-            <button class="map-ctrl-btn gps" (click)="recenterMap()" aria-label="Recenter Map">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="8" />
-                <line x1="12" y1="1" x2="12" y2="4" />
-                <line x1="12" y1="20" x2="12" y2="23" />
-                <line x1="1" y1="12" x2="4" y2="12" />
-                <line x1="20" y1="12" x2="23" y2="12" />
-                <circle cx="12" cy="12" r="2.5" fill="currentColor" />
-              </svg>
-            </button>
-          </div>
         </div>
 
-        <!-- SCROLLABLE BOTTOM SHEET CONTENT CONTAINER -->
+        <!-- SCROLLABLE CONTENT CONTAINER -->
         <div class="home-bottom-sheet">
-          <!-- Sheet handle indicator -->
-          <div class="sheet-drag-handle"></div>
 
           <!-- 1. GRADIENT RED-TO-ORANGE PILL SEARCH BAR -->
           <div class="gradient-search-container" (click)="openSearch()">

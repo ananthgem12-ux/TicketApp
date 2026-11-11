@@ -62,20 +62,21 @@ ion-content {
   flex-direction: column;
 }
 
-/* MAP VIEW */
+/* MAP VIEW WITH HERO BANNER */
 .map-viewport-container {
   position: relative;
   width: 100%;
-  height: 45vh;
-  min-height: 320px;
-  background-color: #1a1a1a;
+  height: 275px;
+  background-color: #e5e3df;
   overflow: hidden;
-  box-shadow: inset 0 -4px 10px rgba(0, 0, 0, 0.05);
-  touch-action: none;
+  touch-action: pan-x pan-y;
   user-select: none;
 }
 
 .map-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -84,14 +85,37 @@ ion-content {
   transition: transform 0.08s ease-out;
   transform-origin: center center;
   will-change: transform;
+  z-index: 1;
 }
 
 .map-display-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 25%;
   display: block;
   pointer-events: auto;
+}
+
+/* Hero Banner Overlay with transparent sky fading to green landscape */
+.hero-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom center;
+  display: block;
 }
 
 /* Controls Stack (Zoom In, Zoom Out, GPS) */
@@ -373,37 +397,33 @@ ion-content {
   border: none;
 }
 
-/* BOTTOM SHEET */
+/* HOME CONTENT CONTAINER */
 .home-bottom-sheet {
-  background-color: #ffffff;
-  border-top-left-radius: 28px;
-  border-top-right-radius: 28px;
-  margin-top: -10px;
-  padding: 12px 18px 140px 18px; /* bottom padding adjusted to clear bottom nav cleanly without extra gaps */
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.05);
+  background-color: transparent;
+  border-radius: 0;
+  margin-top: 0;
+  padding: 0 16px 120px 16px;
+  box-shadow: none;
   position: relative;
   z-index: 10;
   box-sizing: border-box;
 }
 
 .sheet-drag-handle {
-  width: 38px;
-  height: 4.5px;
-  background-color: #e5e5ea;
-  border-radius: 3px;
-  margin: 0 auto 16px auto;
+  display: none;
 }
 
-/* Map Location Hint Overlay */
+/* Map Location Hint Overlay in the sky of the Hero Banner */
 .map-location-overlay {
   position: absolute;
-  top: 95px;
+  top: 45%;
   left: 0;
   right: 0;
+  transform: translateY(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20;
+  z-index: 6;
   cursor: pointer;
   user-select: none;
 
@@ -414,24 +434,26 @@ ion-content {
     text-decoration: underline;
     text-underline-offset: 3px;
     letter-spacing: -0.2px;
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
   }
 }
 
-/* GRADIENT PILL SEARCH BAR */
+/* GRADIENT PILL SEARCH BAR (Floats over the green landscape of the Hero Banner) */
 .gradient-search-container {
   width: 100%;
-  height: 58px;
-  background: linear-gradient(90deg, #d30095 0%, #ee145b 45%, #ff3b00 100%);
-  border-radius: 36px;
+  height: 56px;
+  background: linear-gradient(90deg, #E00085 0%, #F20637 50%, #FD4B0F 100%);
+  border-radius: 28px;
   padding: 0 22px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 5px 18px rgba(230, 20, 70, 0.28);
-  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(224, 0, 133, 0.22);
+  margin-top: -28px;
+  margin-bottom: 18px;
   user-select: none;
+  position: relative;
+  z-index: 12;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease, opacity 0.15s ease;
   
@@ -574,9 +596,9 @@ ion-content {
   transition: all 0.25s ease;
 
   &.active {
-    background-color: #111111;
-    width: 16px;
-    border-radius: 4px;
+    background-color: #1c1c1e;
+    width: 7px;
+    border-radius: 50%;
   }
 }
 
